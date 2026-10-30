@@ -176,7 +176,7 @@ function translateFlight(raw,price,currency){
    const known=codes.filter(c=>AIRPORTS[c]);
    if(known.length>=2){origin=known[0];destination=known[1];}
   }
-  const dateLine=lines.find(x=>/\b\d{1,2}\s+[A-Z]{3}\s+\d{4}\b|\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}\b/i.test(x));
+  const dateLine=lines.find(x=>/\b\d{1,2}\s+[A-Z]{3,9}\s+\d{4}\b|\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}\b/i.test(x));
   const date=dateLine?arabicDate(dateLine):'';
   const timeLine=lines.find(x=>/\b\d{1,2}:?\d{2}\s*[-–]\s*\d{1,2}:?\d{2}\b/.test(x));
   let times=[];
