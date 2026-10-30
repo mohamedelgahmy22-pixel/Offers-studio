@@ -118,9 +118,9 @@ function cityLabel(code){
  return name?name+' ('+code+')':'('+code+') '+code;
 }
 function arabicDate(dateText){
- const m=dateText.match(/(\d{1,2})\s*([A-Z]{3})\s*(\d{4})/i);
+ const m=dateText.match(/(\d{1,2})\s*([A-Z]{3,9})\s*(\d{4})/i);
  let d;
- if(m){const months={JAN:0,FEB:1,MAR:2,APR:3,MAY:4,JUN:5,JUL:6,AUG:7,SEP:8,OCT:9,NOV:10,DEC:11};d=new Date(+m[3],months[m[2].toUpperCase()],+m[1]);}
+ if(m){const months={JAN:0,JANUARY:0,FEB:1,FEBRUARY:1,MAR:2,MARCH:2,APR:3,APRIL:3,MAY:4,JUN:5,JUNE:5,JUL:6,JULY:6,AUG:7,AUGUST:7,SEP:8,SEPT:8,SEPTEMBER:8,OCT:9,OCTOBER:9,NOV:10,NOVEMBER:10,DEC:11,DECEMBER:11};const mi=months[m[2].toUpperCase()];if(mi===undefined)return '';d=new Date(+m[3],mi,+m[1]);}
  else {const n=dateText.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);if(!n)return '';d=new Date(+n[3],+n[2]-1,+n[1]);}
  if(!d||isNaN(d.getTime()))return '';
  const days=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
