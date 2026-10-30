@@ -41,10 +41,11 @@ textarea,input{width:100%;border:1px solid var(--line);border-radius:12px;paddin
  <form class="gate-card" id="gateForm">
   <div class="gate-mark">🔒</div>
   <h2>استوديو عروض السفر</h2>
-  <p>أدخل كلمة المرور للمتابعة</p>
+  <p>سجّل دخولك للمتابعة</p>
+  <input id="gateUsername" type="text" placeholder="اسم المستخدم" autocomplete="username" required>
   <input id="gatePassword" type="password" placeholder="كلمة المرور" autocomplete="current-password" required>
   <button type="submit">دخول</button>
-  <div id="gateError">كلمة المرور غير صحيحة، حاول مرة أخرى.</div>
+  <div id="gateError">اسم المستخدم أو كلمة المرور غير صحيحة، حاول مرة أخرى.</div>
  </form>
 </section>
 <section id="greetingOverlay"><div class="greeting-card"><div style="font-size:34px">✨</div><h2>نورت</h2><p>أهلاً بيك في استوديو عروض السفر</p></div></section>
@@ -242,10 +243,12 @@ $('copyCombined').onclick=()=>copyText($('combinedPreview').textContent);$('prin
 </script>
 <script>
 (()=>{
+ const ACCESS_USERNAME='Mohamed Elgahmy';
  const ACCESS_PASSWORD='elgahmy2000';
  const gate=document.getElementById('passwordGate');
  const form=document.getElementById('gateForm');
  const input=document.getElementById('gatePassword');
+ const username=document.getElementById('gateUsername');
  const error=document.getElementById('gateError');
  const logout=document.getElementById('logoutButton');
  const greeting=document.getElementById('greetingOverlay');
@@ -253,9 +256,9 @@ $('copyCombined').onclick=()=>copyText($('combinedPreview').textContent);$('prin
  if(sessionStorage.getItem('offersStudioUnlocked')==='yes')unlock();
  form.addEventListener('submit',event=>{
   event.preventDefault();
-  if(input.value===ACCESS_PASSWORD){sessionStorage.setItem('offersStudioUnlocked','yes');error.style.display='none';input.value='';greeting.style.display='flex';greeting.classList.add('show');setTimeout(()=>{greeting.classList.remove('show');greeting.style.display='none';unlock();},1300);}
+  if(username.value.trim()===ACCESS_USERNAME&&input.value===ACCESS_PASSWORD){sessionStorage.setItem('offersStudioUnlocked','yes');error.style.display='none';input.value='';username.value='';greeting.style.display='flex';greeting.classList.add('show');setTimeout(()=>{greeting.classList.remove('show');greeting.style.display='none';unlock();},1300);}
   else{error.style.display='block';input.select();}
  });
- logout.addEventListener('click',()=>{sessionStorage.removeItem('offersStudioUnlocked');document.body.classList.add('locked');gate.style.display='';input.value='';input.focus();});
+ logout.addEventListener('click',()=>{sessionStorage.removeItem('offersStudioUnlocked');document.body.classList.add('locked');gate.style.display='';input.value='';username.value='';username.focus();});
 })();
 </script></body></html>
