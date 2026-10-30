@@ -88,22 +88,62 @@ window.hotelParsed={};$('convertHotel').onclick=()=>{let raw=$('hotelRaw').value
 $('clearHotel').onclick=()=>{$('hotelRaw').value='';$('hotelPrice').value='';$('hotelExtra').value='';window.hotelParsed={};$('hotelPreview').textContent='الصق بيانات الحجز ثم اضغط «تحويل إلى عرض» لتظهر النتيجة هنا.'};
 async function copyText(text){if(!text.trim()){toast('لا يوجد عرض لنسخه');return}let ok=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch{}if(!ok){let ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{ok=document.execCommand('copy')}catch{}ta.remove()}toast(ok?'تم نسخ العرض بنجاح':'تعذر النسخ؛ اسمح للمتصفح بالنسخ وحاول مرة أخرى')}
 $('copyHotel').onclick=()=>copyText($('hotelPreview').textContent);$('printHotel').onclick=()=>window.print();
+const AIRLINES={
+ KU:'الخطوط الكويتية',QR:'الخطوط القطرية',EK:'طيران الإمارات',EY:'الاتحاد للطيران',SV:'الخطوط السعودية',MS:'مصر للطيران',GF:'طيران الخليج',J9:'طيران الجزيرة',WY:'الطيران العماني',RJ:'الملكية الأردنية',TK:'الخطوط التركية',LH:'لوفتهانزا',AF:'الخطوط الجوية الفرنسية',BA:'الخطوط البريطانية',KL:'الخطوط الملكية الهولندية',LX:'سويس إنترناشيونال',OS:'الخطوط النمساوية',AZ:'ITA Airways',IB:'إيبيريا',TP:'تاب البرتغالية',SU:'إيروفلوت',LO:'الخطوط البولندية',UA:'يونايتد إيرلاينز',AA:'أمريكان إيرلاينز',DL:'دلتا إيرلاينز',AC:'إير كندا',ET:'الخطوط الإثيوبية',KQ:'الخطوط الكينية',SA:'الخطوط الجنوب أفريقية',AT:'الخطوط الملكية المغربية',TU:'الخطوط التونسية',AH:'الخطوط الجوية الجزائرية',ME:'طيران الشرق الأوسط',FZ:'فلاي دبي',G9:'العربية للطيران',3L:'العربية للطيران أبوظبي',XY:'طيران ناس',F3:'طيران أديل',W6:'ويز إير',FR:'رايان إير',U2:'إيزي جيت',VY:'فيولينغ',PC:'بيجاسوس',XQ:'صن إكسبريس',A3:'إيجه',AI:'إير إنديا',6E:'إنديغو',SG:'سبايس جيت',UL:'الخطوط السريلانكية',MH:'الخطوط الماليزية',SQ:'الخطوط السنغافورية',TR:'سكوت',TG:'الخطوط التايلاندية',FD:'إير آسيا تايلاند',AK:'إير آسيا',QZ:'إير آسيا إندونيسيا',GA:'غارودا إندونيسيا',CX:'كاثاي باسيفيك',HX:'هونغ كونغ إيرلاينز',JL:'الخطوط اليابانية',NH:'آل نيبون',KE:'الخطوط الكورية',OZ:'آسيانا',CA:'إير تشاينا',MU:'تشاينا إيسترن',CZ:'تشاينا ساوثرن',3U:'سيشوان إيرلاينز',QF:'كانتاس',VA:'فيرجن أستراليا',NZ:'طيران نيوزيلندا',FJ:'فيجي إيرويز',PR:'الخطوط الفلبينية',5J:'سيبو باسيفيك'
+};
+const AIRPORTS={
+ KWI:'الكويت',DXB:'دبي',DWC:'دبي',AUH:'أبوظبي',SHJ:'الشارقة',DOH:'الدوحة',BAH:'البحرين',MCT:'مسقط',SLL:'صلالة',RUH:'الرياض',JED:'جدة',DMM:'الدمام',MED:'المدينة المنورة',ELQ:'القصيم',TUU:'تبوك',HAS:'حائل',AHB:'أبها',GIZ:'جازان',YNB:'ينبع',CAI:'القاهرة',SPX:'سفنكس',HBE:'الإسكندرية',SSH:'شرم الشيخ',HRG:'الغردقة',LXR:'الأقصر',ASW:'أسوان',HMB:'سوهاج',AMM:'عمّان',AQJ:'العقبة',BEY:'بيروت',DAM:'دمشق',BGW:'بغداد',BSR:'البصرة',IST:'إسطنبول',SAW:'إسطنبول',AYT:'أنطاليا',ADB:'إزمير',ESB:'أنقرة',BJV:'بودروم',DLM:'دالامان',ATH:'أثينا',SKG:'سالونيك',LHR:'لندن',LGW:'لندن',STN:'لندن',LTN:'لندن',LCY:'لندن',MAN:'مانشستر',EDI:'إدنبرة',CDG:'باريس',ORY:'باريس',NCE:'نيس',LYS:'ليون',FRA:'فرانكفورت',MUC:'ميونخ',BER:'برلين',DUS:'دوسلدورف',AMS:'أمستردام',BRU:'بروكسل',ZRH:'زيورخ',GVA:'جنيف',VIE:'فيينا',FCO:'روما',MXP:'ميلانو',VCE:'البندقية',MAD:'مدريد',BCN:'برشلونة',LIS:'لشبونة',OPO:'بورتو',PRG:'براغ',BUD:'بودابست',WAW:'وارسو',CPH:'كوبنهاغن',ARN:'ستوكهولم',OSL:'أوسلو',HEL:'هلسنكي',DUB:'دبلن',JFK:'نيويورك',EWR:'نيويورك',LGA:'نيويورك',LAX:'لوس أنجلوس',SFO:'سان فرانسيسكو',ORD:'شيكاغو',MIA:'ميامي',IAD:'واشنطن',DCA:'واشنطن',BOS:'بوسطن',ATL:'أتلانتا',DFW:'دالاس',IAH:'هيوستن',SEA:'سياتل',YYZ:'تورونتو',YVR:'فانكوفر',YUL:'مونتريال',GRU:'ساو باولو',GIG:'ريو دي جانيرو',MEX:'مكسيكو سيتي',CUN:'كانكون',NRT:'طوكيو',HND:'طوكيو',KIX:'أوساكا',ICN:'سيول',GMP:'سيول',PEK:'بكين',PKX:'بكين',PVG:'شنغهاي',SHA:'شنغهاي',CAN:'قوانغتشو',HKG:'هونغ كونغ',TPE:'تايبيه',SIN:'سنغافورة',KUL:'كوالالمبور',BKK:'بانكوك',DMK:'بانكوك',HKT:'بوكيت',CNX:'تشيانغ ماي',HAN:'هانوي',SGN:'مدينة هو تشي منه',MNL:'مانيلا',CEB:'سيبو',DPS:'بالي',CGK:'جاكرتا',DEL:'نيودلهي',BOM:'مومباي',BLR:'بنغالورو',CMB:'كولومبو',MLE:'ماليه',NBO:'نيروبي',ADD:'أديس أبابا',JNB:'جوهانسبرغ',CPT:'كيب تاون',ZNZ:'زنجبار',DAR:'دار السلام',LOS:'لاغوس',CMN:'الدار البيضاء',RAK:'مراكش',TUN:'تونس',ALG:'الجزائر',TIP:'طرابلس',ROB:'مونروفيا',SYD:'سيدني',MEL:'ملبورن',BNE:'بريزبن',PER:'بيرث',AKL:'أوكلاند',FUK:'فوكوكا',KHI:'كراتشي',LHE:'لاهور',ISB:'إسلام آباد',DAC:'دكا',KTM:'كاتماندو',GYD:'باكو',TBS:'تبليسي',EVN:'يريفان',TAS:'طشقند',ALA:'ألماتي',NQZ:'أستانا',LED:'سانت بطرسبرغ',SVO:'موسكو',DME:'موسكو',VKO:'موسكو',GOT:'غوتنبرغ',LUX:'لوكسمبورغ',MLA:'مالطا',LCA:'لارنكا',PFO:'بافوس',SOF:'صوفيا',OTP:'بوخارست',ZAG:'زغرب',BEG:'بلغراد',TIA:'تيرانا',SKP:'سكوبيه',DBV:'دوبروفنيك',SPU:'سبليت',KEF:'ريكيافيك',MRU:'موريشيوس',SEZ:'سيشل',MLE:'ماليه',VFA:'فيكتوريا فولز',LUN:'لوساكا'
+};
+function flightDate(token){
+ const m=token.match(/^(\d{1,2})(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)$/i);if(!m)return '';
+ const months={JAN:0,FEB:1,MAR:2,APR:3,MAY:4,JUN:5,JUL:6,AUG:7,SEP:8,OCT:9,NOV:10,DEC:11};
+ const now=new Date();let year=now.getFullYear(),date=new Date(year,months[m[2].toUpperCase()],+m[1]);
+ if(date<new Date(now.getFullYear(),now.getMonth(),now.getDate()-30))date=new Date(year+1,months[m[2].toUpperCase()],+m[1]);
+ const days=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],monthNames=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+ return days[date.getDay()]+' '+date.getDate()+' '+monthNames[date.getMonth()]+' '+date.getFullYear();
+}
+function flightTime(t){
+ let h=+t.slice(0,2),m=t.slice(2),period=h>=12?'م':'ص',hh=h%12||12;
+ return hh+':'+m+' '+period;
+}
 function translateFlight(raw,price,currency){
- let text=norm(raw); if(!text)return '';
- let lines=text.split('\n').map(x=>x.trim()).filter(Boolean).map(x=>x.replace(/^\*+|\*+$/g,''));
- const replacements=[
- [/\bDeparture\b/gi,'المغادرة'],[/\bArrival\b/gi,'الوصول'],[/\bFlight\s*(No\.?|Number)?\b/gi,'رقم الرحلة'],[/\bDate\b/gi,'التاريخ'],[/\bDepart(?:ure)?\s*time\b/gi,'موعد الإقلاع'],[/\bArrival\s*time\b/gi,'موعد الوصول'],[/\bBaggage\b/gi,'الحقائب'],[/\bAdult(?:s)?\b/gi,'بالغ'],[/\bChild(?:ren)?\b/gi,'طفل'],[/\bInfant(?:s)?\b/gi,'رضيع'],[/\bPassengers?\b/gi,'عدد الأفراد'],[/\bOne\s*way\b/gi,'ذهاب فقط'],[/\bRound\s*trip\b/gi,'ذهاب وعودة'],[/\bReturn\b/gi,'العودة'],[/\bOutbound\b/gi,'الذهاب'],[/\bTerminal\b/gi,'صالة'],[/\bNon.?stop\b/gi,'مباشرة']
- ];
- lines=lines.map(line=>replacements.reduce((s,[re,to])=>s.replace(re,to),line));
- let airline='', trip='';
- const airlineIndex=lines.findIndex(x=>/(airways|airlines|air\s|express|航空)/i.test(x));
- if(airlineIndex>=0){airline=lines[airlineIndex];lines.splice(airlineIndex,1)}
- if(/one\s*way/i.test(text))trip='ذهاب فقط';else if(/round\s*trip|return/i.test(text))trip='ذهاب وعودة';
- let out=[];if(airline)out.push(airline);if(trip)out.push(trip);
- let translated=lines.join('\n');
- translated=translated.replace(/\s+-\s+/g,' → ');
- if(translated)out.push(translated);
- out.push('💰 السعر للفرد: '+(price?price+' '+currency:''));
+ const text=norm(raw);if(!text)return '';
+ const lines=text.split('\n').map(x=>x.trim().replace(/^\*+|\*+$/g,'')).filter(Boolean);
+ const segments=[];
+ for(const line of lines){
+  const m=line.match(/^\d+\s+([A-Z0-9]{2})\s*(\d{1,4})\s+([A-Z])\s+(\d{1,2}[A-Z]{3})\s+\d\s+([A-Z]{6})\s+\S+\s+(\d{4})\s+(\d{4})/i);
+  if(m)segments.push({airline:m[1].toUpperCase(),flight:m[1].toUpperCase()+' '+m[2],date:m[4].toUpperCase(),route:m[5].toUpperCase(),depart:m[6],arrive:m[7]});
+ }
+ const airlineNames=segments.map(x=>AIRLINES[x.airline]||'');
+ const uniqueAirlines=[...new Set(airlineNames.filter(Boolean))];
+ let baggage='';
+ const bagLine=lines.find(x=>/(?:\d+\s*(?:kg|kilo)|\d+\s*\+\s*\d+)/i.test(x)&&!segments.some(seg=>x.includes(seg.flight)));
+ if(bagLine){
+  const nums=[...bagLine.matchAll(/(\d+)\s*(?:kg|kilo)?/gi)].map(x=>+x[1]).filter(x=>x>0);
+  if(nums.length>=3&&nums[0]===nums[1])baggage='7 كيلو شنطة يد + '+nums[0]+' كيلو';
+  else if(nums.length>=2)baggage=nums[nums.length-1]+' كيلو';
+  else if(nums.length===1)baggage=nums[0]+' كيلو';
+ }
+ const passengerMatch=text.match(/(\d+)\s*(?:ADL|ADT|ADULTS?)/i);
+ const childMatch=text.match(/(\d+)\s*(?:CHD|CNN|CHILDREN?)/i);
+ const infantMatch=text.match(/(\d+)\s*(?:INF|INFANT)/i);
+ let out=[];
+ segments.forEach((seg,i)=>{
+  const origin=seg.route.slice(0,3),destination=seg.route.slice(3,6);
+  const originName=AIRPORTS[origin]||origin,destinationName=AIRPORTS[destination]||destination;
+  const airline=AIRLINES[seg.airline]||seg.airline;
+  out.push((i===0?'رحلة الذهاب':'رحلة العودة')+'\n\n✈️ '+airline+'\n🛫 '+originName+' ('+origin+') ← '+destinationName+' ('+destination+')\n📅 '+flightDate(seg.date)+'\n🕒 '+flightTime(seg.depart)+' ← '+flightTime(seg.arrive)+(baggage?'\n🧳 '+baggage:''));
+ });
+ if(!segments.length){
+  const airlineCode=(text.match(/(?:^|\n)\s*\d+\s+([A-Z0-9]{2})\s+\d{1,4}/i)||[])[1];
+  const airline=airlineCode?(AIRLINES[airlineCode.toUpperCase()]||airlineCode.toUpperCase()):'';
+  if(airline)out.push('✈️ '+airline);
+  out.push(lines.filter(x=>!/(?:\d+\s*(?:kg|kilo)|\d+\s*\+\s*\d+)/i.test(x)).join('\n'));
+  if(baggage)out.push('🧳 '+baggage);
+ }
+ let people=[];if(passengerMatch)people.push(+passengerMatch[1]+' بالغ');if(childMatch)people.push(+childMatch[1]+' طفل');if(infantMatch)people.push(+infantMatch[1]+' رضيع');
+ if(people.length)out.push('👥 عدد الأفراد: '+people.join(' / '));
+ out.push('💰 السعر للفرد: '+(price?price+(currency?' '+currency:''):''));
  out.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
  return out.join('\n\n');
 }
