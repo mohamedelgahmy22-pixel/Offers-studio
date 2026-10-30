@@ -82,7 +82,7 @@ let board=match(text,/^(?:board|meal\s*plan|meal)\s*[:：]\s*([^\n]+)/im);let me
 let guest=[];if(adults)guest.push(adults+' بالغ');if(children)guest.push(children+' طفل');if(infants)guest.push(infants+' رضيع');let guests=guest.join(' و ');
 let price=match(text,/(?:total\s*price|price|السعر)\s*[:：]\s*([^\n]+)/i);
 return {hotel,ci,co,rooms,meal,guests,price}}
-function hotelText(){let d=window.hotelParsed||{};let a=[];if(d.hotel)a.push('🏨 الفندق: '+d.hotel);if(d.rooms?.length){let multi=d.rooms.length>1;for(const r of d.rooms)a.push((multi?'🛏️ الغرف: ':'🛏️ الغرفة: ')+(r.count>1?r.count+' × ':'')+r.name)}if(d.ci)a.push('📅 الدخول: '+d.ci);if(d.co)a.push('📅 الخروج: '+d.co);if(d.meal)a.push('🍽️ الوجبات: '+d.meal);if(d.guests)a.push('👥 عدد الأفراد: '+d.guests);let p=$('hotelPrice').value.trim()||d.price||'';a.push('💰 السعر الإجمالي: '+(p? p+' '+$('hotelCurrency').value.trim():''));let notes=['✅ السعر شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).','⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.','❌ الحجز غير مسترد وغير قابل للتعديل.'];if($('hotelExtra').value.trim())notes.push($('hotelExtra').value.trim());a.push('📝 ملاحظة:\n'+notes.join('\n'));return a.join('\n\n')}
+function hotelText(options={}){let d=window.hotelParsed||{};let a=[];if(d.hotel)a.push('🏨 الفندق: '+d.hotel);if(d.rooms?.length){let multi=d.rooms.length>1;for(const r of d.rooms)a.push((multi?'🛏️ الغرف: ':'🛏️ الغرفة: ')+(r.count>1?r.count+' × ':'')+r.name)}if(d.ci)a.push('📅 الدخول: '+d.ci);if(d.co)a.push('📅 الخروج: '+d.co);if(d.meal)a.push('🍽️ الوجبات: '+d.meal);if(d.guests)a.push('👥 عدد الأفراد: '+d.guests);if(options.includePrice!==false){let p=$('hotelPrice').value.trim()||d.price||'';a.push('💰 السعر الإجمالي: '+(p? p+' '+$('hotelCurrency').value.trim():''));}let notes=['✅ السعر شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).','⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.','❌ الحجز غير مسترد وغير قابل للتعديل.'];if($('hotelExtra').value.trim())notes.push($('hotelExtra').value.trim());if(options.includeNotes!==false)a.push('📝 ملاحظة:\n'+notes.join('\n'));return a.join('\n\n')}
 window.hotelParsed={};$('convertHotel').onclick=()=>{let raw=$('hotelRaw').value;if(!raw.trim()){toast('الصق تفاصيل الحجز أولاً');return}window.hotelParsed=parseHotel(raw);$('hotelPreview').textContent=hotelText();if(!window.hotelParsed.hotel)toast('تم التحويل، لكن لم أتعرف على اسم الفندق؛ يمكنك مراجعة النص الأصلي');else toast('تم تحويل بيانات الفندق')};
 ['hotelPrice','hotelCurrency','hotelExtra'].forEach(id=>$(id).addEventListener('input',()=>{if($('hotelRaw').value.trim())$('hotelPreview').textContent=hotelText()}));
 $('clearHotel').onclick=()=>{$('hotelRaw').value='';$('hotelPrice').value='';$('hotelExtra').value='';window.hotelParsed={};$('hotelPreview').textContent='الصق بيانات الحجز ثم اضغط «تحويل إلى عرض» لتظهر النتيجة هنا.'};
@@ -131,7 +131,7 @@ function displayTime(t){
  const h=+m[1],mins=m[2],period=h>=12?'م':'ص',hh=h%12||12;
  return hh+':'+mins+' '+period;
 }
-function translateFlight(raw,price,currency){
+function translateFlight(raw,price,currency,options={}){
  const text=norm(raw);if(!text)return '';
  const lines=text.split('\n').map(x=>x.trim().replace(/^\*+|\*+$/g,'')).filter(Boolean);
  const segments=[];
@@ -190,15 +190,15 @@ function translateFlight(raw,price,currency){
   output.push(trip.join('\n'));
  }
  if(passengers.length)output.push('👥 عدد الأفراد: '+passengers.join(' + '));
- output.push('السعر للفرد: '+(price?price+(currency?' '+currency:''):''));
- output.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
+ if(options.includePrice!==false)output.push('السعر للفرد: '+(price?price+(currency?' '+currency:''):''));
+ if(options.includeNotes!==false)output.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
  return output.join('\n\n');
 }
 function buildCombined(){
- const flight=translateFlight($('combinedFlightRaw').value,'','');
+ const flight=translateFlight($('combinedFlightRaw').value,'','',{includePrice:false,includeNotes:false});
  const rawHotel=$('combinedHotelRaw').value;
  window.hotelParsed=parseHotel(rawHotel);
- const hotel=hotelText().replace(/💰 السعر الإجمالي:.*(?:\n|$)/,'').replace(/\n\n📝 ملاحظة:[\s\S]*$/,'');
+ const hotel=hotelText({includePrice:false,includeNotes:false});
  const price=$('combinedPrice').value.trim(),currency=$('combinedCurrency').value.trim();
  const notes='📝 ملاحظة:\n✅ السعر يشمل الطيران والفنادق.\n✅ السعر شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.';
  return [flight,'========',hotel,'💰 السعر للفرد: '+(price?price+' '+currency:''),notes].filter(Boolean).join('\n\n');
