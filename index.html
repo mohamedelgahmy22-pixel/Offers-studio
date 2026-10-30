@@ -89,7 +89,7 @@ $('clearHotel').onclick=()=>{$('hotelRaw').value='';$('hotelPrice').value='';$('
 async function copyText(text){if(!text.trim()){toast('لا يوجد عرض لنسخه');return}let ok=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch{}if(!ok){let ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{ok=document.execCommand('copy')}catch{}ta.remove()}toast(ok?'تم نسخ العرض بنجاح':'تعذر النسخ؛ اسمح للمتصفح بالنسخ وحاول مرة أخرى')}
 $('copyHotel').onclick=()=>copyText($('hotelPreview').textContent);$('printHotel').onclick=()=>window.print();
 const AIRLINES={
- KU:'الخطوط الكويتية',QR:'الخطوط القطرية',EK:'طيران الإمارات',EY:'الاتحاد للطيران',SV:'الخطوط السعودية',MS:'مصر للطيران',GF:'طيران الخليج',J9:'طيران الجزيرة',WY:'الطيران العماني',RJ:'الملكية الأردنية',TK:'الخطوط التركية',LH:'لوفتهانزا',AF:'الخطوط الجوية الفرنسية',BA:'الخطوط البريطانية',KL:'الخطوط الملكية الهولندية',LX:'سويس إنترناشيونال',OS:'الخطوط النمساوية',AZ:'ITA Airways',IB:'إيبيريا',TP:'تاب البرتغالية',SU:'إيروفلوت',LO:'الخطوط البولندية',UA:'يونايتد إيرلاينز',AA:'أمريكان إيرلاينز',DL:'دلتا إيرلاينز',AC:'إير كندا',ET:'الخطوط الإثيوبية',KQ:'الخطوط الكينية',SA:'الخطوط الجنوب أفريقية',AT:'الخطوط الملكية المغربية',TU:'الخطوط التونسية',AH:'الخطوط الجوية الجزائرية',ME:'طيران الشرق الأوسط',FZ:'فلاي دبي',G9:'العربية للطيران','3L':'العربية للطيران أبوظبي',XY:'طيران ناس',F3:'طيران أديل',W6:'ويز إير',FR:'رايان إير',U2:'إيزي جيت',VY:'فيولينغ',PC:'بيجاسوس',XQ:'صن إكسبريس',A3:'إيجه',AI:'إير إنديا','6E':'إنديغو',SG:'سبايس جيت',UL:'الخطوط السريلانكية',MH:'الخطوط الماليزية',SQ:'الخطوط السنغافورية',TR:'سكوت',TG:'الخطوط التايلاندية',FD:'إير آسيا تايلاند',AK:'إير آسيا',QZ:'إير آسيا إندونيسيا',GA:'غارودا إندونيسيا',CX:'كاثاي باسيفيك',HX:'هونغ كونغ إيرلاينز',JL:'الخطوط اليابانية',NH:'آل نيبون',KE:'الخطوط الكورية',OZ:'آسيانا',CA:'إير تشاينا',MU:'تشاينا إيسترن',CZ:'تشاينا ساوثرن','3U':'سيشوان إيرلاينز',QF:'كانتاس',VA:'فيرجن أستراليا',NZ:'طيران نيوزيلندا',FJ:'فيجي إيرويز',PR:'الخطوط الفلبينية','5J':'سيبو باسيفيك'
+ KU:'Kuwait Airways',QR:'Qatar Airways',EK:'Emirates',EY:'Etihad Airways',SV:'Saudia',MS:'EgyptAir',GF:'Gulf Air',J9:'Jazeera Airways',WY:'Oman Air',RJ:'Royal Jordanian',TK:'Turkish Airlines',LH:'Lufthansa',AF:'Air France',BA:'British Airways',KL:'KLM',LX:'SWISS',OS:'Austrian Airlines',AZ:'ITA Airways',IB:'Iberia',TP:'TAP Air Portugal',SU:'Aeroflot',LO:'LOT Polish Airlines',UA:'United Airlines',AA:'American Airlines',DL:'Delta Air Lines',AC:'Air Canada',ET:'Ethiopian Airlines',KQ:'Kenya Airways',SA:'South African Airways',AT:'Royal Air Maroc',TU:'Tunisair',AH:'Air Algerie',ME:'Middle East Airlines',FZ:'flydubai',G9:'Air Arabia','3L':'Air Arabia Abu Dhabi',XY:'flynas',F3:'flyadeal',W6:'Wizz Air',FR:'Ryanair',U2:'easyJet',VY:'Vueling',PC:'Pegasus Airlines',XQ:'SunExpress',A3:'Aegean Airlines',AI:'Air India','6E':'IndiGo',SG:'SpiceJet',UL:'SriLankan Airlines',MH:'Malaysia Airlines',SQ:'Singapore Airlines',TR:'Scoot',TG:'Thai Airways',FD:'Thai AirAsia',AK:'AirAsia',QZ:'Indonesia AirAsia',GA:'Garuda Indonesia',CX:'Cathay Pacific',HX:'Hong Kong Airlines',JL:'Japan Airlines',NH:'ANA',KE:'Korean Air',OZ:'Asiana Airlines',CA:'Air China',MU:'China Eastern',CZ:'China Southern','3U':'Sichuan Airlines',QF:'Qantas',VA:'Virgin Australia',NZ:'Air New Zealand',FJ:'Fiji Airways',PR:'Philippine Airlines','5J':'Cebu Pacific'
 };
 const AIRPORTS={
  KWI:'الكويت',DXB:'دبي',DWC:'دبي',AUH:'أبوظبي',SHJ:'الشارقة',DOH:'الدوحة',BAH:'البحرين',MCT:'مسقط',SLL:'صلالة',RUH:'الرياض',JED:'جدة',DMM:'الدمام',MED:'المدينة المنورة',ELQ:'القصيم',TUU:'تبوك',HAS:'حائل',AHB:'أبها',GIZ:'جازان',YNB:'ينبع',CAI:'القاهرة',SPX:'سفنكس',HBE:'الإسكندرية',SSH:'شرم الشيخ',HRG:'الغردقة',LXR:'الأقصر',ASW:'أسوان',HMB:'سوهاج',AMM:'عمّان',AQJ:'العقبة',BEY:'بيروت',DAM:'دمشق',BGW:'بغداد',BSR:'البصرة',IST:'إسطنبول',SAW:'إسطنبول',AYT:'أنطاليا',ADB:'إزمير',ESB:'أنقرة',BJV:'بودروم',DLM:'دالامان',ATH:'أثينا',SKG:'سالونيك',LHR:'لندن',LGW:'لندن',STN:'لندن',LTN:'لندن',LCY:'لندن',MAN:'مانشستر',EDI:'إدنبرة',CDG:'باريس',ORY:'باريس',NCE:'نيس',LYS:'ليون',FRA:'فرانكفورت',MUC:'ميونخ',BER:'برلين',DUS:'دوسلدورف',AMS:'أمستردام',BRU:'بروكسل',ZRH:'زيورخ',GVA:'جنيف',VIE:'فيينا',FCO:'روما',MXP:'ميلانو',VCE:'البندقية',MAD:'مدريد',BCN:'برشلونة',LIS:'لشبونة',OPO:'بورتو',PRG:'براغ',BUD:'بودابست',WAW:'وارسو',CPH:'كوبنهاغن',ARN:'ستوكهولم',OSL:'أوسلو',HEL:'هلسنكي',DUB:'دبلن',JFK:'نيويورك',EWR:'نيويورك',LGA:'نيويورك',LAX:'لوس أنجلوس',SFO:'سان فرانسيسكو',ORD:'شيكاغو',MIA:'ميامي',IAD:'واشنطن',DCA:'واشنطن',BOS:'بوسطن',ATL:'أتلانتا',DFW:'دالاس',IAH:'هيوستن',SEA:'سياتل',YYZ:'تورونتو',YVR:'فانكوفر',YUL:'مونتريال',GRU:'ساو باولو',GIG:'ريو دي جانيرو',MEX:'مكسيكو سيتي',CUN:'كانكون',NRT:'طوكيو',HND:'طوكيو',KIX:'أوساكا',ICN:'سيول',GMP:'سيول',PEK:'بكين',PKX:'بكين',PVG:'شنغهاي',SHA:'شنغهاي',CAN:'قوانغتشو',HKG:'هونغ كونغ',TPE:'تايبيه',SIN:'سنغافورة',KUL:'كوالالمبور',BKK:'بانكوك',DMK:'بانكوك',HKT:'بوكيت',CNX:'تشيانغ ماي',HAN:'هانوي',SGN:'مدينة هو تشي منه',MNL:'مانيلا',CEB:'سيبو',DPS:'بالي',CGK:'جاكرتا',DEL:'نيودلهي',BOM:'مومباي',BLR:'بنغالورو',CMB:'كولومبو',MLE:'ماليه',NBO:'نيروبي',ADD:'أديس أبابا',JNB:'جوهانسبرغ',CPT:'كيب تاون',ZNZ:'زنجبار',DAR:'دار السلام',LOS:'لاغوس',CMN:'الدار البيضاء',RAK:'مراكش',TUN:'تونس',ALG:'الجزائر',TIP:'طرابلس',ROB:'مونروفيا',SYD:'سيدني',MEL:'ملبورن',BNE:'بريزبن',PER:'بيرث',AKL:'أوكلاند',FUK:'فوكوكا',KHI:'كراتشي',LHE:'لاهور',ISB:'إسلام آباد',DAC:'دكا',KTM:'كاتماندو',GYD:'باكو',TBS:'تبليسي',EVN:'يريفان',TAS:'طشقند',ALA:'ألماتي',NQZ:'أستانا',LED:'سانت بطرسبرغ',SVO:'موسكو',DME:'موسكو',VKO:'موسكو',GOT:'غوتنبرغ',LUX:'لوكسمبورغ',MLA:'مالطا',LCA:'لارنكا',PFO:'بافوس',SOF:'صوفيا',OTP:'بوخارست',ZAG:'زغرب',BEG:'بلغراد',TIA:'تيرانا',SKP:'سكوبيه',DBV:'دوبروفنيك',SPU:'سبليت',KEF:'ريكيافيك',MRU:'موريشيوس',SEZ:'سيشل',MLE:'ماليه',VFA:'فيكتوريا فولز',LUN:'لوساكا'
@@ -106,46 +106,93 @@ function flightTime(t){
  let h=+t.slice(0,2),m=t.slice(2),period=h>=12?'م':'ص',hh=h%12||12;
  return hh+':'+m+' '+period;
 }
+function cityCode(value){
+ const v=value.trim().toUpperCase().replace(/[()[\]]/g,'').trim();
+ const aliases={'KUWAIT':'KWI','DUBAI':'DXB','ABU DHABI':'AUH','ABUDHABI':'AUH','SHARJAH':'SHJ','DOHA':'DOH','BAHRAIN':'BAH','MUSCAT':'MCT','BANGKOK':'BKK','PHUKET':'HKT','HONG KONG':'HKG','CAIRO':'CAI','ISTANBUL':'IST','ANTALYA':'AYT','LONDON':'LHR','PARIS':'CDG','SINGAPORE':'SIN','KUALA LUMPUR':'KUL','MANILA':'MNL','TOKYO':'NRT','SEOUL':'ICN','NEW YORK':'JFK'};
+ if(AIRPORTS[v])return v;
+ if(aliases[v])return aliases[v];
+ return '';
+}
+function cityLabel(code){
+ const name=AIRPORTS[code];
+ return name?name+' ('+code+')':'('+code+') '+code;
+}
+function arabicDate(dateText){
+ const m=dateText.match(/(\d{1,2})\s*([A-Z]{3})\s*(\d{4})/i);
+ let d;
+ if(m){const months={JAN:0,FEB:1,MAR:2,APR:3,MAY:4,JUN:5,JUL:6,AUG:7,SEP:8,OCT:9,NOV:10,DEC:11};d=new Date(+m[3],months[m[2].toUpperCase()],+m[1]);}
+ else {const n=dateText.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);if(!n)return '';d=new Date(+n[3],+n[2]-1,+n[1]);}
+ if(!d||isNaN(d.getTime()))return '';
+ const days=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+ return days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+}
+function displayTime(t){
+ const m=t.match(/^(\d{1,2}):?(\d{2})$/);if(!m)return t;
+ const h=+m[1],mins=m[2],period=h>=12?'م':'ص',hh=h%12||12;
+ return hh+':'+mins+' '+period;
+}
 function translateFlight(raw,price,currency){
  const text=norm(raw);if(!text)return '';
  const lines=text.split('\n').map(x=>x.trim().replace(/^\*+|\*+$/g,'')).filter(Boolean);
  const segments=[];
  for(const line of lines){
   const m=line.match(/^\d+\s+([A-Z0-9]{2})\s*(\d{1,4})\s+([A-Z])\s+(\d{1,2}[A-Z]{3})\s+\d\s+([A-Z]{6})\s+\S+\s+(\d{4})\s+(\d{4})/i);
-  if(m)segments.push({airline:m[1].toUpperCase(),flight:m[1].toUpperCase()+' '+m[2],date:m[4].toUpperCase(),route:m[5].toUpperCase(),depart:m[6],arrive:m[7]});
+  if(m)segments.push({airline:m[1].toUpperCase(),date:m[4].toUpperCase(),origin:m[5].slice(0,3).toUpperCase(),destination:m[5].slice(3,6).toUpperCase(),depart:m[6],arrive:m[7]});
  }
- const airlineNames=segments.map(x=>AIRLINES[x.airline]||'');
- const uniqueAirlines=[...new Set(airlineNames.filter(Boolean))];
+ let airlineName='';
+ const airlineLine=lines.find(x=>/AIR|AIRWAYS|AIRLINES|AVIATION|JET|FLY|EXPRESS/i.test(x)&&!/(TO|FROM)/i.test(x));
+ if(airlineLine)airlineName=airlineLine.replace(/^✈️\s*/,'').trim();
+ if(!airlineName){
+  const code=segments[0]?.airline || (text.match(/(?:^|\n)\s*\d+\s+([A-Z0-9]{2})\s+\d{1,4}/i)||[])[1];
+  if(code)airlineName=AIRLINES[code.toUpperCase()]||code.toUpperCase();
+ }
+ const baggageLine=lines.find(x=>/(?:\d+\s*kg|\d+\s*\+\s*\d+)/i.test(x)&&!segments.some(seg=>x.includes(seg.airline)));
  let baggage='';
- const bagLine=lines.find(x=>/(?:\d+\s*(?:kg|kilo)|\d+\s*\+\s*\d+)/i.test(x)&&!segments.some(seg=>x.includes(seg.flight)));
- if(bagLine){
-  const nums=[...bagLine.matchAll(/(\d+)\s*(?:kg|kilo)?/gi)].map(x=>+x[1]).filter(x=>x>0);
+ if(baggageLine){
+  const nums=[...baggageLine.matchAll(/(\d+)\s*(?:kg|kilo)?/gi)].map(x=>+x[1]).filter(x=>x>0);
   if(nums.length>=3&&nums[0]===nums[1])baggage='7 كيلو شنطة يد + '+nums[0]+' كيلو';
-  else if(nums.length>=2)baggage=nums[nums.length-1]+' كيلو';
+  else if(nums.length>=2){const small=Math.min(...nums),large=Math.max(...nums);baggage=small+' كيلو شنطة يد + '+large+' كيلو';}
   else if(nums.length===1)baggage=nums[0]+' كيلو';
  }
- const passengerMatch=text.match(/(\d+)\s*(?:ADL|ADT|ADULTS?)/i);
- const childMatch=text.match(/(\d+)\s*(?:CHD|CNN|CHILDREN?)/i);
- const infantMatch=text.match(/(\d+)\s*(?:INF|INFANT)/i);
- let out=[];
- segments.forEach((seg,i)=>{
-  const origin=seg.route.slice(0,3),destination=seg.route.slice(3,6);
-  const originName=AIRPORTS[origin]||origin,destinationName=AIRPORTS[destination]||destination;
-  const airline=AIRLINES[seg.airline]||seg.airline;
-  out.push((i===0?'رحلة الذهاب':'رحلة العودة')+'\n\n✈️ '+airline+'\n🛫 '+originName+' ('+origin+') ← '+destinationName+' ('+destination+')\n📅 '+flightDate(seg.date)+'\n🕒 '+flightTime(seg.depart)+' ← '+flightTime(seg.arrive)+(baggage?'\n🧳 '+baggage:''));
- });
- if(!segments.length){
-  const airlineCode=(text.match(/(?:^|\n)\s*\d+\s+([A-Z0-9]{2})\s+\d{1,4}/i)||[])[1];
-  const airline=airlineCode?(AIRLINES[airlineCode.toUpperCase()]||airlineCode.toUpperCase()):'';
-  if(airline)out.push('✈️ '+airline);
-  out.push(lines.filter(x=>!/(?:\d+\s*(?:kg|kilo)|\d+\s*\+\s*\d+)/i.test(x)).join('\n'));
-  if(baggage)out.push('🧳 '+baggage);
+ let passengers=[];
+ const adults=[...text.matchAll(/(\d+)\s*(?:ADL|ADT|ADULTS?)/gi)].reduce((a,m)=>a+(+m[1]),0);
+ const children=[...text.matchAll(/(\d+)\s*(?:CHD|CNN|CHILDREN?)/gi)].reduce((a,m)=>a+(+m[1]),0);
+ const infants=[...text.matchAll(/(\d+)\s*(?:INF|INFANT)/gi)].reduce((a,m)=>a+(+m[1]),0);
+ if(adults)passengers.push(adults+' بالغ');if(children)passengers.push(children+' طفل');if(infants)passengers.push(infants+' رضيع');
+ const output=[];
+ if(segments.length){
+  segments.forEach((seg,i)=>{
+   output.push((i===0?'رحلة الذهاب':'رحلة العودة')+'\n\n✈️ '+(airlineName||seg.airline)+'\n🛫 '+cityLabel(seg.origin)+' ← '+cityLabel(seg.destination)+'\n📅 '+flightDate(seg.date)+'\n🕒 '+flightTime(seg.depart)+' ← '+flightTime(seg.arrive)+(baggage?'\n🧳 '+baggage:''));
+  });
+ }else{
+  let routeLine=lines.find(x=>/(?:\bTO\b|→|←|-)/i.test(x)&&/(?:[A-Z]{3}|KUWAIT|DUBAI|ABU DHABI|BANGKOK|PHUKET|HONG KONG|CAIRO|ISTANBUL|LONDON)/i.test(x));
+  let origin='',destination='';
+  if(routeLine){
+   let parts=routeLine.match(/^(.+?)\s+(?:TO|→|←|-)\s+(.+)$/i);
+   if(parts){origin=cityCode(parts[1])||parts[1].trim().toUpperCase();destination=cityCode(parts[2])||parts[2].trim().toUpperCase();}
+  }
+  if(!origin||!destination){
+   const codes=text.match(/\b[A-Z]{3}\b/g)||[];
+   const known=codes.filter(c=>AIRPORTS[c]);
+   if(known.length>=2){origin=known[0];destination=known[1];}
+  }
+  const dateLine=lines.find(x=>/\b\d{1,2}\s+[A-Z]{3}\s+\d{4}\b|\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}\b/i.test(x));
+  const date=dateLine?arabicDate(dateLine):'';
+  const timeLine=lines.find(x=>/\b\d{1,2}:?\d{2}\s*[-–]\s*\d{1,2}:?\d{2}\b/.test(x));
+  let times=[];
+  if(timeLine){const mt=timeLine.match(/(\d{1,2}:?\d{2})\s*[-–]\s*(\d{1,2}:?\d{2})/);if(mt)times=[displayTime(mt[1]),displayTime(mt[2])];}
+  const trip=['رحلة الذهاب'];
+  if(airlineName)trip.push('✈️ '+airlineName);
+  if(origin&&destination)trip.push('🛫 '+cityLabel(origin)+' ← '+cityLabel(destination));
+  if(date)trip.push('📅 '+date);
+  if(times.length)trip.push('🕒 '+times[0]+' ← '+times[1]);
+  if(baggage)trip.push('🧳 '+baggage);
+  output.push(trip.join('\n'));
  }
- let people=[];if(passengerMatch)people.push(+passengerMatch[1]+' بالغ');if(childMatch)people.push(+childMatch[1]+' طفل');if(infantMatch)people.push(+infantMatch[1]+' رضيع');
- if(people.length)out.push('👥 عدد الأفراد: '+people.join(' / '));
- out.push('💰 السعر للفرد: '+(price?price+(currency?' '+currency:''):''));
- out.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
- return out.join('\n\n');
+ if(passengers.length)output.push('👥 عدد الأفراد: '+passengers.join(' + '));
+ output.push('السعر للفرد: '+(price?price+(currency?' '+currency:''):''));
+ output.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
+ return output.join('\n\n');
 }
 function buildCombined(){
  const flight=translateFlight($('combinedFlightRaw').value,'','');
