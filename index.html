@@ -7,6 +7,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap');
 :root{--navy:#12343d;--teal:#17636b;--gold:#c9aa70;--bg:#eef3f4;--card:#fff;--ink:#18363d;--muted:#71858a;--line:#dce6e8;--soft:#f5f8f8}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tajawal,Arial,sans-serif}
+body.locked>header,body.locked>main,body.locked>.toast{display:none!important}
+#passwordGate{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#102f39,#1b5961)}
+body.locked #passwordGate{display:flex}
+.gate-card{width:min(100%,390px);background:#fff;border-radius:22px;padding:30px;box-shadow:0 18px 60px #061e2580;text-align:center}
+.gate-mark{width:58px;height:58px;border-radius:18px;background:#e9f2f2;display:grid;place-items:center;font-size:29px;margin:0 auto 15px}
+.gate-card h2{margin:0 0 8px;font-size:23px;color:var(--ink)}.gate-card p{margin:0 0 20px;color:var(--muted);font-size:14px}
+.gate-card input{text-align:center;margin-bottom:12px}.gate-card button{width:100%;background:var(--teal);color:white;border:0;border-radius:11px;padding:12px;font:700 15px Tajawal;cursor:pointer}
+#gateError{display:none;color:#b42318;font-size:13px;margin-top:12px}
+#logoutButton{margin-right:auto;border:1px solid #ffffff55;background:#ffffff15;color:#fff;border-radius:10px;padding:8px 12px;font:700 12px Tajawal;cursor:pointer}
 header{background:linear-gradient(115deg,#102f39,#1b5961);color:white;padding:22px max(20px,calc((100vw - 1240px)/2));display:flex;align-items:center;gap:14px;box-shadow:0 8px 25px #102f3922}
 .logo{width:48px;height:48px;border-radius:15px;background:#ffffff18;display:grid;place-items:center;font-size:25px;border:1px solid #ffffff2b}
 header h1{font-size:23px;margin:0;font-weight:800}header p{margin:3px 0 0;color:#c4d6d7;font-size:13px}
@@ -26,8 +35,18 @@ textarea,input{width:100%;border:1px solid var(--line);border-radius:12px;paddin
 @media(max-width:800px){main{margin:22px auto}.cards{grid-template-columns:1fr;gap:13px}.card{min-height:0;padding:21px;display:grid;grid-template-columns:55px 1fr;column-gap:14px;align-items:center}.card .icon{grid-row:span 2;margin:0}.card h3{align-self:end}.card p{align-self:start}.card .arrow{grid-column:2;margin-top:8px}.layout{grid-template-columns:1fr}.intro h2{font-size:23px}.panel{padding:16px}}
 @media print{header,.topline,.panel.input-panel,.actions,.intro{display:none!important}body{background:white}main{margin:0;padding:0}.layout{display:block}.panel{border:0;box-shadow:none;padding:0}.preview{border:0;background:white;padding:0;min-height:0;font-size:14pt}}
 </style></head>
-<body>
-<header><div class="logo">✦</div><div><h1>استوديو عروض السفر</h1><p>جهّز عروضك بسهولة وبالقوالب المعتمدة</p></div></header>
+<body class="locked">
+<section id="passwordGate" aria-label="تسجيل الدخول">
+ <form class="gate-card" id="gateForm">
+  <div class="gate-mark">🔒</div>
+  <h2>استوديو عروض السفر</h2>
+  <p>أدخل كلمة المرور للمتابعة</p>
+  <input id="gatePassword" type="password" placeholder="كلمة المرور" autocomplete="current-password" required>
+  <button type="submit">دخول</button>
+  <div id="gateError">كلمة المرور غير صحيحة، حاول مرة أخرى.</div>
+ </form>
+</section>
+<header><div class="logo">✦</div><div><h1>استوديو عروض السفر</h1><p>جهّز عروضك بسهولة وبالقوالب المعتمدة</p></div><button id="logoutButton" type="button">تسجيل الخروج</button></header>
 <main>
 <section id="home">
 <div class="intro"><h2>أهلاً بك في استوديو عروض السفر</h2><p>اختر نوع العرض للبدء</p></div>
@@ -218,4 +237,22 @@ $('convertFlight').onclick=()=>{if(!$('flightRaw').value.trim()){toast('الصق
 $('copyFlight').onclick=()=>copyText($('flightPreview').textContent);$('printFlight').onclick=()=>window.print();$('clearFlight').onclick=()=>{$('flightRaw').value='';$('flightPrice').value='';$('flightPreview').textContent='الصق تفاصيل الرحلة ثم اضغط تحويل.'};
 $('convertCombined').onclick=()=>{if(!$('combinedFlightRaw').value.trim()&&!$('combinedHotelRaw').value.trim()){toast('أدخل بيانات الطيران والفندق أولاً');return}$('combinedPreview').textContent=buildCombined();toast('تم تجميع العرض؛ راجع البيانات قبل النسخ')};
 $('copyCombined').onclick=()=>copyText($('combinedPreview').textContent);$('printCombined').onclick=()=>window.print();$('clearCombined').onclick=()=>{$('combinedFlightRaw').value='';$('combinedHotelRaw').value='';$('combinedPrice').value='';$('combinedPreview').textContent='أدخل بيانات الطيران والفندق ثم اضغط تحويل.'};
+</script>
+<script>
+(()=>{
+ const ACCESS_PASSWORD='elgahmy2000';
+ const gate=document.getElementById('passwordGate');
+ const form=document.getElementById('gateForm');
+ const input=document.getElementById('gatePassword');
+ const error=document.getElementById('gateError');
+ const logout=document.getElementById('logoutButton');
+ const unlock=()=>{document.body.classList.remove('locked');gate.style.display='none';};
+ if(sessionStorage.getItem('offersStudioUnlocked')==='yes')unlock();
+ form.addEventListener('submit',event=>{
+  event.preventDefault();
+  if(input.value===ACCESS_PASSWORD){sessionStorage.setItem('offersStudioUnlocked','yes');error.style.display='none';input.value='';unlock();}
+  else{error.style.display='block';input.select();}
+ });
+ logout.addEventListener('click',()=>{sessionStorage.removeItem('offersStudioUnlocked');document.body.classList.add('locked');gate.style.display='';input.value='';input.focus();});
+})();
 </script></body></html>
