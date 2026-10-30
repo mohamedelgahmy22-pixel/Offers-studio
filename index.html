@@ -99,17 +99,27 @@ function mealArabic(raw){let original=String(raw||'').trim().replace(/\s+/g,' ')
 function cleanHotelLine(s){return s.replace(/^\*+|\*+$/g,'').replace(/\\+$/,'').trim()}
 function extractHotelDate(s){const m=String(s||'').match(/\d{4}-\d{1,2}-\d{1,2}|\d{1,2}[\/-]\d{1,2}[\/-]\d{4}|\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)(?:\s+\d{4})?/i);return m?parseDate(m[0]):''}
 function refundDateFromText(text,checkIn){
- const months={يناير:0,كانون:0,فبراير:1,شباط:1,مارس:2,آذار:2,أبريل:3,ابريل:3,نيسان:3,مايو:4,أيار:4,يونيو:5,حزيران:5,يوليو:6,تموز:6,أغسطس:7,اغسطس:7,آب:7,سبتمبر:8,أيلول:8,اكتوبر:9,أكتوبر:9,تشرين:9,نوفمبر:10,تشرين2:10,ديسمبر:11,كانون2:11};
  const monthNames=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
- let m=text.match(/(?:مسترد|استرداد|قابل\\s+للاسترداد)[^\\n]{0,45}?(?:لحد|حتى|إلى|الى|until|till|through)\\s*(?:يوم\\s*)?(\\d{1,2})\\s+([\\u0600-\\u06FF]+)/i);
- if(!m)m=text.match(/(?:refundable|refund)[^\\n]{0,35}?(?:until|till|through)\\s*(\\d{1,2})\\s+([A-Za-z]+)/i);
+ const arabicMonths={'يناير':0,'فبراير':1,'مارس':2,'أبريل':3,'ابريل':3,'مايو':4,'يونيو':5,'يونيه':5,'يوليو':6,'أغسطس':7,'اغسطس':7,'سبتمبر':8,'أكتوبر':9,'اكتوبر':9,'نوفمبر':10,'ديسمبر':11};
+ const englishMonths={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,sept:8,oct:9,nov:10,dec:11};
+ const source=String(text||'');
+ let m=source.match(/(?:مسترد|استرداد|قابل\s+للاسترداد)[^\n]{0,60}?(?:لحد|حتى|إلى|الى|until|till|through)\s*(?:يوم\s*)?(\d{1,2})\s+([\u0600-\u06FF]+)/i);
+ if(!m)m=source.match(/(?:refundable|refund)[^\n]{0,45}?(?:until|till|through)\s*(?:day\s*)?(\d{1,2})\s+([A-Za-z]+)/i);
  if(!m)return '';
- const day=+m[1],monthKey=m[2].toLowerCase();let mi=months[monthKey];
- if(mi===undefined){const en={jan:0,january:0,feb:1,february:1,mar:2,march:2,apr:3,april:3,may:4,jun:5,june:5,jul:6,july:6,aug:7,august:7,sep:8,sept:8,september:8,oct:9,october:9,nov:10,november:10,dec:11,december:11};mi=en[monthKey.slice(0,3)]}
+ const day=Number(m[1]),monthText=m[2].toLowerCase();
+ let mi=arabicMonths[monthText];
+ if(mi===undefined)mi=englishMonths[monthText.slice(0,4)]??englishMonths[monthText.slice(0,3)];
  if(mi===undefined||day<1||day>31)return '';
- const ci=String(checkIn||'').match(/^(\\d{1,2})[\\/-](\\d{1,2})[\\/-](\\d{4})$/);let year=ci?+ci[3]:new Date().getFullYear();
- if(ci&&mi<+ci[2]-1)year++;
- const d=new Date(year,mi,day);if(d.getMonth()!==mi||d.getDate()!==day)return '';
+ const ci=String(checkIn||'').match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/)||String(checkIn||'').match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/);
+ let year=new Date().getFullYear();
+ if(ci){
+   if(String(checkIn).includes('-')&&ci[1].length===4)year=Number(ci[1]);
+   else year=Number(ci[3]);
+ }
+ const checkMonth=ci?(String(checkIn).includes('-')&&ci[1].length===4?Number(ci[2]):Number(ci[2]))-1:null;
+ if(checkMonth!==null&&mi<checkMonth)year++;
+ const d=new Date(year,mi,day);
+ if(d.getMonth()!==mi||d.getDate()!==day)return '';
  return day+' '+monthNames[mi]+' '+year;
 }
 function parseHotel(raw){
