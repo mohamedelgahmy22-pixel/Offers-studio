@@ -490,6 +490,32 @@ flightWarnings=function(raw,price,passengerCounts){
  if(!/(?:\b\d+\s*\+\s*\d+\b|\b\d+\s*(?:kg|kgs|kilo|kilos)\b|\b(?:baggage|checked bag|cabin bag|hand bag|personal item)\b|بدون أمتعة|بدون شنط|شنطة|أمتعة)/i.test(text))missing.push('وزن الأمتعة');
  return [...new Set(missing)];
 };
+
+const allFormatFlightWarnings=flightWarnings;
+flightWarnings=function(raw,price,passengerCounts){
+ const text=norm(raw),lines=text.split('\n').map(x=>x.trim().replace(/^\*+|\*+$/g,'').replace(/\\+$/,'')).filter(Boolean);
+ const amadeus=lines.filter(x=>/^\d+\s+[A-Z0-9]{2}\s*\d{1,4}\s+[A-Z]\s+\d{1,2}[A-Z]{3}\s+\d\s+[A-Z]{6}\s+\S+\s+\d{4}\s+\d{4}/i.test(x));
+ const jazeera=lines.filter(x=>/^(?:J9|Jazeera)\s*\d{1,4}\s*\|/i.test(x));
+ const standardDates=lines.filter(x=>/^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/i.test(x));
+ const standardRoutes=lines.filter(x=>/^\d{1,2}:\d{2}\s+.+?\s+[-–]\s+\d{1,2}:\d{2}\s+.+$/i.test(x));
+ const routeHeaders=lines.filter(x=>/^[A-Za-z][A-Za-z .'-]{1,35}\s*[-–]\s*[A-Za-z][A-Za-z .'-]{1,35}$/.test(x));
+ const hasSingleSegment=amadeus.length===1||jazeera.length===1||(standardDates.length===1&&standardRoutes.length===1);
+ const hasReturn=amadeus.length>1||jazeera.length>1||standardDates.length>1||standardRoutes.length>1||lines.some(x=>/^={2,}$/.test(x));
+ if(!hasSingleSegment||hasReturn)return allFormatFlightWarnings(raw,price,passengerCounts);
+ const missing=[];
+ const hasRoute=standardRoutes.length>0||routeHeaders.length>0||amadeus.length===1||jazeera.some(x=>/\b[A-Z]{3}\s*[-–]\s*[A-Z]{3}\b/i.test(x));
+ const hasDate=standardDates.length===1||amadeus.length===1||jazeera.some(x=>/\b\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}\b/i.test(x));
+ const hasTimes=standardRoutes.length>0||amadeus.length===1||jazeera.some(x=>(x.match(/\b\d{1,2}:\d{2}\b/g)||[]).length>=2);
+ const hasAirline=amadeus.length===1||jazeera.length===1||lines.some(x=>/\b(?:airlines?|airways?|aviation|air arabia|flynas|flydubai|gulf air|qatar|emirates|etihad|saudia|kuwait airways|jazeera|egyptair|royal jordanian|pegasus|turkish|bangkok airways)\b/i.test(x))||Object.values(AIRLINES||{}).some(n=>lines.some(x=>x.toLowerCase()===String(n).toLowerCase()));
+ if(!hasAirline)missing.push('شركة الطيران');
+ if(!hasRoute)missing.push('المدن (مدينة المغادرة والوصول)');
+ if(!hasDate)missing.push('تاريخ الرحلة');
+ if(!hasTimes)missing.push('موعد الإقلاع والوصول');
+ const pc=passengerCounts||flightPassengerCounts(raw);
+ if(!(pc&&((pc.adults||0)+(pc.children||0)+(pc.infants||0)>0)))missing.push('عدد الأفراد');
+ if(!/(?:\b\d+\s*\+\s*\d+\b|\b\d+\s*(?:kg|kgs|kilo|kilos)\b|\b(?:baggage|checked bag|cabin bag|hand bag|personal item)\b|بدون أمتعة|بدون شنط|شنطة|أمتعة)/i.test(text))missing.push('وزن الأمتعة');
+ return [...new Set(missing)];
+};
 function refreshFlight(){const raw=$('flightRaw').value;updateFlightPriceFields(raw);if(!raw.trim()){$('flightPreview').textContent='Paste flight details to see a live preview.';$('flightWarnings').textContent='';return;}$('flightPreview').textContent=translateFlight(raw,$('flightPrice').value,$('flightCurrency').value,{childPrice:$('flightChildPrice').value,infantPrice:$('flightInfantPrice').value});showWarnings('flightWarnings',flightWarnings(raw,$('flightPrice').value));}
 
 $('copyFlight').onclick=()=>copyValidated('flight');$('printFlight').onclick=()=>window.print();$('clearFlight').onclick=()=>{$('flightRaw').value='';$('flightPrice').value='';$('flightChildPrice').value='';$('flightInfantPrice').value='';$('flightCurrency').value='KWD';updateFlightPriceFields('');$('flightPreview').textContent='Paste flight details to see a live preview.';$('flightWarnings').textContent='';};['flightRaw','flightPrice','flightChildPrice','flightInfantPrice'].forEach(id=>$(id).addEventListener('input',refreshFlight));$('flightCurrency').addEventListener('change',refreshFlight);
