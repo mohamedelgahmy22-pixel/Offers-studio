@@ -174,7 +174,7 @@ function flightTime(t){
 }
 function cityCode(value){
  const v=value.trim().toUpperCase().replace(/[()[\]]/g,'').trim();
- const aliases={'KUWAIT':'KWI','DUBAI':'DXB','ABU DHABI':'AUH','ABUDHABI':'AUH','SHARJAH':'SHJ','DOHA':'DOH','BAHRAIN':'BAH','MUSCAT':'MCT','BANGKOK':'BKK','PHUKET':'HKT','HONG KONG':'HKG','CAIRO':'CAI','ISTANBUL':'IST','ANTALYA':'AYT','LONDON':'LHR','PARIS':'CDG','SINGAPORE':'SIN','KUALA LUMPUR':'KUL','MANILA':'MNL','TOKYO':'NRT','SEOUL':'ICN','NEW YORK':'JFK','MOSCOW':'CITY:MOSCOW','ROME':'FCO','MILAN':'MXP','VENICE':'VCE','FLORENCE':'FLR','NAPLES':'NAP','MUNICH':'MUC','HAMBURG':'HAM','COLOGNE':'CGN','STUTTGART':'STR','DUSSELDORF':'DUS','BRUSSELS':'BRU','ROTTERDAM':'RTM','LYON':'LYS','MARSEILLE':'MRS','TOULOUSE':'TLS','BORDEAUX':'BOD','MALAGA':'AGP','VALENCIA':'VLC','SEVILLE':'SVQ','BILBAO':'BIO','PALMA':'PMI','PORTO':'OPO','ATHENS':'ATH','THESSALONIKI':'SKG','RHODES':'RHO','HERAKLION':'HER','SANTORINI':'JTR','MYKONOS':'JMK','OSAKA':'KIX','NAGOYA':'NGO','SAPPORO':'CTS','BUSAN':'PUS','JEJU':'CJU','SHENZHEN':'SZX','CHENGDU':'CTU','HANGZHOU':'HGH','XI AN':'XIY','TIANJIN':'TSN','CHONGQING':'CKG','WUHAN':'WUH','XIAMEN':'XMN','CHENNAI':'MAA','HYDERABAD':'HYD','KOLKATA':'CCU','AHMEDABAD':'AMD','GOA':'GOI','JAIPUR':'JAI','KOCHI':'COK','THIRUVANANTHAPURAM':'TRV','OTTAWA':'YOW','HALIFAX':'YHZ','BALTIMORE':'BWI','PHILADELPHIA':'PHL','DENVER':'DEN','LAS VEGAS':'LAS','PHOENIX':'PHX','ORLANDO':'MCO','TAMPA':'TPA','SAN DIEGO':'SAN','PORTLAND':'PDX','AUSTIN':'AUS','NEW ORLEANS':'MSY','FORT LAUDERDALE':'FLL','GUADALAJARA':'GDL','SANTIAGO':'SCL','LIMA':'LIM','BOGOTA':'BOG','PANAMA CITY':'PTY','PUNTA CANA':'PUJ','WINDHOEK':'WDH','HARARE':'HRE','ACCRA':'ACC','ABIDJAN':'ABJ','DAKAR':'DKR','DURBAN':'DUR','MOMBASA':'MBA','KIGALI':'KGL','ENTEBBE':'EBB','DJIBOUTI':'JIB','ANTANANARIVO':'TNR','MAURITIUS':'MRU','SEYCHELLES':'SEZ','ALULA':'ULH','TAIF':'TIF'};
+ const aliases={'KUWAIT':'KWI','DAMASCUS':'DAM','DUBAI':'DXB','ABU DHABI':'AUH','ABUDHABI':'AUH','SHARJAH':'SHJ','DOHA':'DOH','BAHRAIN':'BAH','MUSCAT':'MCT','BANGKOK':'BKK','PHUKET':'HKT','HONG KONG':'HKG','CAIRO':'CAI','ISTANBUL':'IST','ANTALYA':'AYT','LONDON':'LHR','PARIS':'CDG','SINGAPORE':'SIN','KUALA LUMPUR':'KUL','MANILA':'MNL','TOKYO':'NRT','SEOUL':'ICN','NEW YORK':'JFK','MOSCOW':'CITY:MOSCOW','ROME':'FCO','MILAN':'MXP','VENICE':'VCE','FLORENCE':'FLR','NAPLES':'NAP','MUNICH':'MUC','HAMBURG':'HAM','COLOGNE':'CGN','STUTTGART':'STR','DUSSELDORF':'DUS','BRUSSELS':'BRU','ROTTERDAM':'RTM','LYON':'LYS','MARSEILLE':'MRS','TOULOUSE':'TLS','BORDEAUX':'BOD','MALAGA':'AGP','VALENCIA':'VLC','SEVILLE':'SVQ','BILBAO':'BIO','PALMA':'PMI','PORTO':'OPO','ATHENS':'ATH','THESSALONIKI':'SKG','RHODES':'RHO','HERAKLION':'HER','SANTORINI':'JTR','MYKONOS':'JMK','OSAKA':'KIX','NAGOYA':'NGO','SAPPORO':'CTS','BUSAN':'PUS','JEJU':'CJU','SHENZHEN':'SZX','CHENGDU':'CTU','HANGZHOU':'HGH','XI AN':'XIY','TIANJIN':'TSN','CHONGQING':'CKG','WUHAN':'WUH','XIAMEN':'XMN','CHENNAI':'MAA','HYDERABAD':'HYD','KOLKATA':'CCU','AHMEDABAD':'AMD','GOA':'GOI','JAIPUR':'JAI','KOCHI':'COK','THIRUVANANTHAPURAM':'TRV','OTTAWA':'YOW','HALIFAX':'YHZ','BALTIMORE':'BWI','PHILADELPHIA':'PHL','DENVER':'DEN','LAS VEGAS':'LAS','PHOENIX':'PHX','ORLANDO':'MCO','TAMPA':'TPA','SAN DIEGO':'SAN','PORTLAND':'PDX','AUSTIN':'AUS','NEW ORLEANS':'MSY','FORT LAUDERDALE':'FLL','GUADALAJARA':'GDL','SANTIAGO':'SCL','LIMA':'LIM','BOGOTA':'BOG','PANAMA CITY':'PTY','PUNTA CANA':'PUJ','WINDHOEK':'WDH','HARARE':'HRE','ACCRA':'ACC','ABIDJAN':'ABJ','DAKAR':'DKR','DURBAN':'DUR','MOMBASA':'MBA','KIGALI':'KGL','ENTEBBE':'EBB','DJIBOUTI':'JIB','ANTANANARIVO':'TNR','MAURITIUS':'MRU','SEYCHELLES':'SEZ','ALULA':'ULH','TAIF':'TIF'};
  if(AIRPORTS[v])return v;
  if(aliases[v])return aliases[v];
  return '';
@@ -207,6 +207,20 @@ function translateFlight(raw,price,currency,options={}){
  for(const line of lines){
   const m=line.match(/^\d+\s+([A-Z0-9]{2})\s*(\d{1,4})\s+([A-Z])\s+(\d{1,2}[A-Z]{3})\s+\d\s+([A-Z]{6})\s+\S+\s+(\d{4})\s+(\d{4})/i);
   if(m)segments.push({airline:m[1].toUpperCase(),date:m[4].toUpperCase(),origin:m[5].slice(0,3).toUpperCase(),destination:m[5].slice(3,6).toUpperCase(),depart:m[6],arrive:m[7]});
+ }
+ // Also support route-heading format: "Kuwait - Damascus" followed by "J9 177 | 13:15 - 15:45 | Tue, 10 Nov 2026".
+ if(!segments.length){
+  for(let i=0;i<lines.length-1;i++){
+   const route=lines[i].match(/^(.+?)\\s+-\\s+(.+)$/);
+   const detail=lines[i+1].match(/^([A-Z0-9]{2})\\s*(\\d{1,4})\\s*\\|\\s*(\\d{1,2}:\\d{2})\\s*[-–]\\s*(\\d{1,2}:\\d{2})\\s*\\|\\s*(?:[A-Za-z]{3},?\\s*)?(\\d{1,2})\\s+([A-Za-z]{3})\\s+(\\d{4})$/i);
+   if(route&&detail){
+    const from=cityCode(route[1])||route[1].trim().toUpperCase();
+    const to=cityCode(route[2])||route[2].trim().toUpperCase();
+    const monthMap={JAN:'JAN',FEB:'FEB',MAR:'MAR',APR:'APR',MAY:'MAY',JUN:'JUN',JUL:'JUL',AUG:'AUG',SEP:'SEP',OCT:'OCT',NOV:'NOV',DEC:'DEC'};
+    const dateToken=detail[5]+(monthMap[detail[6].slice(0,3).toUpperCase()]||detail[6].slice(0,3).toUpperCase());
+    segments.push({airline:detail[1].toUpperCase(),date:dateToken,origin:from,destination:to,depart:detail[3].replace(':',''),arrive:detail[4].replace(':','')});
+   }
+  }
  }
  let airlineName='';
  const airlineLine=lines.find(x=>/AIR|AIRWAYS|AIRLINES|AVIATION|JET|FLY|EXPRESS/i.test(x)&&!/(TO|FROM)/i.test(x))||lines.find(x=>/^(?:AIRLINE|CARRIER)\\s*[:=-]\\s*[A-Z0-9]{2}$/i.test(x))||lines.find(x=>/^[A-Z0-9]{2}$/i.test(x)&&AIRLINES[x.toUpperCase()]);
