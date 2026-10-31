@@ -339,21 +339,21 @@ translateFlight=function(raw,price,currency,options={}){
  for(const line of lines){const m=line.match(pat);if(m)seg.push({airline:m[1].toUpperCase(),flightNo:m[2],date:m[4].toUpperCase(),origin:m[5].slice(0,3).toUpperCase(),destination:m[5].slice(3,6).toUpperCase(),depart:m[6],arrive:m[7]});}
  if(!seg.length)return originalTranslateFlight(raw,price,currency,options);
  const bagLines=lines.filter(x=>/^\d+\s*\+\s*\d+\s*(?:kg)?$/i.test(x));
- const bag=x=>{if(!x)return '';const n=[...x.matchAll(/(\d+)/g)].map(m=>+m[1]);return n.length>=2?Math.min(...n)+' كيلو شنطة يد + '+Math.max(...n)+' كيلو':n.length? n[0]+' كيلو':'';};
+ const bag=x=>{if(!x)return '';const n=[...x.matchAll(/(\d+)/g)].map(m=>+m[1]);return n.length>=2?Math.min(...n)+' كيلو شنطة يد + '+Math.max(...n)+' كيلو':n.length?n[0]+' كيلو':'';};
  const pc=flightPassengerCounts(raw),pass=[];if(pc.adults)pass.push(pc.adults+' بالغ');if(pc.children)pass.push(pc.children+' طفل');if(pc.infants)pass.push(pc.infants+' رضيع');
  let split=Math.ceil(seg.length/2);
- // If the itinerary explicitly returns to the first departure airport, split at the start of that return chain.
  for(let i=1;i<seg.length;i++){if(seg[i].origin===seg[0].origin){split=i;break;}}
  const groups=[{label:'رحلة الذهاب',items:seg.slice(0,split),offset:0},{label:'رحلة العودة',items:seg.slice(split),offset:split}].filter(g=>g.items.length);
  const out=[];
  groups.forEach(g=>{
-  const first=g.items[0],last=g.items[g.items.length-1],carriers=[...new Set(g.items.map(x=>AIRLINES[x.airline]||x.airline))],block=[g.label,'✈️ '+carriers.join(' / '),'🛫 '+cityLabel(first.origin)+' ← '+cityLabel(last.destination)];
-  g.items.forEach((x,i)=>{
-   block.push('   '+cityLabel(x.origin)+' → '+cityLabel(x.destination)+' | '+x.flightNo+' | '+flightDate(x.date)+' | '+flightTime(x.depart)+' - '+flightTime(x.arrive));
-   const b=bag(bagLines[g.offset+i]);if(b)block.push('   🧳 '+b);
-   if(i<g.items.length-1){const wait=transitDuration(x,g.items[i+1]);block.push('   🔄 ترانزيت في '+cityLabel(x.destination)+(wait?' – مدة الانتظار '+wait:''));}
+  out.push(g.label);
+  g.items.forEach((x,j)=>{
+   const i=g.offset+j,airline=AIRLINES[x.airline]||x.airline;
+   const block=['✈️ '+airline,'🛫 '+cityLabel(x.origin)+' ← '+cityLabel(x.destination),'📅 '+flightDate(x.date),'🕒 '+flightTime(x.depart)+' ← '+flightTime(x.arrive)];
+   const baggage=bag(bagLines[i]);if(baggage)block.push('🧳 '+baggage);
+   out.push(block.join('\n'));
+   if(j<g.items.length-1){const wait=transitDuration(x,g.items[j+1]);out.push('⏳ انتظار '+(wait||'')+' في '+cityLabel(x.destination));}
   });
-  out.push(block.join('\n'));
  });
  if(pass.length)out.push('👥 عدد الأفراد: '+pass.join(' + '));
  if(options.includePrice!==false){const unit=currency?' '+currencyArabic(currency):'';out.push('💰 السعر للفرد: '+(price?price+unit:''));}
