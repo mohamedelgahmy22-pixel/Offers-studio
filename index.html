@@ -310,13 +310,19 @@ translateFlight=function(raw,price,currency,options={}){
  if(!seg.length)return originalTranslateFlight(raw,price,currency,options);
  const bagLines=lines.filter(x=>/^\d+\s*\+\s*\d+\s*(?:kg)?$/i.test(x));
  const bag=x=>{if(!x)return '';const n=[...x.matchAll(/(\d+)/g)].map(m=>+m[1]);if(n.length>=2){const cabin=Math.min(...n),checked=Math.max(...n);return cabin+' كيلو شنطة يد + '+checked+' كيلو';}return n.length?n[0]+' كيلو':'';};
+ let split=Math.ceil(seg.length/2);
+ for(let i=1;i<seg.length;i++){if(seg[i].origin===seg[0].origin){split=i;break;}}
+ const groups=[{label:'رحلة الذهاب',items:seg.slice(0,split),offset:0},{label:'رحلة العودة',items:seg.slice(split),offset:split}].filter(g=>g.items.length);
  const out=[];
- seg.forEach((x,i)=>{
+ groups.forEach(group=>{
+  out.push(group.label);
+  group.items.forEach((x,j)=>{const i=group.offset+j;
   const airline=AIRLINES[x.airline]||x.airline;
   const block=['✈️ '+airline,'🛫 '+cityLabel(x.origin)+' ← '+cityLabel(x.destination),'📅 '+flightDate(x.date),'🕒 '+flightTime(x.depart)+' ← '+flightTime(x.arrive)];
   const baggage=bag(bagLines[i]);if(baggage)block.push('🧳 '+baggage);
-  out.push(block.join('\n'));
-  if(i<seg.length-1){const wait=transitDuration(x,seg[i+1]);out.push('⏳ انتظار '+(wait||'')+' في '+cityLabel(x.destination));}
+   out.push(block.join('\n'));
+   if(j<group.items.length-1){const wait=transitDuration(x,group.items[j+1]);out.push('⏳ انتظار '+(wait||'')+' في '+cityLabel(x.destination));}
+  });
  });
  const pc=flightPassengerCounts(raw),pass=[];if(pc.adults)pass.push(pc.adults+' بالغ');if(pc.children)pass.push(pc.children+' طفل');if(pc.infants)pass.push(pc.infants+' رضيع');
  if(pass.length)out.push('👥 عدد الأفراد: '+pass.join(' + '));
