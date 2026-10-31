@@ -174,12 +174,13 @@ function flightTime(t){
 }
 function cityCode(value){
  const v=value.trim().toUpperCase().replace(/[()[\]]/g,'').trim();
- const aliases={'KUWAIT':'KWI','DUBAI':'DXB','ABU DHABI':'AUH','ABUDHABI':'AUH','SHARJAH':'SHJ','DOHA':'DOH','BAHRAIN':'BAH','MUSCAT':'MCT','BANGKOK':'BKK','PHUKET':'HKT','HONG KONG':'HKG','CAIRO':'CAI','ISTANBUL':'IST','ANTALYA':'AYT','LONDON':'LHR','PARIS':'CDG','SINGAPORE':'SIN','KUALA LUMPUR':'KUL','MANILA':'MNL','TOKYO':'NRT','SEOUL':'ICN','NEW YORK':'JFK','ROME':'FCO','MILAN':'MXP','VENICE':'VCE','FLORENCE':'FLR','NAPLES':'NAP','MUNICH':'MUC','HAMBURG':'HAM','COLOGNE':'CGN','STUTTGART':'STR','DUSSELDORF':'DUS','BRUSSELS':'BRU','ROTTERDAM':'RTM','LYON':'LYS','MARSEILLE':'MRS','TOULOUSE':'TLS','BORDEAUX':'BOD','MALAGA':'AGP','VALENCIA':'VLC','SEVILLE':'SVQ','BILBAO':'BIO','PALMA':'PMI','PORTO':'OPO','ATHENS':'ATH','THESSALONIKI':'SKG','RHODES':'RHO','HERAKLION':'HER','SANTORINI':'JTR','MYKONOS':'JMK','OSAKA':'KIX','NAGOYA':'NGO','SAPPORO':'CTS','BUSAN':'PUS','JEJU':'CJU','SHENZHEN':'SZX','CHENGDU':'CTU','HANGZHOU':'HGH','XI AN':'XIY','TIANJIN':'TSN','CHONGQING':'CKG','WUHAN':'WUH','XIAMEN':'XMN','CHENNAI':'MAA','HYDERABAD':'HYD','KOLKATA':'CCU','AHMEDABAD':'AMD','GOA':'GOI','JAIPUR':'JAI','KOCHI':'COK','THIRUVANANTHAPURAM':'TRV','OTTAWA':'YOW','HALIFAX':'YHZ','BALTIMORE':'BWI','PHILADELPHIA':'PHL','DENVER':'DEN','LAS VEGAS':'LAS','PHOENIX':'PHX','ORLANDO':'MCO','TAMPA':'TPA','SAN DIEGO':'SAN','PORTLAND':'PDX','AUSTIN':'AUS','NEW ORLEANS':'MSY','FORT LAUDERDALE':'FLL','GUADALAJARA':'GDL','SANTIAGO':'SCL','LIMA':'LIM','BOGOTA':'BOG','PANAMA CITY':'PTY','PUNTA CANA':'PUJ','WINDHOEK':'WDH','HARARE':'HRE','ACCRA':'ACC','ABIDJAN':'ABJ','DAKAR':'DKR','DURBAN':'DUR','MOMBASA':'MBA','KIGALI':'KGL','ENTEBBE':'EBB','DJIBOUTI':'JIB','ANTANANARIVO':'TNR','MAURITIUS':'MRU','SEYCHELLES':'SEZ','ALULA':'ULH','TAIF':'TIF'};
+ const aliases={'KUWAIT':'KWI','DUBAI':'DXB','ABU DHABI':'AUH','ABUDHABI':'AUH','SHARJAH':'SHJ','DOHA':'DOH','BAHRAIN':'BAH','MUSCAT':'MCT','BANGKOK':'BKK','PHUKET':'HKT','HONG KONG':'HKG','CAIRO':'CAI','ISTANBUL':'IST','ANTALYA':'AYT','LONDON':'LHR','PARIS':'CDG','SINGAPORE':'SIN','KUALA LUMPUR':'KUL','MANILA':'MNL','TOKYO':'NRT','SEOUL':'ICN','NEW YORK':'JFK','MOSCOW':'CITY:MOSCOW','ROME':'FCO','MILAN':'MXP','VENICE':'VCE','FLORENCE':'FLR','NAPLES':'NAP','MUNICH':'MUC','HAMBURG':'HAM','COLOGNE':'CGN','STUTTGART':'STR','DUSSELDORF':'DUS','BRUSSELS':'BRU','ROTTERDAM':'RTM','LYON':'LYS','MARSEILLE':'MRS','TOULOUSE':'TLS','BORDEAUX':'BOD','MALAGA':'AGP','VALENCIA':'VLC','SEVILLE':'SVQ','BILBAO':'BIO','PALMA':'PMI','PORTO':'OPO','ATHENS':'ATH','THESSALONIKI':'SKG','RHODES':'RHO','HERAKLION':'HER','SANTORINI':'JTR','MYKONOS':'JMK','OSAKA':'KIX','NAGOYA':'NGO','SAPPORO':'CTS','BUSAN':'PUS','JEJU':'CJU','SHENZHEN':'SZX','CHENGDU':'CTU','HANGZHOU':'HGH','XI AN':'XIY','TIANJIN':'TSN','CHONGQING':'CKG','WUHAN':'WUH','XIAMEN':'XMN','CHENNAI':'MAA','HYDERABAD':'HYD','KOLKATA':'CCU','AHMEDABAD':'AMD','GOA':'GOI','JAIPUR':'JAI','KOCHI':'COK','THIRUVANANTHAPURAM':'TRV','OTTAWA':'YOW','HALIFAX':'YHZ','BALTIMORE':'BWI','PHILADELPHIA':'PHL','DENVER':'DEN','LAS VEGAS':'LAS','PHOENIX':'PHX','ORLANDO':'MCO','TAMPA':'TPA','SAN DIEGO':'SAN','PORTLAND':'PDX','AUSTIN':'AUS','NEW ORLEANS':'MSY','FORT LAUDERDALE':'FLL','GUADALAJARA':'GDL','SANTIAGO':'SCL','LIMA':'LIM','BOGOTA':'BOG','PANAMA CITY':'PTY','PUNTA CANA':'PUJ','WINDHOEK':'WDH','HARARE':'HRE','ACCRA':'ACC','ABIDJAN':'ABJ','DAKAR':'DKR','DURBAN':'DUR','MOMBASA':'MBA','KIGALI':'KGL','ENTEBBE':'EBB','DJIBOUTI':'JIB','ANTANANARIVO':'TNR','MAURITIUS':'MRU','SEYCHELLES':'SEZ','ALULA':'ULH','TAIF':'TIF'};
  if(AIRPORTS[v])return v;
  if(aliases[v])return aliases[v];
  return '';
 }
 function cityLabel(code){
+ if(code==='CITY:MOSCOW')return 'موسكو (يرجى تحديد المطار: SVO أو DME)';
  const name=AIRPORTS[code];
  return name?name+' ('+code+')':'('+code+') '+code;
 }
@@ -208,10 +209,13 @@ function translateFlight(raw,price,currency,options={}){
   if(m)segments.push({airline:m[1].toUpperCase(),date:m[4].toUpperCase(),origin:m[5].slice(0,3).toUpperCase(),destination:m[5].slice(3,6).toUpperCase(),depart:m[6],arrive:m[7]});
  }
  let airlineName='';
- const airlineLine=lines.find(x=>/AIR|AIRWAYS|AIRLINES|AVIATION|JET|FLY|EXPRESS/i.test(x)&&!/(TO|FROM)/i.test(x));
- if(airlineLine)airlineName=airlineLine.replace(/^✈️\s*/,'').trim();
+ const airlineLine=lines.find(x=>/AIR|AIRWAYS|AIRLINES|AVIATION|JET|FLY|EXPRESS/i.test(x)&&!/(TO|FROM)/i.test(x))||lines.find(x=>/^(?:AIRLINE|CARRIER)\\s*[:=-]\\s*[A-Z0-9]{2}$/i.test(x))||lines.find(x=>/^[A-Z0-9]{2}$/i.test(x)&&AIRLINES[x.toUpperCase()]);
+ if(airlineLine){
+  const token=airlineLine.replace(/^✈️\\s*/,'').replace(/^(?:AIRLINE|CARRIER)\\s*[:=-]\\s*/i,'').trim();
+  airlineName=AIRLINES[token.toUpperCase()]||token;
+ }
  if(!airlineName){
-  const code=segments[0]?.airline || (text.match(/(?:^|\n)\s*\d+\s+([A-Z0-9]{2})\s+\d{1,4}/i)||[])[1];
+  const code=segments[0]?.airline || (text.match(/(?:^|\\n)\\s*\\d+\\s+([A-Z0-9]{2})\\s+\\d{1,4}/i)||[])[1];
   if(code)airlineName=AIRLINES[code.toUpperCase()]||code.toUpperCase();
  }
  const baggageLines=lines.filter(x=>/(?:\d+\s*kg|\d+\s*\+\s*\d+)/i.test(x)&&!segments.some(seg=>new RegExp('\\\\b'+seg.airline+'\\\\b').test(x)));
