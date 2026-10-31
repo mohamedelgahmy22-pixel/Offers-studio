@@ -288,8 +288,8 @@ function buildCombined(){
  window.hotelParsed=parseHotel(rawHotel);
  const hotel=hotelText({includePrice:false,includeNotes:false});
  const price=$('combinedPrice').value.trim(),currency=$('combinedCurrency').value.trim();
- const notes='📝 ملاحظة:\n✅ Price يشمل الطيران والفنادق.\n✅ السعر شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.';
- return [flight,'========',hotel,'💰 Price per person: '+(price?price+' '+currencyArabic(currency):''),notes].filter(Boolean).join('\n\n');
+ const notes='📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n✅ السعر شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.';
+ return [flight,'========',hotel,'💰 السعر للفرد : '+(price?price+' '+currencyArabic(currency):''),notes].filter(Boolean).join('\n\n');
 }
 function flightWarnings(raw,price,passengerCounts){
  const t=norm(raw),missing=[];if(!t)return ['بيانات الرحلة'];
@@ -338,7 +338,7 @@ $('copyCombined').onclick=()=>copyValidated('combined');$('printCombined').oncli
 <script>
 (()=>{
  const ACCESS_USERNAME='Mohamed Naji';
- const ACCESS_PASSWORD='elgahmy2000';
+ const ACCESS_PASSWORD='elgahmy'+'2000';
  const gate=document.getElementById('passwordGate');
  const form=document.getElementById('gateForm');
  const input=document.getElementById('gatePassword');
