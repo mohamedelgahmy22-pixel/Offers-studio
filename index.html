@@ -471,6 +471,25 @@ flightWarnings=function(raw,price,passengerCounts){
  const validationText=hasJazeeraSegments&&!hasCarrierName?'Jazeera Airways\n'+text:text;
  return jazeeraAwareFlightWarnings(validationText,price,passengerCounts);
 };
+
+const roundTripFlightWarnings=flightWarnings;
+flightWarnings=function(raw,price,passengerCounts){
+ const text=norm(raw),lines=text.split('\n').map(x=>x.trim().replace(/^\*+|\*+$/g,'').replace(/\\+$/,'')).filter(Boolean);
+ const oneWayDate=lines.some(x=>/^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/i.test(x));
+ const oneWayRoute=lines.some(x=>/^\d{1,2}:\d{2}\s+.+?\s+[-–]\s+\d{1,2}:\d{2}\s+.+$/i.test(x));
+ const hasReturn=lines.some(x=>/^=+$/.test(x))||lines.filter(x=>/^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/i.test(x)).length>1;
+ if(!oneWayDate||!oneWayRoute||hasReturn)return roundTripFlightWarnings(raw,price,passengerCounts);
+ const missing=[];
+ const carrier=lines.some(x=>/\b(?:airlines?|airways?|aviation|air arabia|flynas|flydubai|gulf air|qatar|emirates|etihad|saudia|kuwait airways|jazeera|egyptair|royal jordanian|pegasus|turkish|bangkok airways)\b/i.test(x))||Object.values(AIRLINES||{}).some(n=>lines.some(x=>x.toLowerCase()===String(n).toLowerCase()));
+ if(!carrier)missing.push('شركة الطيران');
+ if(!oneWayRoute)missing.push('المدن (مدينة المغادرة والوصول)');
+ if(!oneWayDate)missing.push('تاريخ الرحلة');
+ if(!oneWayRoute)missing.push('موعد الإقلاع والوصول');
+ const pc=passengerCounts||flightPassengerCounts(raw);
+ if(!(pc&&((pc.adults||0)+(pc.children||0)+(pc.infants||0)>0)))missing.push('عدد الأفراد');
+ if(!/(?:\b\d+\s*\+\s*\d+\b|\b\d+\s*(?:kg|kgs|kilo|kilos)\b|\b(?:baggage|checked bag|cabin bag|hand bag|personal item)\b|بدون أمتعة|بدون شنط|شنطة|أمتعة)/i.test(text))missing.push('وزن الأمتعة');
+ return [...new Set(missing)];
+};
 function refreshFlight(){const raw=$('flightRaw').value;updateFlightPriceFields(raw);if(!raw.trim()){$('flightPreview').textContent='Paste flight details to see a live preview.';$('flightWarnings').textContent='';return;}$('flightPreview').textContent=translateFlight(raw,$('flightPrice').value,$('flightCurrency').value,{childPrice:$('flightChildPrice').value,infantPrice:$('flightInfantPrice').value});showWarnings('flightWarnings',flightWarnings(raw,$('flightPrice').value));}
 
 $('copyFlight').onclick=()=>copyValidated('flight');$('printFlight').onclick=()=>window.print();$('clearFlight').onclick=()=>{$('flightRaw').value='';$('flightPrice').value='';$('flightChildPrice').value='';$('flightInfantPrice').value='';$('flightCurrency').value='KWD';updateFlightPriceFields('');$('flightPreview').textContent='Paste flight details to see a live preview.';$('flightWarnings').textContent='';};['flightRaw','flightPrice','flightChildPrice','flightInfantPrice'].forEach(id=>$(id).addEventListener('input',refreshFlight));$('flightCurrency').addEventListener('change',refreshFlight);
