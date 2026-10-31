@@ -190,9 +190,9 @@ function cityLabel(code){
 function airlineIdentity(value){
  const token=String(value||'').trim();
  if(!token)return '';
- const code=token.toUpperCase().replace(/^AIRLINE\\s*[:=-]\\s*/i,'');
+ const code=token.toUpperCase().replace(/^AIRLINE\s*[:=-]\s*/i,'');
  if(AIRLINES[code])return AIRLINES[code]+' ('+code+')';
- const normalize=x=>String(x||'').toLowerCase().replace(/\\b(airlines?|airways|international|company|the)\\b/g,'').replace(/[^a-z0-9]/g,'');
+ const normalize=x=>String(x||'').toLowerCase().replace(/\b(airlines?|airways|international|company|the)\b/g,'').replace(/[^a-z0-9]/g,'');
  const wanted=normalize(token);
  for(const [iata,name] of Object.entries(AIRLINES)){if(normalize(name)===wanted)return name+' ('+iata+')';}
  const aliases={'flydubai':'FZ','airarabia':'G9','saudia':'SV','egyptair':'MS','jazeera':'J9','indigo':'6E','bangkokairways':'PG','thaiairways':'TG'};
@@ -240,7 +240,7 @@ function translateFlight(raw,price,currency,options={}){
  let airlineName='';
  const airlineLine=lines.find(x=>/AIR|AIRWAYS|AIRLINES|AVIATION|JET|FLY|EXPRESS/i.test(x)&&!/(TO|FROM)/i.test(x))||lines.find(x=>/^(?:AIRLINE|CARRIER)\\s*[:=-]\\s*[A-Z0-9]{2}$/i.test(x))||lines.find(x=>/^[A-Z0-9]{2}$/i.test(x)&&AIRLINES[x.toUpperCase()]);
  if(airlineLine){
-  const token=airlineLine.replace(/^✈️\\s*/,'').replace(/^(?:AIRLINE|CARRIER)\\s*[:=-]\\s*/i,'').trim();
+  const token=airlineLine.replace(/^✈️\s*/,'').replace(/^(?:AIRLINE|CARRIER)\s*[:=-]\s*/i,'').trim();
   airlineName=AIRLINES[token.toUpperCase()]||token;
  }
  if(!airlineName){
@@ -329,15 +329,15 @@ translateFlight=function(raw,price,currency,options={}){
   const cleanPlace=v=>{const t=v.trim().replace(/\s*\([A-Z]{3}\)\s*/g,'').trim();return cityCode(t)||t.toUpperCase();};
   const knownCarrier=/^(Bangkok Airways|Air Arabia|Gulf Air|Qatar Airways|Emirates|Etihad Airways|Kuwait Airways|Jazeera Airways|Turkish Airlines|Oman Air|Saudia|Saudi Arabian Airlines|flydubai|flynas|EgyptAir|Ethiopian Airlines|IndiGo|Malaysia Airlines|Singapore Airlines|Thai Airways|British Airways|Lufthansa|KLM|Air France|Pegasus Airlines)$/i;
   for(let i=0;i<lines.length;i++){
-   const line=lines[i].replace(/^\\*+|\\*+$/g,'').replace(/\\\\+$/,'').trim();
-   if(/^(?:=+|\\-+)$/.test(line))continue;
-   if(/^\\d+\\s*(?:\\+|kg)/i.test(line)||/^\\d+\\s*(?:ADL|ADT|CHD|INF)/i.test(line))continue;
+   const line=lines[i].replace(/^\*+|\*+$/g,'').replace(/\\\\+$/,'').trim();
+   if(/^(?:=+|\-+)$/.test(line))continue;
+   if(/^\d+\s*(?:\\+|kg)/i.test(line)||/^\d+\s*(?:ADL|ADT|CHD|INF)/i.test(line))continue;
    if(knownCarrier.test(line)||/^[A-Za-z][A-Za-z .&'-]{1,50}$/.test(line)){carrier=line;continue;}
-   const dateMatch=line.match(/(?:^|\\|)\\s*(?:[A-Za-z]{3},?\\s*)?(\\d{1,2})\\s+([A-Za-z]{3,9})\\s+(\\d{4})(?:\\s*$|\\s*\\|)/i)||line.match(/^(\\d{1,2})\\s+([A-Za-z]{3,9})\\s+(\\d{4})$/i);
+   const dateMatch=line.match(/(?:^|\|)\s*(?:[A-Za-z]{3},?\s*)?(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})(?:\s*$|\s*\|)/i)||line.match(/^(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})$/i);
    if(dateMatch){date=dateMatch[1]+' '+dateMatch[2]+' '+dateMatch[3];}
-   const routeDate=line.match(/^([A-Z]{3})\\s*[-–]\\s*([A-Z]{3})\\s*\\|\\s*(?:[A-Za-z]{3},?\\s*)?(\\d{1,2}\\s+[A-Za-z]{3,9}\\s+\\d{4})$/i);
+   const routeDate=line.match(/^([A-Z]{3})\s*[-–]\s*([A-Z]{3})\s*\|\s*(?:[A-Za-z]{3},?\s*)?(\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4})$/i);
    if(routeDate){pendingRoute={from:routeDate[1],to:routeDate[2]};date=routeDate[3];continue;}
-   const codedTimes=line.match(/^([0-2]?\\d:\\d{2})\\s*\\(([A-Z]{3})\\)\\s*[-–]\\s*([0-2]?\\d:\\d{2})\\s*\\(([A-Z]{3})\\)$/i);
+   const codedTimes=line.match(/^([0-2]?\d:\d{2})\s*\(([A-Z]{3})\)\s*[-–]\s*([0-2]?\d:\d{2})\s*\(([A-Z]{3})\)$/i);
    if(codedTimes&&pendingRoute&&date){
     pretty.push({airline:carrier,date,displayDate:arabicDate(date),origin:pendingRoute.from,destination:pendingRoute.to,depart:codedTimes[1].replace(':',''),arrive:codedTimes[3].replace(':','')});pendingRoute=null;continue;
    }
