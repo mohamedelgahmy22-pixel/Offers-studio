@@ -191,12 +191,12 @@ function airlineIdentity(value){
  const token=String(value||'').trim();
  if(!token)return '';
  const code=token.toUpperCase().replace(/^AIRLINE\s*[:=-]\s*/i,'');
- if(AIRLINES[code])return AIRLINES[code]+' ('+code+')';
+ if(AIRLINES[code])return AIRLINES[code];
  const normalize=x=>String(x||'').toLowerCase().replace(/\b(airlines?|airways|international|company|the)\b/g,'').replace(/[^a-z0-9]/g,'');
  const wanted=normalize(token);
- for(const [iata,name] of Object.entries(AIRLINES)){if(normalize(name)===wanted)return name+' ('+iata+')';}
+ for(const name of Object.values(AIRLINES)){if(normalize(name)===wanted)return name;}
  const aliases={'flydubai':'FZ','airarabia':'G9','saudia':'SV','egyptair':'MS','jazeera':'J9','indigo':'6E','bangkokairways':'PG','thaiairways':'TG'};
- const alias=aliases[wanted];if(alias)return (AIRLINES[alias]||token)+' ('+alias+')';
+ const alias=aliases[wanted];if(alias)return AIRLINES[alias]||token;
  return token;
 }
 function arabicDate(dateText){
