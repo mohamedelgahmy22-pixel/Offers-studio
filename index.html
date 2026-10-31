@@ -195,11 +195,10 @@ function cityCode(value){
 }
 function cityLabel(code){
  if(String(code).startsWith('CITY:')){
-  const city=String(code).slice(5),names={MOSCOW:'موسكو - Moscow',LONDON:'لندن - London',PARIS:'باريس - Paris',TOKYO:'طوكيو - Tokyo',SEOUL:'سيول - Seoul',NEW_YORK:'نيويورك - New York',WASHINGTON:'واشنطن - Washington',ROME:'روما - Rome',MILAN:'ميلانو - Milan',BANGKOK:'بانكوك - Bangkok',SHANGHAI:'شنغهاي - Shanghai',BEIJING:'بكين - Beijing',ISTANBUL:'إسطنبول - Istanbul'};
+  const city=String(code).slice(5),names={MOSCOW:'موسكو',LONDON:'لندن',PARIS:'باريس',TOKYO:'طوكيو',SEOUL:'سيول',NEW_YORK:'نيويورك',WASHINGTON:'واشنطن',ROME:'روما',MILAN:'ميلانو',BANGKOK:'بانكوك',SHANGHAI:'شنغهاي',BEIJING:'بكين',ISTANBUL:'إسطنبول'};
   return names[city]||city.replace(/_/g,' ');
  }
- const name=AIRPORTS[code];
- return name?name+' ('+code+')':'('+code+') '+code;
+ return AIRPORTS[code]||String(code||'');
 }
 function airlineIdentity(value){
  const token=String(value||'').trim();
@@ -441,6 +440,24 @@ function flightWarnings(raw,price,passengerCounts){
  if(!/(?:\b\d+\s*\+\s*\d+\b|\b\d+\s*(?:kg|kgs|kilo|kilos)\b|\b(?:baggage|checked bag|cabin bag|hand bag|personal item)\b|بدون أمتعة|بدون شنط|شنطة|أمتعة)/i.test(t))missing.push('وزن الأمتعة');
  return [...new Set(missing)];
 }
+const previousFlightWarnings=flightWarnings;
+flightWarnings=function(raw,price,passengerCounts){
+ const text=norm(raw),lines=text.split('\n').map(x=>x.trim().replace(/^\*+|\*+$/g,'').replace(/\\+$/,'')).filter(Boolean);
+ const dates=lines.filter(x=>/^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/i.test(x));
+ const routes=lines.filter(x=>/^\d{1,2}:\d{2}\s+.+?\s+[-–]\s+\d{1,2}:\d{2}\s+.+$/i.test(x));
+ const isStandard=dates.length>=1&&routes.length>=1;
+ if(!isStandard)return previousFlightWarnings(raw,price,passengerCounts);
+ const missing=[];
+ const carrier=lines.some(x=>/\b(?:airlines?|airways?|aviation|air arabia|flynas|flydubai|gulf air|qatar|emirates|etihad|saudia|kuwait airways|jazeera|egyptair|royal jordanian|pegasus|turkish|bangkok airways)\b/i.test(x))||Object.values(AIRLINES||{}).some(n=>lines.some(x=>x.toLowerCase()===String(n).toLowerCase()));
+ if(!carrier)missing.push('شركة الطيران');
+ if(routes.length<2)missing.push('المدن (مدينة المغادرة والوصول)');
+ if(dates.length<2)missing.push('تواريخ الذهاب والعودة');
+ if(routes.length<2)missing.push('مواعيد الإقلاع والعودة');
+ const pc=passengerCounts||flightPassengerCounts(raw);
+ if(!(pc&&((pc.adults||0)+(pc.children||0)+(pc.infants||0)>0)))missing.push('عدد الأفراد');
+ if(!/(?:\b\d+\s*\+\s*\d+\b|\b\d+\s*(?:kg|kgs|kilo|kilos)\b|\b(?:baggage|checked bag|cabin bag|hand bag|personal item)\b|بدون أمتعة|بدون شنط|شنطة|أمتعة)/i.test(text))missing.push('وزن الأمتعة');
+ return [...new Set(missing)];
+};
 const baseFlightWarnings=flightWarnings;
 flightWarnings=function(raw,price,passengerCounts){
  const normalized=String(raw||'').replace(/(\d{1,2}[A-Z]{3})\s+(\d)\*/gi,'$1 $2 ');
