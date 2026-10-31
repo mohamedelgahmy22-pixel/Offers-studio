@@ -264,7 +264,7 @@ function translateFlight(raw,price,currency,options={}){
   output.push(trip.join('\n'));
  }
  if(passengers.length)output.push('👥 عدد الأفراد: '+passengers.join(' + '));
- if(options.includePrice!==false){const counts=flightPassengerCounts(raw),unit=currency?' '+currencyArabic(currency):'',priceLines=[];if(counts.adults||(!counts.children&&!counts.infants))priceLines.push('💰 السعر للبالغ: '+(price?price+unit:''));if(counts.children)priceLines.push('💰 السعر للطفل: '+(options.childPrice?options.childPrice+unit:''));if(counts.infants)priceLines.push('💰 السعر للرضيع: '+(options.infantPrice?options.infantPrice+unit:''));output.push(priceLines.join('\n'));}
+ if(options.includePrice!==false){const counts=flightPassengerCounts(raw),unit=currency?' '+currencyArabic(currency):'',priceLines=[];if(counts.adults||(!counts.children&&!counts.infants)){const adultLabel=(counts.children||counts.infants)?'السعر للبالغ':'السعر للفرد';priceLines.push('💰 '+adultLabel+': '+(price?price+unit:''));}if(counts.children)priceLines.push('💰 السعر للطفل: '+(options.childPrice?options.childPrice+unit:''));if(counts.infants)priceLines.push('💰 السعر للرضيع: '+(options.infantPrice?options.infantPrice+unit:''));output.push(priceLines.join('\n'));}
  if(options.includeNotes!==false)output.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
  return output.join('\n\n');
 }
