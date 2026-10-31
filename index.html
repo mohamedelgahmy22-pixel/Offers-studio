@@ -367,6 +367,12 @@ function flightWarnings(raw,price,passengerCounts){
  if(!hasBaggage)missing.push('وزن الأمتعة');
  return [...new Set(missing)];
 }
+
+const baseFlightWarnings=flightWarnings;
+flightWarnings=function(raw,price,passengerCounts){
+ const normalized=String(raw||'').replace(/(\d{1,2}[A-Z]{3})\s+(\d)\*/gi,'$1 $2 ');
+ return baseFlightWarnings(normalized,price,passengerCounts);
+};
 function refreshFlight(){const raw=$('flightRaw').value;updateFlightPriceFields(raw);if(!raw.trim()){$('flightPreview').textContent='Paste flight details to see a live preview.';$('flightWarnings').textContent='';return;}$('flightPreview').textContent=translateFlight(raw,$('flightPrice').value,$('flightCurrency').value,{childPrice:$('flightChildPrice').value,infantPrice:$('flightInfantPrice').value});showWarnings('flightWarnings',flightWarnings(raw,$('flightPrice').value));}
 
 $('copyFlight').onclick=()=>copyValidated('flight');$('printFlight').onclick=()=>window.print();$('clearFlight').onclick=()=>{$('flightRaw').value='';$('flightPrice').value='';$('flightChildPrice').value='';$('flightInfantPrice').value='';$('flightCurrency').value='KWD';updateFlightPriceFields('');$('flightPreview').textContent='Paste flight details to see a live preview.';$('flightWarnings').textContent='';};['flightRaw','flightPrice','flightChildPrice','flightInfantPrice'].forEach(id=>$(id).addEventListener('input',refreshFlight));$('flightCurrency').addEventListener('change',refreshFlight);
