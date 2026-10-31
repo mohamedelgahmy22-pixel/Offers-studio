@@ -291,7 +291,32 @@ function buildCombined(){
  const notes='📝 ملاحظة:\n✅ Price يشمل الطيران والفنادق.\n✅ السعر شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.';
  return [flight,'========',hotel,'💰 Price per person: '+(price?price+' '+currencyArabic(currency):''),notes].filter(Boolean).join('\n\n');
 }
-function flightWarnings(raw){const t=norm(raw);const missing=[];if(!t)return ['بيانات الرحلة'];const lines=t.split('\n').map(x=>x.trim().replace(/^\*+|\*+$/g,'')).filter(Boolean);const ticket=(t.match(/^\d+\s+[A-Z0-9]{2}\s*\d{1,4}\s+[A-Z]\s+\d{1,2}[A-Z]{3}\s+\d\s+[A-Z]{6}/gim)||[]).length;let headed=0;for(let i=0;i<lines.length-1;i++){if(/^(.+?)\s+-\s+(.+)$/.test(lines[i])&&/^([A-Z0-9]{2})\s*(\d{1,4})\s*\|\s*(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})\s*\|\s*(?:[A-Za-z]{3},?\s*)?(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})$/i.test(lines[i+1]))headed++;}if(!ticket&&!headed)missing.push('تفاصيل مسار الرحلة أو صيغة التذكرة');return missing;}
+function flightWarnings(raw){
+ const t=norm(raw),missing=[];if(!t)return ['بيانات الرحلة'];
+ const lines=t.split('\n').map(x=>x.trim().replace(/^\*+|\*+$/g,'')).filter(Boolean);
+ const routeHeadings=[];
+ for(let i=0;i<lines.length;i++){
+  const route=lines[i].match(/^(.+?)\s+-\s+(.+)$/);
+  if(route&&!/^([A-Z0-9]{2})\s*\d{1,4}\s*\|/i.test(lines[i])){
+   routeHeadings.push({index:i,from:route[1].trim(),to:route[2].trim(),detail:lines[i+1]||''});
+  }
+ }
+ if(routeHeadings.length){
+  routeHeadings.forEach((leg,i)=>{
+   const label=routeHeadings.length===1?'الذهاب':(i===0?'الذهاب':'العودة');
+   const parts=leg.detail.split('|').map(x=>x.trim());
+   if(!leg.from||!leg.to)missing.push('مسار رحلة '+label);
+   if(!/^[A-Z0-9]{2}\s*\d{1,4}$/i.test(parts[0]||''))missing.push('شركة الطيران ورقم الرحلة ('+label+')');
+   if(!/\d{1,2}:\d{2}\s*[-–]\s*\d{1,2}:\d{2}/.test(parts[1]||''))missing.push('مواعيد الإقلاع والوصول ('+label+')');
+   if(!/(?:\d{1,2}\s+[A-Za-z]{3}\s+\d{4}|[A-Za-z]{3},?\s*\d{1,2}\s+[A-Za-z]{3}\s+\d{4})/i.test(parts[2]||''))missing.push('تاريخ الرحلة ('+label+')');
+  });
+  return [...new Set(missing)];
+ }
+ const ticketLines=lines.filter(x=>/^\d+\s+[A-Z0-9]{2}\s*\d{1,4}\s+[A-Z]\s+\d{1,2}[A-Z]{3}\s+\d\s+[A-Z]{6}/i.test(x));
+ if(ticketLines.length)return missing;
+ missing.push('تفاصيل مسار الرحلة أو صيغة التذكرة');
+ return missing;
+}
 function refreshFlight(){const raw=$('flightRaw').value;updateFlightPriceFields(raw);if(!raw.trim()){$('flightPreview').textContent='Paste flight details to see a live preview.';$('flightWarnings').textContent='';return;}$('flightPreview').textContent=translateFlight(raw,$('flightPrice').value,$('flightCurrency').value,{childPrice:$('flightChildPrice').value,infantPrice:$('flightInfantPrice').value});showWarnings('flightWarnings',flightWarnings(raw));}
 
 $('copyFlight').onclick=()=>copyValidated('flight');$('printFlight').onclick=()=>window.print();$('clearFlight').onclick=()=>{$('flightRaw').value='';$('flightPrice').value='';$('flightChildPrice').value='';$('flightInfantPrice').value='';$('flightCurrency').value='KWD';updateFlightPriceFields('');$('flightPreview').textContent='Paste flight details to see a live preview.';$('flightWarnings').textContent='';};['flightRaw','flightPrice','flightChildPrice','flightInfantPrice'].forEach(id=>$(id).addEventListener('input',refreshFlight));$('flightCurrency').addEventListener('change',refreshFlight);
