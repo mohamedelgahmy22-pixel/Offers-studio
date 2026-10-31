@@ -76,7 +76,7 @@ Board: ROOM ONLY
 <div class="fields">
 <div class="field"><label>السعر الإجمالي (اختياري)</label><input id="hotelPrice" placeholder="اتركه فارغاً إذا لم يتوفر"></div>
 <div class="field"><label>العملة</label><input id="hotelCurrency" value="دينار كويتي"></div>
-<div class="field full"><label>ملاحظات إضافية (اختياري)</label><input id="hotelExtra" placeholder="أي ملاحظة تريد إضافتها للعرض"></div>
+<div class="field full"><label>آخر موعد للإلغاء (اختياري)</label><input id="hotelCancelDate" placeholder="مثال: 10 يناير 2027 أو 10 Nov 2027"></div>
 </div>
 
 </div>
@@ -102,24 +102,23 @@ function refundDateFromText(text,checkIn){
  const monthNames=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
  const arabicMonths={'يناير':0,'فبراير':1,'مارس':2,'أبريل':3,'ابريل':3,'مايو':4,'يونيو':5,'يونيه':5,'يوليو':6,'أغسطس':7,'اغسطس':7,'سبتمبر':8,'أكتوبر':9,'اكتوبر':9,'نوفمبر':10,'ديسمبر':11};
  const englishMonths={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,sept:8,oct:9,nov:10,dec:11};
- const source=String(text||'');
- let m=source.match(/(?:مسترد|استرداد|قابل\s+للاسترداد)[^\n]{0,60}?(?:لحد|حتى|إلى|الى|until|till|through)\s*(?:يوم\s*)?(\d{1,2})\s+([\u0600-\u06FF]+)/i);
- if(!m)m=source.match(/(?:refundable|refund)[^\n]{0,45}?(?:until|till|through)\s*(?:day\s*)?(\d{1,2})\s+([A-Za-z]+)/i);
- if(!m)return '';
- const day=Number(m[1]),monthText=m[2].toLowerCase();
- let mi=arabicMonths[monthText];
- if(mi===undefined)mi=englishMonths[monthText.slice(0,4)]??englishMonths[monthText.slice(0,3)];
- if(mi===undefined||day<1||day>31)return '';
- const ci=String(checkIn||'').match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/)||String(checkIn||'').match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/);
- let year=new Date().getFullYear();
- if(ci){
-   if(String(checkIn).includes('-')&&ci[1].length===4)year=Number(ci[1]);
-   else year=Number(ci[3]);
+ const source=String(text||'').trim();if(!source)return '';
+ let m=source.match(/(?:^|\\b)(\\d{1,2})[\\/-](\\d{1,2})(?:[\\/-](\\d{4}))?(?:$|\\b)/);
+ let day,mi,yearText='';
+ if(m){day=+m[1];mi=+m[2]-1;yearText=m[3]||'';}
+ else{
+  m=source.match(/(\\d{1,2})\\s+([\\u0600-\\u06FF]+|[A-Za-z]{3,9})(?:\\s+(\\d{4}))?/i);
+  if(!m)return '';
+  day=+m[1];const monthText=m[2].toLowerCase();
+  mi=arabicMonths[monthText];if(mi===undefined)mi=englishMonths[monthText.slice(0,4)]??englishMonths[monthText.slice(0,3)];
+  yearText=m[3]||'';
  }
- const checkMonth=ci?(String(checkIn).includes('-')&&ci[1].length===4?Number(ci[2]):Number(ci[2]))-1:null;
- if(checkMonth!==null&&mi<checkMonth)year++;
- const d=new Date(year,mi,day);
- if(d.getMonth()!==mi||d.getDate()!==day)return '';
+ if(mi<0||mi>11||day<1||day>31)return '';
+ const ci=String(checkIn||'').match(/^(\\d{4})-(\\d{1,2})-(\\d{1,2})$/)||String(checkIn||'').match(/^(\\d{1,2})[/-](\\d{1,2})[/-](\\d{4})$/);
+ let year=yearText?+yearText:(ci?(String(checkIn).includes('-')&&ci[1].length===4?+ci[1]:+ci[3]):new Date().getFullYear());
+ const checkMonth=ci?(String(checkIn).includes('-')&&ci[1].length===4?+ci[2]:+ci[2])-1:null;
+ if(!yearText&&checkMonth!==null&&mi<checkMonth)year++;
+ const d=new Date(year,mi,day);if(d.getMonth()!==mi||d.getDate()!==day)return '';
  return day+' '+monthNames[mi]+' '+year;
 }
 function parseHotel(raw){
@@ -136,14 +135,14 @@ function parseHotel(raw){
  let adults=0,children=0,infants=0;for(const m of text.matchAll(/(\d+)\s*(ADL|ADT|ADULTS?|CHD|CNN|CHILDREN?|INF(?:ANT)?S?)/gi)){let n=+m[1],k=m[2].toUpperCase();if(k.startsWith('ADL')||k.startsWith('ADT')||k.startsWith('ADULT'))adults+=n;else if(k.startsWith('CHD')||k.startsWith('CNN')||k.startsWith('CHILD'))children+=n;else infants+=n}
  for(const m of text.matchAll(/(\d+)\s*(?:adult|adults|بالغ|بالغين)/gi))adults=Math.max(adults,+m[1]);
  let guest=[];if(adults)guest.push(adults+' بالغ');if(children)guest.push(children+' طفل');if(infants)guest.push(infants+' رضيع');let price=match(text,/(?:total\s*price|price|السعر)\s*[:：]\s*([^\n]+)/i);
- const refundDate=refundDateFromText(text,ci);
+ const refundDate=refundDateFromText($('hotelCancelDate')?.value||'',ci)||refundDateFromText(text,ci);
  return {hotel,ci,co,rooms,meal,guests:guest.join(' و '),price,refundDate}
 }
 function hotelDateArabic(value){if(!value)return '';let m=String(value).match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/),d;if(m){d=new Date(+m[3],+m[2]-1,+m[1]);if(d.getFullYear()!==+m[3]||d.getMonth()!==+m[2]-1||d.getDate()!==+m[1])return value}else{m=String(value).match(/^(\d{1,2})\s+([A-Za-z]{3,9})(?:\s+(\d{4}))?$/);if(!m)return value;const monthsEn={jan:0,january:0,feb:1,february:1,mar:2,march:2,apr:3,april:3,may:4,jun:5,june:5,jul:6,july:6,aug:7,august:7,sep:8,sept:8,september:8,oct:9,october:9,nov:10,november:10,dec:11,december:11};let mi=monthsEn[m[2].toLowerCase()];if(mi===undefined)return value;if(!m[3]){const names=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];return +m[1]+' '+names[mi]}d=new Date(+m[3],mi,+m[1])}const days=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];return days[d.getDay()]+'، '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear()}
-function hotelText(options={}){let d=window.hotelParsed||{};let a=[];if(d.hotel)a.push('🏨 الفندق: '+d.hotel);if(d.rooms?.length){let multi=d.rooms.length>1;for(const r of d.rooms)a.push((multi?'🛏️ الغرف: ':'🛏️ الغرفة: ')+(r.count>1?r.count+' × ':'')+r.name)}if(d.ci)a.push('📅 الدخول: '+hotelDateArabic(d.ci));if(d.co)a.push('📅 الخروج: '+hotelDateArabic(d.co));if(d.meal)a.push('🍽️ الوجبات: '+d.meal);if(d.guests)a.push('👥 عدد الأفراد: '+d.guests);if(options.includePrice!==false){let p=$('hotelPrice').value.trim()||d.price||'';a.push('💰 السعر الإجمالي: '+(p? p+' '+$('hotelCurrency').value.trim():''));}let notes=['✅ السعر شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).','⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.',d.refundDate?'🔄 الحجز مسترد حتى '+d.refundDate+'، مع خصم 5% عند الإلغاء.':'❌ الحجز غير مسترد وغير قابل للتعديل.'];if($('hotelExtra').value.trim())notes.push($('hotelExtra').value.trim());if(options.includeNotes!==false)a.push('📝 ملاحظة:\n'+notes.join('\n'));return a.join('\n\n')}
+function hotelText(options={}){let d=window.hotelParsed||{};let a=[];if(d.hotel)a.push('🏨 الفندق: '+d.hotel);if(d.rooms?.length){let multi=d.rooms.length>1;for(const r of d.rooms)a.push((multi?'🛏️ الغرف: ':'🛏️ الغرفة: ')+(r.count>1?r.count+' × ':'')+r.name)}if(d.ci)a.push('📅 الدخول: '+hotelDateArabic(d.ci));if(d.co)a.push('📅 الخروج: '+hotelDateArabic(d.co));if(d.meal)a.push('🍽️ الوجبات: '+d.meal);if(d.guests)a.push('👥 عدد الأفراد: '+d.guests);if(options.includePrice!==false){let p=$('hotelPrice').value.trim()||d.price||'';a.push('💰 السعر الإجمالي: '+(p? p+' '+$('hotelCurrency').value.trim():''));}let notes=['✅ السعر شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).','⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.',d.refundDate?'🔄 الحجز مسترد حتى '+d.refundDate+'، مع خصم 5% عند الإلغاء.':'❌ الحجز غير مسترد وغير قابل للتعديل.'];if(options.includeNotes!==false)a.push('📝 ملاحظة:\n'+notes.join('\n'));return a.join('\n\n')}
 window.hotelParsed={};$('convertHotel').onclick=()=>{let raw=$('hotelRaw').value;if(!raw.trim()){toast('الصق تفاصيل الحجز أولاً');return}window.hotelParsed=parseHotel(raw);$('hotelPreview').textContent=hotelText();if(!window.hotelParsed.hotel)toast('تم التحويل، لكن لم أتعرف على اسم الفندق؛ يمكنك مراجعة النص الأصلي');else toast('تم تحويل بيانات الفندق')};
-['hotelPrice','hotelCurrency','hotelExtra'].forEach(id=>$(id).addEventListener('input',()=>{if($('hotelRaw').value.trim())$('hotelPreview').textContent=hotelText()}));
-$('clearHotel').onclick=()=>{$('hotelRaw').value='';$('hotelPrice').value='';$('hotelExtra').value='';window.hotelParsed={};$('hotelPreview').textContent='الصق بيانات الحجز ثم اضغط «تحويل إلى عرض» لتظهر النتيجة هنا.'};
+['hotelPrice','hotelCurrency','hotelCancelDate'].forEach(id=>$(id).addEventListener('input',()=>{if($('hotelRaw').value.trim())$('hotelPreview').textContent=hotelText()}));
+$('clearHotel').onclick=()=>{$('hotelRaw').value='';$('hotelPrice').value='';$('hotelCancelDate').value='';window.hotelParsed={};$('hotelPreview').textContent='الصق بيانات الحجز ثم اضغط «تحويل إلى عرض» لتظهر النتيجة هنا.'};
 async function copyText(text){if(!text.trim()){toast('لا يوجد عرض لنسخه');return}let ok=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch{}if(!ok){let ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{ok=document.execCommand('copy')}catch{}ta.remove()}toast(ok?'تم نسخ العرض بنجاح':'تعذر النسخ؛ اسمح للمتصفح بالنسخ وحاول مرة أخرى')}
 $('copyHotel').onclick=()=>copyText($('hotelPreview').textContent);$('printHotel').onclick=()=>window.print();
 const AIRLINES={
