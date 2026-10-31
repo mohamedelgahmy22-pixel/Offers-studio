@@ -211,13 +211,13 @@ function translateFlight(raw,price,currency,options={}){
   if(code)airlineName=AIRLINES[code.toUpperCase()]||code.toUpperCase();
  }
  const baggageLines=lines.filter(x=>/(?:\d+\s*kg|\d+\s*\+\s*\d+)/i.test(x)&&!segments.some(seg=>new RegExp('\\\\b'+seg.airline+'\\\\b').test(x)));
- function baggageValue(line){if(!line)return '';const nums=[...line.matchAll(/(\d+)\s*(?:kg|kilo)?/gi)].map(x=>+x[1]).filter(x=>x>0);if(nums.length>=3&&nums[0]===nums[1])return '7 كيلو شنطة يد + '+nums[0]+' كيلو';if(nums.length>=2){const small=Math.min(...nums),large=Math.max(...nums);return small+' كيلو شنطة يد + '+large+' كيلو';}return nums.length===1?nums[0]+' كيلو':'';}
+ function baggageValue(line){if(!line)return '';const nums=[...line.matchAll(/(\d+)\s*(?:kg|kilo)?/gi)].map(x=>+x[1]).filter(x=>x>0);if(nums.length>=3&&nums.includes(7)){const checked=nums.filter(n=>n!==7);return '7 كيلو شنطة يد + '+checked.join(' كيلو + ')+' كيلو';}if(nums.length>=2){const small=Math.min(...nums),large=Math.max(...nums);return small+' كيلو شنطة يد + '+large+' كيلو';}return nums.length===1?nums[0]+' كيلو':'';}
  const outboundBagLine=baggageLines.find(x=>/outbound|departure|depart|going|ذهاب/i.test(x));
  const returnBagLine=baggageLines.find(x=>/return|inbound|عودة|رجوع/i.test(x));
- const genericBagLine=baggageLines.find(x=>!/outbound|departure|depart|going|ذهاب|return|inbound|عودة|رجوع/i.test(x));
- const baggage=baggageValue(genericBagLine);
- const outboundBaggage=baggageValue(outboundBagLine)||baggage;
- const returnBaggage=baggageValue(returnBagLine)||baggage;
+ const genericBagLines=baggageLines.filter(x=>!/outbound|departure|depart|going|ذهاب|return|inbound|عودة|رجوع/i.test(x));
+ const baggage=baggageValue(genericBagLines[0]);
+ const outboundBaggage=baggageValue(outboundBagLine)||(segments.length>1&&genericBagLines.length>=segments.length?baggageValue(genericBagLines[0]):baggage);
+ const returnBaggage=baggageValue(returnBagLine)||(segments.length>1&&genericBagLines.length>=segments.length?baggageValue(genericBagLines[1]):baggage);
  let passengers=[];
  const adults=[...text.matchAll(/(\d+)\s*(?:ADL|ADT|ADULTS?)/gi)].reduce((a,m)=>a+(+m[1]),0);
  const children=[...text.matchAll(/(\d+)\s*(?:CHD|CNN|CHILDREN?)/gi)].reduce((a,m)=>a+(+m[1]),0);
