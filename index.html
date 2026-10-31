@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#12343d"><title>استوديو عروض السفر</title>
+<meta name="theme-color" content="#12343d"><title>Travel Offers Studio</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap');
 :root{--navy:#12343d;--teal:#17636b;--gold:#c9aa70;--bg:#eef3f4;--card:#fff;--ink:#18363d;--muted:#71858a;--line:#dce6e8;--soft:#f5f8f8}
@@ -37,31 +37,31 @@ textarea,input{width:100%;border:1px solid var(--line);border-radius:12px;paddin
 @media print{header,.topline,.panel.input-panel,.actions,.intro{display:none!important}body{background:white}main{margin:0;padding:0}.layout{display:block}.panel{border:0;box-shadow:none;padding:0}.preview{border:0;background:white;padding:0;min-height:0;font-size:14pt}}
 </style></head>
 <body class="locked">
-<section id="passwordGate" aria-label="تسجيل الدخول">
+<section id="passwordGate" aria-label="Sign in">
  <form class="gate-card" id="gateForm">
   <div class="gate-mark">🔒</div>
-  <h2>استوديو عروض السفر</h2>
-  <p>سجّل دخولك للمتابعة</p>
-  <input id="gateUsername" type="text" placeholder="اسم المستخدم" autocomplete="username" required>
-  <input id="gatePassword" type="password" placeholder="كلمة المرور" autocomplete="current-password" required>
-  <button type="submit">دخول</button>
-  <div id="gateError">اسم المستخدم أو كلمة المرور غير صحيحة، حاول مرة أخرى.</div>
+  <h2>Travel Offers Studio</h2>
+  <p>Sign in to continue</p>
+  <input id="gateUsername" type="text" placeholder="Username" autocomplete="username" required>
+  <input id="gatePassword" type="password" placeholder="Password" autocomplete="current-password" required>
+  <button type="submit">Sign in</button>
+  <div id="gateError">Incorrect username or password. Please try again.</div>
  </form>
 </section>
-<section id="greetingOverlay"><div class="greeting-card"><div style="font-size:34px">✨</div><h2>نورت</h2><p>أهلاً بيك في استوديو عروض السفر</p></div></section>
-<header><div class="logo">✦</div><div><h1>استوديو عروض السفر</h1><p>جهّز عروضك بسهولة وبالقوالب المعتمدة</p></div><button id="logoutButton" type="button">تسجيل الخروج</button></header>
+<section id="greetingOverlay"><div class="greeting-card"><div style="font-size:34px">✨</div><h2>Welcome</h2><p>Welcome to Travel Offers Studio</p></div></section>
+<header><div class="logo">✦</div><div><h1>Travel Offers Studio</h1><p>Create your offers easily with ready-made templates</p></div><button id="logoutButton" type="button">Log out</button></header>
 <main>
 <section id="home">
-<div class="intro"><h2>أهلاً بك في استوديو عروض السفر</h2><p>اختر نوع العرض للبدء</p></div>
+<div class="intro"><h2>Welcome to Travel Offers Studio</h2><p>Choose an offer type to get started</p></div>
 <div class="cards">
-<button class="card" data-open="hotel"><span class="icon">🏨</span><h3>الفنادق</h3><p>الصق تفاصيل الحجز وحوّلها تلقائياً إلى عرض عربي جاهز.</p><span class="arrow">فتح القسم ←</span></button>
-<button class="card" data-open="flight"><span class="icon">✈️</span><h3>الطيران</h3><p>جهّز تفاصيل رحلات الطيران في قالب مرتب وواضح.</p><span class="arrow">فتح القسم ←</span></button>
-<button class="card" data-open="combined"><span class="icon">🧳</span><h3>الطيران والفندق</h3><p>اجمع تفاصيل الطيران والإقامة في عرض واحد.</p><span class="arrow">فتح القسم ←</span></button>
+<button class="card" data-open="hotel"><span class="icon">🏨</span><h3>Hotels</h3><p>Paste booking details and convert them into a ready-to-use Arabic offer.</p><span class="arrow">Open section →</span></button>
+<button class="card" data-open="flight"><span class="icon">✈️</span><h3>Flights</h3><p>Format flight details into a clear, organized offer.</p><span class="arrow">Open section →</span></button>
+<button class="card" data-open="combined"><span class="icon">🧳</span><h3>Flight + Hotel</h3><p>Combine flight and hotel details in one offer.</p><span class="arrow">Open section →</span></button>
 </div></section>
 <section class="workspace" id="hotel">
-<div class="topline"><h2>🏨 عروض الفنادق</h2><button class="back" data-home>← القائمة الرئيسية</button></div>
+<div class="topline"><h2>🏨 Hotel Offers</h2><button class="back" data-home>← Main menu</button></div>
 <div class="layout">
-<div class="panel input-panel"><h3>بيانات الحجز</h3><p class="hint">انسخ تفاصيل الحجز من نظامك والصقها هنا كما هي، حتى لو كانت بالإنجليزية. سنستخرج اسم الفندق والغرف والتواريخ والوجبات وعدد الأفراد تلقائياً.</p>
+<div class="panel input-panel"><h3>Booking Details</h3><p class="hint">Copy booking details from your system and paste them here as-is, even if they are in English. We will automatically extract the hotel, rooms, dates, meals, and guest count.</p>
 <textarea id="hotelRaw" placeholder="مثال:
 The Marble Arch Hotel, by Thistle
 
@@ -72,19 +72,19 @@ Check-in 06/11/2026 - Check-out 11/11/2026
 Board: ROOM ONLY
 
 2 ADL"></textarea>
-<div class="actions"><button class="btn primary" id="convertHotel">تحويل إلى عرض</button><button class="btn soft" id="clearHotel">مسح البيانات</button></div>
+<div class="actions"><button class="btn primary" id="convertHotel">Generate Offer</button><button class="btn soft" id="clearHotel">Clear</button></div>
 <div class="fields">
-<div class="field"><label>السعر الإجمالي (اختياري)</label><input id="hotelPrice" placeholder="اتركه فارغاً إذا لم يتوفر"></div>
-<div class="field"><label>العملة</label><input id="hotelCurrency" value="دينار كويتي"></div>
-<div class="field full"><label><input id="hotelRefundToggle" type="checkbox" style="width:auto;margin-inline-end:8px"> إظهار ملاحظة الاسترداد في العرض</label><input id="hotelExtraNote" value="🔄 الحجز مسترد حتى () مع خصم 5% عند الإلغاء" placeholder="اكتب موعد الإلغاء هنا" disabled></div>
+<div class="field"><label>Total Price (optional)</label><input id="hotelPrice" placeholder="Leave blank if unavailable"></div>
+<div class="field"><label>Currency</label><input id="hotelCurrency" value="دينار كويتي"></div>
+<div class="field full"><label><input id="hotelRefundToggle" type="checkbox" style="width:auto;margin-inline-end:8px"> Show refund note in offer</label><input id="hotelExtraNote" value="🔄 الحجز مسترد حتى () مع خصم 5% عند الإلغاء" placeholder="Enter cancellation deadline here" disabled></div>
 </div>
 
 </div>
-<div class="panel"><h3>معاينة العرض</h3><div class="preview" id="hotelPreview">الصق بيانات الحجز ثم اضغط «تحويل إلى عرض» لتظهر النتيجة هنا.</div>
-<div class="actions"><button class="btn primary" id="copyHotel">نسخ العرض</button><button class="btn soft" id="printHotel">طباعة / PDF</button></div></div>
+<div class="panel"><h3>Offer Preview</h3><div class="preview" id="hotelPreview">الصق Booking Details ثم اضغط «Generate Offer» لتظهر النتيجة هنا.</div>
+<div class="actions"><button class="btn primary" id="copyHotel">Copy Offer</button><button class="btn soft" id="printHotel">Print / PDF</button></div></div>
 </div></section>
-<section class="workspace" id="flight"><div class="topline"><h2>✈️ عروض الطيران</h2><button class="back" data-home>← القائمة الرئيسية</button></div><div class="layout"><div class="panel input-panel"><h3>تفاصيل الطيران</h3><p class="hint">الصق تفاصيل الرحلة كما تستلمها من نظام الحجز، وسنرتبها ونترجم مسميات البيانات إلى قالب الطيران.</p><textarea id="flightRaw" placeholder="الصق بيانات الطيران هنا..."></textarea><div class="fields"><div class="field"><label>السعر للفرد</label><input id="flightPrice" placeholder="السعر"></div><div class="field"><label>العملة</label><input id="flightCurrency" value="دينار كويتي"></div></div><div class="actions"><button class="btn primary" id="convertFlight">تحويل إلى عرض</button><button class="btn soft" id="clearFlight">مسح البيانات</button></div></div><div class="panel"><h3>معاينة العرض</h3><div class="preview" id="flightPreview">الصق تفاصيل الرحلة ثم اضغط تحويل.</div><div class="actions"><button class="btn primary" id="copyFlight">نسخ العرض</button><button class="btn soft" id="printFlight">طباعة / PDF</button></div></div></div></section>
-<section class="workspace" id="combined"><div class="topline"><h2>🧳 عروض الطيران والفندق</h2><button class="back" data-home>← القائمة الرئيسية</button></div><div class="layout"><div class="panel input-panel"><h3>بيانات الطيران والفندق</h3><p class="hint">ضع بيانات الطيران في المربع العلوي، وبيانات الفندق في المربع السفلي. سيجمعهما الموقع في عرض واحد بنفس الترتيب.</p><div class="field"><label>بيانات الطيران</label><textarea id="combinedFlightRaw" placeholder="الصق بيانات الطيران هنا..." style="min-height:170px"></textarea></div><div class="field" style="margin-top:13px"><label>بيانات الفندق</label><textarea id="combinedHotelRaw" placeholder="الصق بيانات الفندق هنا..." style="min-height:170px"></textarea></div><div class="fields"><div class="field"><label>السعر للفرد</label><input id="combinedPrice" placeholder="السعر"></div><div class="field"><label>العملة</label><input id="combinedCurrency" value="دينار كويتي"></div></div><div class="actions"><button class="btn primary" id="convertCombined">تحويل إلى عرض</button><button class="btn soft" id="clearCombined">مسح البيانات</button></div></div><div class="panel"><h3>معاينة العرض</h3><div class="preview" id="combinedPreview">الصق تفاصيل الطيران والفندق ثم اضغط تحويل.</div><div class="actions"><button class="btn primary" id="copyCombined">نسخ العرض</button><button class="btn soft" id="printCombined">طباعة / PDF</button></div></div></div></section>
+<section class="workspace" id="flight"><div class="topline"><h2>✈️ Flight Offers</h2><button class="back" data-home>← Main menu</button></div><div class="layout"><div class="panel input-panel"><h3>Flight Details</h3><p class="hint">Paste flight details as received from your booking system. We will organize them into the flight offer template.</p><textarea id="flightRaw" placeholder="Paste flight details here..."></textarea><div class="fields"><div class="field"><label>Price per person</label><input id="flightPrice" placeholder="Price"></div><div class="field"><label>Currency</label><input id="flightCurrency" value="دينار كويتي"></div></div><div class="actions"><button class="btn primary" id="convertFlight">Generate Offer</button><button class="btn soft" id="clearFlight">Clear</button></div></div><div class="panel"><h3>Offer Preview</h3><div class="preview" id="flightPreview">Paste flight details, then click Generate.</div><div class="actions"><button class="btn primary" id="copyFlight">Copy Offer</button><button class="btn soft" id="printFlight">Print / PDF</button></div></div></div></section>
+<section class="workspace" id="combined"><div class="topline"><h2>🧳 Flight Offers والفندق</h2><button class="back" data-home>← Main menu</button></div><div class="layout"><div class="panel input-panel"><h3>Flight and Hotel Details</h3><p class="hint">Enter flight details in the top box and hotel details in the bottom box. They will be combined into one offer in the same order.</p><div class="field"><label>Flight Details</label><textarea id="combinedFlightRaw" placeholder="Paste flight details here..." style="min-height:170px"></textarea></div><div class="field" style="margin-top:13px"><label>Hotel Details</label><textarea id="combinedHotelRaw" placeholder="الصق Hotel Details هنا..." style="min-height:170px"></textarea></div><div class="fields"><div class="field"><label>Price per person</label><input id="combinedPrice" placeholder="Price"></div><div class="field"><label>Currency</label><input id="combinedCurrency" value="دينار كويتي"></div></div><div class="actions"><button class="btn primary" id="convertCombined">Generate Offer</button><button class="btn soft" id="clearCombined">Clear</button></div></div><div class="panel"><h3>Offer Preview</h3><div class="preview" id="combinedPreview">الصق Flight Details والفندق ثم اضغط تحويل.</div><div class="actions"><button class="btn primary" id="copyCombined">Copy Offer</button><button class="btn soft" id="printCombined">Print / PDF</button></div></div></div></section>
 </main><div class="toast" id="toast"></div>
 <script>
 const $=id=>document.getElementById(id);let active='hotel',hotelOffer='',flightOffer='',combinedOffer='';
@@ -126,7 +126,7 @@ function parseHotel(raw){
  let ci='',co='';const im=text.match(new RegExp('check[\\s-]*in\\s*[:：]?\\s*'+datePattern,'i')),om=text.match(new RegExp('check[\\s-]*out\\s*[:：]?\\s*'+datePattern,'i'));if(im)ci=parseDate(im[1]);if(om)co=parseDate(om[1]);
  if(!ci||!co){const range=text.match(new RegExp(datePattern+'\\s*(?:to|[-–—])\\s*'+datePattern,'i'));if(range){if(!ci)ci=parseDate(range[1]);if(!co)co=parseDate(range[2]);}}
  const isGuestLine=x=>/^\(?\s*\d+\s*(?:ADL|ADT|ADULTS?|CHD|CNN|CHILDREN?|INF(?:ANT)?S?)\b/i.test(x)||/^\(?\s*\d+\s*(?:adults?|children?|infants?)\s*\)?$/i.test(x);
- const isMeta=x=>/^(check[\s-]*in|check[\s-]*out|board\s*:|meal(?:\s*plan)?\s*:|inclusion\s*:|price\s*:|total\s*price\s*:|السعر\s*:|room\s*:|الغرفة\s*:)/i.test(x)||isGuestLine(x)||/^[-=]+$/.test(x);
+ const isMeta=x=>/^(check[\s-]*in|check[\s-]*out|board\s*:|meal(?:\s*plan)?\s*:|inclusion\s*:|price\s*:|total\s*price\s*:|Price\s*:|room\s*:|الغرفة\s*:)/i.test(x)||isGuestLine(x)||/^[-=]+$/.test(x);
  const roomHint=/\b(room|suite|guest|deluxe|classic|premium|standard|superior|junior|executive|family|twin|king|queen|studio|apartment|villa|bungalow|connecting|pool|garden|sea view|city view|balcony)\b/i;
  let hotel='';for(const line of lines){if(!isMeta(line)&&!extractHotelDate(line)&&!roomHint.test(line)){hotel=line;break}}
  let rooms=[];for(const line of lines){if(isMeta(line)||/^(?:inclusion|board|meal(?:\s*plan)?|check[\s-]*in|check[\s-]*out)\s*:/i.test(line))continue;let m=line.match(/^(\d+)\s*[×xX]\s*(.+)$/);if(m){let name=m[2].trim().replace(/[,;.]$/,'');if(roomHint.test(name))rooms.push({count:+m[1],name});continue}if(roomHint.test(line)&&line!==hotel&&!extractHotelDate(line)&&!mealArabic(line))rooms.push({count:1,name:line})}
@@ -134,16 +134,16 @@ function parseHotel(raw){
  let meal='';for(const line of lines){let candidate=line.replace(/^(?:board|meal(?:\s*plan)?|inclusion)\s*[:：]\s*/i,'').trim(),translated=mealArabic(candidate);if(translated){meal=translated;break}}
  let adults=0,children=0,infants=0;for(const m of text.matchAll(/(\d+)\s*(ADL|ADT|ADULTS?|CHD|CNN|CHILDREN?|INF(?:ANT)?S?)/gi)){let n=+m[1],k=m[2].toUpperCase();if(k.startsWith('ADL')||k.startsWith('ADT')||k.startsWith('ADULT'))adults+=n;else if(k.startsWith('CHD')||k.startsWith('CNN')||k.startsWith('CHILD'))children+=n;else infants+=n}
  for(const m of text.matchAll(/(\d+)\s*(?:adult|adults|بالغ|بالغين)/gi))adults=Math.max(adults,+m[1]);
- let guest=[];if(adults)guest.push(adults+' بالغ');if(children)guest.push(children+' طفل');if(infants)guest.push(infants+' رضيع');let price=match(text,/(?:total\s*price|price|السعر)\s*[:：]\s*([^\n]+)/i);
+ let guest=[];if(adults)guest.push(adults+' بالغ');if(children)guest.push(children+' طفل');if(infants)guest.push(infants+' رضيع');let price=match(text,/(?:total\s*price|price|Price)\s*[:：]\s*([^\n]+)/i);
  const refundDate=refundDateFromText($('hotelCancelDate')?.value||'',ci)||refundDateFromText(text,ci);
  return {hotel,ci,co,rooms,meal,guests:guest.join(' و '),price,refundDate}
 }
 function hotelDateArabic(value){if(!value)return '';let m=String(value).match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/),d;if(m){d=new Date(+m[3],+m[2]-1,+m[1]);if(d.getFullYear()!==+m[3]||d.getMonth()!==+m[2]-1||d.getDate()!==+m[1])return value}else{m=String(value).match(/^(\d{1,2})\s+([A-Za-z]{3,9})(?:\s+(\d{4}))?$/);if(!m)return value;const monthsEn={jan:0,january:0,feb:1,february:1,mar:2,march:2,apr:3,april:3,may:4,jun:5,june:5,jul:6,july:6,aug:7,august:7,sep:8,sept:8,september:8,oct:9,october:9,nov:10,november:10,dec:11,december:11};let mi=monthsEn[m[2].toLowerCase()];if(mi===undefined)return value;if(!m[3]){const names=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];return +m[1]+' '+names[mi]}d=new Date(+m[3],mi,+m[1])}const days=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];return days[d.getDay()]+'، '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear()}
-function hotelText(options={}){let d=window.hotelParsed||{};const extraNote=$('hotelRefundToggle')?.checked?($('hotelExtraNote')?.value.trim()||''):'';let a=[];if(d.hotel)a.push('🏨 الفندق: '+d.hotel);if(d.rooms?.length){let multi=d.rooms.length>1;for(const r of d.rooms)a.push((multi?'🛏️ الغرف: ':'🛏️ الغرفة: ')+(r.count>1?r.count+' × ':'')+r.name)}if(d.ci)a.push('📅 الدخول: '+hotelDateArabic(d.ci));if(d.co)a.push('📅 الخروج: '+hotelDateArabic(d.co));if(d.meal)a.push('🍽️ الوجبات: '+d.meal);if(d.guests)a.push('👥 عدد الأفراد: '+d.guests);if(options.includePrice!==false){let p=$('hotelPrice').value.trim()||d.price||'';a.push('💰 السعر الإجمالي: '+(p? p+' '+$('hotelCurrency').value.trim():''));}let notes=['✅ السعر شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).','⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.',(extraNote?[extraNote]:['❌ الحجز غير مسترد وغير قابل للتعديل.'])];if(options.includeNotes!==false)a.push('📝 ملاحظة:\n'+notes.join('\n'));return a.join('\n\n')}
-window.hotelParsed={};$('convertHotel').onclick=()=>{let raw=$('hotelRaw').value;if(!raw.trim()){toast('الصق تفاصيل الحجز أولاً');return}window.hotelParsed=parseHotel(raw);$('hotelPreview').textContent=hotelText();if(!window.hotelParsed.hotel)toast('تم التحويل، لكن لم أتعرف على اسم الفندق؛ يمكنك مراجعة النص الأصلي');else toast('تم تحويل بيانات الفندق')};
+function hotelText(options={}){let d=window.hotelParsed||{};const extraNote=$('hotelRefundToggle')?.checked?($('hotelExtraNote')?.value.trim()||''):'';let a=[];if(d.hotel)a.push('🏨 الفندق: '+d.hotel);if(d.rooms?.length){let multi=d.rooms.length>1;for(const r of d.rooms)a.push((multi?'🛏️ الغرف: ':'🛏️ الغرفة: ')+(r.count>1?r.count+' × ':'')+r.name)}if(d.ci)a.push('📅 الدخول: '+hotelDateArabic(d.ci));if(d.co)a.push('📅 الخروج: '+hotelDateArabic(d.co));if(d.meal)a.push('🍽️ الوجبات: '+d.meal);if(d.guests)a.push('👥 عدد الأفراد: '+d.guests);if(options.includePrice!==false){let p=$('hotelPrice').value.trim()||d.price||'';a.push('💰 Price الإجمالي: '+(p? p+' '+$('hotelCurrency').value.trim():''));}let notes=['✅ Price شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).','⚠️ Price والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.',(extraNote?[extraNote]:['❌ الحجز غير مسترد وغير قابل للتعديل.'])];if(options.includeNotes!==false)a.push('📝 ملاحظة:\n'+notes.join('\n'));return a.join('\n\n')}
+window.hotelParsed={};$('convertHotel').onclick=()=>{let raw=$('hotelRaw').value;if(!raw.trim()){toast('Please paste booking details first');return}window.hotelParsed=parseHotel(raw);$('hotelPreview').textContent=hotelText();if(!window.hotelParsed.hotel)toast('Converted, but the hotel name was not detected. Please review the original text');else toast('تم تحويل Hotel Details')};
 ['hotelPrice','hotelCurrency','hotelExtraNote'].forEach(id=>$(id).addEventListener('input',()=>{if($('hotelRaw').value.trim())$('hotelPreview').textContent=hotelText()}));$('hotelRefundToggle').addEventListener('change',()=>{$('hotelExtraNote').disabled=!$('hotelRefundToggle').checked;if($('hotelRaw').value.trim())$('hotelPreview').textContent=hotelText()});
-$('clearHotel').onclick=()=>{$('hotelRaw').value='';$('hotelPrice').value='';$('hotelExtraNote').value='🔄 الحجز مسترد حتى () مع خصم 5% عند الإلغاء';$('hotelRefundToggle').checked=false;$('hotelExtraNote').disabled=true;window.hotelParsed={};$('hotelPreview').textContent='الصق بيانات الحجز ثم اضغط «تحويل إلى عرض» لتظهر النتيجة هنا.'};
-async function copyText(text){if(!text.trim()){toast('لا يوجد عرض لنسخه');return}let ok=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch{}if(!ok){let ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{ok=document.execCommand('copy')}catch{}ta.remove()}toast(ok?'تم نسخ العرض بنجاح':'تعذر النسخ؛ اسمح للمتصفح بالنسخ وحاول مرة أخرى')}
+$('clearHotel').onclick=()=>{$('hotelRaw').value='';$('hotelPrice').value='';$('hotelExtraNote').value='🔄 الحجز مسترد حتى () مع خصم 5% عند الإلغاء';$('hotelRefundToggle').checked=false;$('hotelExtraNote').disabled=true;window.hotelParsed={};$('hotelPreview').textContent='الصق Booking Details ثم اضغط «Generate Offer» لتظهر النتيجة هنا.'};
+async function copyText(text){if(!text.trim()){toast('There is no offer to copy');return}let ok=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch{}if(!ok){let ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{ok=document.execCommand('copy')}catch{}ta.remove()}toast(ok?'تم Copy Offer بنجاح':'Copy failed. Allow clipboard access and try again')}
 $('copyHotel').onclick=()=>copyText($('hotelPreview').textContent);$('printHotel').onclick=()=>window.print();
 const AIRLINES={
  KU:'Kuwait Airways',QR:'Qatar Airways',EK:'Emirates',EY:'Etihad Airways',SV:'Saudia',MS:'EgyptAir',GF:'Gulf Air',J9:'Jazeera Airways',WY:'Oman Air',RJ:'Royal Jordanian',TK:'Turkish Airlines',LH:'Lufthansa',AF:'Air France',BA:'British Airways',KL:'KLM',LX:'SWISS',OS:'Austrian Airlines',AZ:'ITA Airways',IB:'Iberia',TP:'TAP Air Portugal',SU:'Aeroflot',LO:'LOT Polish Airlines',UA:'United Airlines',AA:'American Airlines',DL:'Delta Air Lines',AC:'Air Canada',ET:'Ethiopian Airlines',KQ:'Kenya Airways',SA:'South African Airways',AT:'Royal Air Maroc',TU:'Tunisair',AH:'Air Algerie',ME:'Middle East Airlines',FZ:'flydubai',G9:'Air Arabia','3L':'Air Arabia Abu Dhabi',XY:'flynas',F3:'flyadeal',W6:'Wizz Air',FR:'Ryanair',U2:'easyJet',VY:'Vueling',PC:'Pegasus Airlines',XQ:'SunExpress',A3:'Aegean Airlines',AI:'Air India','6E':'IndiGo',SG:'SpiceJet',UL:'SriLankan Airlines',MH:'Malaysia Airlines',SQ:'Singapore Airlines',TR:'Scoot',TG:'Thai Airways',FD:'Thai AirAsia',AK:'AirAsia',QZ:'Indonesia AirAsia',GA:'Garuda Indonesia',CX:'Cathay Pacific',HX:'Hong Kong Airlines',JL:'Japan Airlines',NH:'ANA',KE:'Korean Air',OZ:'Asiana Airlines',CA:'Air China',MU:'China Eastern',CZ:'China Southern','3U':'Sichuan Airlines',QF:'Qantas',VA:'Virgin Australia',NZ:'Air New Zealand',FJ:'Fiji Airways',PR:'Philippine Airlines','5J':'Cebu Pacific'
@@ -247,8 +247,8 @@ function translateFlight(raw,price,currency,options={}){
   output.push(trip.join('\n'));
  }
  if(passengers.length)output.push('👥 عدد الأفراد: '+passengers.join(' + '));
- if(options.includePrice!==false)output.push('السعر للفرد: '+(price?price+(currency?' '+currency:''):''));
- if(options.includeNotes!==false)output.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
+ if(options.includePrice!==false)output.push('Price per person: '+(price?price+(currency?' '+currency:''):''));
+ if(options.includeNotes!==false)output.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ Price والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
  return output.join('\n\n');
 }
 function buildCombined(){
@@ -257,13 +257,13 @@ function buildCombined(){
  window.hotelParsed=parseHotel(rawHotel);
  const hotel=hotelText({includePrice:false,includeNotes:false});
  const price=$('combinedPrice').value.trim(),currency=$('combinedCurrency').value.trim();
- const notes='📝 ملاحظة:\n✅ السعر يشمل الطيران والفنادق.\n✅ السعر شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.';
- return [flight,'========',hotel,'💰 السعر للفرد: '+(price?price+' '+currency:''),notes].filter(Boolean).join('\n\n');
+ const notes='📝 ملاحظة:\n✅ Price يشمل الطيران والفنادق.\n✅ Price شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ Price والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.';
+ return [flight,'========',hotel,'💰 Price per person: '+(price?price+' '+currency:''),notes].filter(Boolean).join('\n\n');
 }
-$('convertFlight').onclick=()=>{if(!$('flightRaw').value.trim()){toast('الصق بيانات الطيران أولاً');return}$('flightPreview').textContent=translateFlight($('flightRaw').value,$('flightPrice').value,$('flightCurrency').value);toast('تم تجهيز عرض الطيران؛ راجع التفاصيل قبل النسخ')};
-$('copyFlight').onclick=()=>copyText($('flightPreview').textContent);$('printFlight').onclick=()=>window.print();$('clearFlight').onclick=()=>{$('flightRaw').value='';$('flightPrice').value='';$('flightPreview').textContent='الصق تفاصيل الرحلة ثم اضغط تحويل.'};
-$('convertCombined').onclick=()=>{if(!$('combinedFlightRaw').value.trim()&&!$('combinedHotelRaw').value.trim()){toast('أدخل بيانات الطيران والفندق أولاً');return}$('combinedPreview').textContent=buildCombined();toast('تم تجميع العرض؛ راجع البيانات قبل النسخ')};
-$('copyCombined').onclick=()=>copyText($('combinedPreview').textContent);$('printCombined').onclick=()=>window.print();$('clearCombined').onclick=()=>{$('combinedFlightRaw').value='';$('combinedHotelRaw').value='';$('combinedPrice').value='';$('combinedPreview').textContent='أدخل بيانات الطيران والفندق ثم اضغط تحويل.'};
+$('convertFlight').onclick=()=>{if(!$('flightRaw').value.trim()){toast('الصق Flight Details أولاً');return}$('flightPreview').textContent=translateFlight($('flightRaw').value,$('flightPrice').value,$('flightCurrency').value);toast('Flight offer generated. Review details before copying')};
+$('copyFlight').onclick=()=>copyText($('flightPreview').textContent);$('printFlight').onclick=()=>window.print();$('clearFlight').onclick=()=>{$('flightRaw').value='';$('flightPrice').value='';$('flightPreview').textContent='Paste flight details, then click Generate.'};
+$('convertCombined').onclick=()=>{if(!$('combinedFlightRaw').value.trim()&&!$('combinedHotelRaw').value.trim()){toast('أدخل Flight and Hotel Details أولاً');return}$('combinedPreview').textContent=buildCombined();toast('Offer combined. Review details before copying')};
+$('copyCombined').onclick=()=>copyText($('combinedPreview').textContent);$('printCombined').onclick=()=>window.print();$('clearCombined').onclick=()=>{$('combinedFlightRaw').value='';$('combinedHotelRaw').value='';$('combinedPrice').value='';$('combinedPreview').textContent='أدخل Flight and Hotel Details ثم اضغط تحويل.'};
 </script>
 <script>
 (()=>{
