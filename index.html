@@ -314,10 +314,10 @@ translateFlight=function(raw,price,currency,options={}){
   const cleanPlace=v=>{const t=v.trim().replace(/\s*\([A-Z]{3}\)\s*/g,'').trim();return cityCode(t)||t.toUpperCase();};
   const knownCarrier=/^(Bangkok Airways|Air Arabia|Gulf Air|Qatar Airways|Emirates|Etihad Airways|Kuwait Airways|Jazeera Airways|Turkish Airlines|Oman Air|Saudia|Saudi Arabian Airlines|flydubai|flynas|EgyptAir|Ethiopian Airlines|IndiGo|Malaysia Airlines|Singapore Airlines|Thai Airways|British Airways|Lufthansa|KLM|Air France|Pegasus Airlines)$/i;
   for(let i=0;i<lines.length;i++){
-   const line=lines[i].replace(/^\\*+|\\*+$/g,'').trim();
+   const line=lines[i].replace(/^\\*+|\\*+$/g,'').replace(/\\\\+$/,'').trim();
    if(/^(?:=+|\\-+)$/.test(line))continue;
    if(/^\\d+\\s*(?:\\+|kg)/i.test(line)||/^\\d+\\s*(?:ADL|ADT|CHD|INF)/i.test(line))continue;
-   if(knownCarrier.test(line)){carrier=line;continue;}
+   if(knownCarrier.test(line)||/^[A-Za-z][A-Za-z .&'-]{1,50}$/.test(line)){carrier=line;continue;}
    const dateMatch=line.match(/(?:^|\\|)\\s*(?:[A-Za-z]{3},?\\s*)?(\\d{1,2})\\s+([A-Za-z]{3,9})\\s+(\\d{4})(?:\\s*$|\\s*\\|)/i)||line.match(/^(\\d{1,2})\\s+([A-Za-z]{3,9})\\s+(\\d{4})$/i);
    if(dateMatch){date=dateMatch[1]+' '+dateMatch[2]+' '+dateMatch[3];}
    const routeDate=line.match(/^([A-Z]{3})\\s*[-–]\\s*([A-Z]{3})\\s*\\|\\s*(?:[A-Za-z]{3},?\\s*)?(\\d{1,2}\\s+[A-Za-z]{3,9}\\s+\\d{4})$/i);
