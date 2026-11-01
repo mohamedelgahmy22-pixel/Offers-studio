@@ -42,6 +42,7 @@ textarea,input{width:100%;border:1px solid var(--line);border-radius:12px;paddin
 .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,18px);opacity:0;background:#123d43;color:white;padding:12px 20px;border-radius:12px;transition:.2s;z-index:10;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:800px){main{margin:22px auto}.cards{grid-template-columns:1fr;gap:13px}.card{min-height:0;padding:21px;display:grid;grid-template-columns:55px 1fr;column-gap:14px;align-items:center}.card .icon{grid-row:span 2;margin:0}.card h3{align-self:end}.card p{align-self:start}.card .arrow{grid-column:2;margin-top:8px}.layout{grid-template-columns:1fr}.intro h2{font-size:23px}.panel{padding:16px}}
 @media print{header,.topline,.panel.input-panel,.actions,.intro{display:none!important}body{background:white}main{margin:0;padding:0}.layout{display:block}.panel{border:0;box-shadow:none;padding:0}.preview{border:0;background:white;padding:0;min-height:0;font-size:14pt}}
+@media(max-width:800px){.cards{display:flex;flex-wrap:wrap;gap:8px}.card{display:flex;grid-template-columns:none;min-width:0;flex:1 1 30%;min-height:64px;padding:10px;gap:7px}.card .icon{margin:0;font-size:22px}.card h3{font-size:14px}.card p,.card .arrow{display:none}}
 </style></head>
 <body class="locked">
 <section id="passwordGate" aria-label="Sign in">
