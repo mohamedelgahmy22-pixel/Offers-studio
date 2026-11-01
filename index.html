@@ -17,15 +17,9 @@ body.locked #passwordGate{display:flex}
 #gateError{display:none;color:#b42318;font-size:13px;margin-top:12px}
 #greetingOverlay{display:none;position:fixed;inset:0;z-index:50;align-items:center;justify-content:center;padding:24px;background:#102f39d9;opacity:0;transition:opacity .25s ease}#greetingOverlay.show{display:flex;opacity:1}.greeting-card{width:min(100%,340px);padding:32px 24px;border-radius:24px;background:#fff;text-align:center;box-shadow:0 20px 70px #061e2580}.greeting-card h2{margin:0 0 8px;color:var(--teal);font-size:32px}.greeting-card p{margin:0;color:var(--muted);font-size:15px}
 #logoutButton{margin-left:auto;margin-right:0;border:1px solid #ffffff55;background:#ffffff15;color:#fff;border-radius:10px;padding:8px 12px;font:700 12px Tajawal;cursor:pointer}
-header{position:relative;isolation:isolate;overflow:hidden;margin:14px 14px 0;border-radius:24px;min-height:clamp(150px,15vw,252px);padding:24px clamp(18px,3vw,42px);display:flex;align-items:center;gap:24px;color:#12345b;background:linear-gradient(100deg,#fff 0%,#f7fbff 42%,#c9e5ff 100%);box-shadow:0 8px 24px #12345b18;border-bottom:5px solid #e00012}
-header:before{content:"";position:absolute;z-index:-1;inset:0 0 0 50%;background:linear-gradient(90deg,#dcefff00,#b5dcff88),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 260'%3E%3Cpath fill='%23fff' opacity='.4' d='M0 40 Q160 -10 300 50 T600 30 T900 55 V260 H0Z'/%3E%3Cpath fill='%238bb9df' opacity='.65' d='M0 240 L60 190 100 225 155 150 205 235 280 120 330 235 390 170 460 230 510 130 575 230 640 170 710 235 780 130 850 220 900 195 V260 H0Z'/%3E%3Cg fill='%23f8fbff' stroke='%2388a9c9' stroke-width='2'%3E%3Cpath d='M145 235 L170 80 195 235Z M157 135 L183 135 M152 170 L188 170 M150 205 L190 205'/%3E%3Cpath d='M285 235 V90 H330 V235Z M277 90 L307 50 338 90Z M297 50 V28 H317 V50Z M294 125 H321 M294 155 H321 M294 185 H321'/%3E%3Cpath d='M410 235 V135 H475 V235Z M400 135 L442 95 485 135Z M435 95 V60 H450 V95Z'/%3E%3Cpath d='M565 235 V105 H625 V235Z M560 105 L595 65 630 105Z M585 65 V45 H605 V65Z'/%3E%3C/g%3E%3Cpath fill='%231c4f83' d='M600 50 Q660 15 710 35 L790 65 718 55 680 78 688 58Z M675 58 L650 95 690 70 720 78 700 58 735 42 695 49Z'/%3E%3C/svg%3E") center/cover no-repeat}
-.brand-logo{width:clamp(130px,15vw,235px);height:clamp(95px,10vw,140px);object-fit:contain;background:transparent;border-radius:0;padding:0;flex:0 0 auto;border-right:2px solid #203858;padding-right:22px}
-header .brand-title{min-width:0;position:relative;z-index:1}
-header h1{font-size:clamp(22px,3.2vw,48px);line-height:1.1;margin:0;font-weight:800;color:#123d70;white-space:nowrap}
-header h1 .studio{color:#e00012}
-header p{margin:9px 0 0;color:#63738b;font-size:clamp(12px,1.5vw,21px);font-weight:600}
-#logoutButton{margin-left:auto;margin-right:0;position:relative;z-index:2;flex:0 0 auto;background:#d90010;color:#fff;border:0;border-radius:14px;padding:13px 20px;font:700 15px Tajawal;cursor:pointer;box-shadow:0 4px 12px #d9001025}
-@media(max-width:760px){header{margin:8px 8px 0;min-height:110px;padding:12px;gap:10px;border-radius:18px}.brand-logo{width:86px;height:76px;padding-right:8px}header h1{white-space:normal;font-size:clamp(17px,4vw,25px)}header p{font-size:10px;margin-top:5px}#logoutButton{padding:8px;font-size:11px}header:before{inset:0 0 0 42%;opacity:.5}}
+header{background:linear-gradient(115deg,#102f39,#1b5961);color:white;padding:22px max(20px,calc((100vw - 1240px)/2));display:flex;align-items:center;gap:14px;box-shadow:0 8px 25px #102f3922}
+.logo{width:48px;height:48px;border-radius:15px;background:#ffffff18;display:grid;place-items:center;font-size:25px;border:1px solid #ffffff2b}
+header h1{font-size:23px;margin:0;font-weight:800}header p{margin:3px 0 0;color:#c4d6d7;font-size:13px}
 main{max-width:1240px;margin:34px auto;padding:0 20px}
 .intro{text-align:center;margin:16px 0 28px}.intro h2{font-size:27px;margin:0 0 8px}.intro p{margin:0;color:var(--muted);font-size:15px}
 .cards{display:flex;align-items:stretch;gap:16px;margin:20px 0}
@@ -57,7 +51,7 @@ textarea,input{width:100%;border:1px solid var(--line);border-radius:12px;paddin
  </form>
 </section>
 <section id="greetingOverlay"><div class="greeting-card"><div id="greetingIcon" style="font-size:34px">✨</div><h2>Welcome</h2><p>Welcome to Travel Offers Studio</p></div></section>
-<header><img class="brand-logo" src="brand-logo.svg" alt="Al Khamees Travel & Tourism logo"><div class="brand-title"><h1>Travel Offers <span class="studio">Studio</span></h1><p>Create your offers easily with ready-made templates</p></div><button id="logoutButton" type="button">Log out</button></header>
+<header><div class="logo">✦</div><div><h1>Travel Offers Studio</h1><p>Create your offers easily with ready-made templates</p></div><button id="logoutButton" type="button">Log out</button></header>
 <main>
 <section id="home">
 <div class="intro"><h2>Welcome to Travel Offers Studio</h2><p>Choose an offer type to get started</p></div>
