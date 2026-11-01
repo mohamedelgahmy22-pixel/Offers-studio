@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 300">
+<rect width="620" height="300" fill="white"/>
+<g transform="translate(18 18)">
+<path d="M100 0 L160 60 L100 120 L40 60 Z" fill="#050505"/>
+<path d="M39 67 Q78 88 143 43 Q123 68 80 83 Q54 90 39 67Z" fill="white"/>
+<path d="M145 42 L162 34 L156 52 L151 46 L144 49Z" fill="#050505"/>
+<path d="M25 145 H245 V212 H112 V300 H45 V212 H25Z" fill="#ed0010"/>
+<path d="M112 212 H245 V145 Q180 162 112 212Z" fill="#d8000b"/>
+<text x="274" y="184" font-family="Arial,sans-serif" font-size="70" font-weight="800" fill="#050505" direction="rtl">الخميس</text>
+<text x="274" y="236" font-family="Arial,sans-serif" font-size="42" font-weight="800" fill="#050505">AL KHAMEES</text>
+<text x="274" y="273" font-family="Arial,sans-serif" font-size="20" fill="#050505">Travel &amp; Tourism</text>
+<text x="510" y="273" font-family="Arial,sans-serif" font-size="22" font-weight="700" fill="#050505" direction="rtl">للسياحة والسفر</text>
+</g></svg>
