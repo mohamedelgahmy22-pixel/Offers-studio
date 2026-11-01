@@ -182,11 +182,50 @@ function currencyArabic(code){return ({KWD:'دينار كويتي',SAR:'ريال
 const HOTEL_CITY_MAP={
  'london':['لندن','🇬🇧'],'paris':['باريس','🇫🇷'],'rome':['روما','🇮🇹'],'milan':['ميلانو','🇮🇹'],'venice':['البندقية','🇮🇹'],'florence':['فلورنسا','🇮🇹'],'barcelona':['برشلونة','🇪🇸'],'madrid':['مدريد','🇪🇸'],'istanbul':['إسطنبول','🇹🇷'],'antalya':['أنطاليا','🇹🇷'],'dubai':['دبي','🇦🇪'],'abu dhabi':['أبوظبي','🇦🇪'],'doha':['الدوحة','🇶🇦'],'kuwait':['الكويت','🇰🇼'],'riyadh':['الرياض','🇸🇦'],'jeddah':['جدة','🇸🇦'],'bangkok':['بانكوك','🇹🇭'],'phuket':['بوكيت','🇹🇭'],'singapore':['سنغافورة','🇸🇬'],'tokyo':['طوكيو','🇯🇵'],'hong kong':['هونغ كونغ','🇭🇰'],'new york':['نيويورك','🇺🇸'],'los angeles':['لوس أنجلوس','🇺🇸'],'las vegas':['لاس فيغاس','🇺🇸'],'miami':['ميامي','🇺🇸'],'orlando':['أورلاندو','🇺🇸'],'amsterdam':['أمستردام','🇳🇱'],'athens':['أثينا','🇬🇷'],'geneva':['جنيف','🇨🇭'],'zurich':['زيورخ','🇨🇭'],'vienna':['فيينا','🇦🇹'],'prague':['براغ','🇨🇿'],'budapest':['بودابست','🇭🇺'],'tbilisi':['تبليسي','🇬🇪'],'sharjah':['الشارقة','🇦🇪'],'cairo':['القاهرة','🇪🇬'],'giza':['الجيزة','🇪🇬'],'makkah':['مكة المكرمة','🇸🇦'],'medina':['المدينة المنورة','🇸🇦'],'maldives':['المالديف','🇲🇻'],'male':['ماليه','🇲🇻']
 };
+const HOTEL_CITY_LOOKUP_CACHE=new Map();
+let hotelCityLookupRequest=0;
+function normalizeHotelCity(value){
+ return String(value||'').trim().toLowerCase()
+  .normalize('NFD').replace(/[\\u0300-\\u036f]/g,'')
+  .replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/[ىي]/g,'ي')
+  .replace(/[^\\p{L}\\p{N} ]/gu,' ').replace(/\\s+/g,' ').trim();
+}
+function flagFromCountryCode(code){
+ const cc=String(code||'').toUpperCase();
+ if(!/^[A-Z]{2}$/.test(cc))return '';
+ return [...cc].map(ch=>String.fromCodePoint(127397+ch.charCodeAt(0))).join('');
+}
 function hotelCityTitle(){
  const raw=$('hotelCity')?.value.trim();if(!raw)return '';
- const entry=HOTEL_CITY_MAP[raw.toLowerCase()];
+ const key=normalizeHotelCity(raw);
+ const entry=HOTEL_CITY_MAP[raw.toLowerCase()]||Object.entries(HOTEL_CITY_MAP).find(([name])=>normalizeHotelCity(name)===key)?.[1]||Object.values(HOTEL_CITY_MAP).find(value=>normalizeHotelCity(value[0])===key);
  if(entry)return entry[1]+' '+entry[0];
- return raw;
+ const found=HOTEL_CITY_LOOKUP_CACHE.get(key);
+ return found&&found.flag?(found.flag+' '+(found.arabicName||raw)):'';
+}
+async function lookupHotelCity(){
+ const raw=$('hotelCity')?.value.trim();if(!raw)return;
+ const key=normalizeHotelCity(raw);
+ const known=HOTEL_CITY_MAP[raw.toLowerCase()]||Object.entries(HOTEL_CITY_MAP).find(([name])=>normalizeHotelCity(name)===key)?.[1]||Object.values(HOTEL_CITY_MAP).find(value=>normalizeHotelCity(value[0])===key);
+ if(known){refreshHotel();return;}
+ if(HOTEL_CITY_LOOKUP_CACHE.has(key)){refreshHotel();return;}
+ const request=++hotelCityLookupRequest;
+ try{
+  const url='https://photon.komoot.io/api/?q='+encodeURIComponent(raw)+'&lang=ar&limit=1';
+  const response=await fetch(url,{headers:{Accept:'application/json'}});
+  if(!response.ok)throw new Error('City lookup unavailable');
+  const data=await response.json();
+  const feature=data.features&&data.features[0],props=feature&&feature.properties||{};
+  const countryCode=String(props.countrycode||'').toUpperCase();
+  const flag=flagFromCountryCode(countryCode);
+  if(flag){
+   const arabicName=/[\\u0600-\\u06FF]/.test(raw)?raw:(props.name||raw);
+   HOTEL_CITY_LOOKUP_CACHE.set(key,{flag,arabicName});
+  }
+ }catch(error){
+  console.warn('City country lookup failed:',error);
+ }
+ if(request===hotelCityLookupRequest&&normalizeHotelCity($('hotelCity')?.value)===key)refreshHotel();
 }
 function hotelText(options={}){let d=window.hotelParsed||{};const refundMode=$('hotelRefundable')?.dataset.active==='true';const cancelDate=$('hotelCancelDate')?.value||'';const extraNote=refundMode&&cancelDate?'🔄 الحجز مسترد حتى ('+hotelDateArabic(parseDate(cancelDate))+') مع خصم 5% عند الإلغاء':'';let a=[];const cityTitle=hotelCityTitle();if(cityTitle)a.push(cityTitle);if(d.hotel)a.push('🏨 الفندق: '+d.hotel);if(d.rooms?.length){const roomTypes=new Set(d.rooms.map(r=>String(r.name||'').replace(/\s+/g,' ').trim().toLowerCase()));const multi=roomTypes.size>1;if(multi){a.push('🛏️ الغرف:\n'+d.rooms.map(r=>' '+(r.count>1?r.count+' × ':'1 × ')+r.name).join('\n'))}else{const room=d.rooms[0];const count=d.rooms.reduce((sum,r)=>sum+(Number(r.count)||1),0);a.push('🛏️ الغرفة: '+(count>1?count+' × ':'')+room.name)}}const dates=[];if(d.ci)dates.push('📅 الدخول: '+hotelDateArabic(d.ci));if(d.co)dates.push('📅 الخروج: '+hotelDateArabic(d.co));if(dates.length)a.push(dates.join('\n'));const guestLines=[];if(d.meal)guestLines.push('🍽️ الوجبات: '+d.meal);if(d.guests)guestLines.push('👥 عدد الأفراد: '+d.guests);if(guestLines.length)a.push(guestLines.join('\n'));if(options.includePrice!==false){let p=$('hotelPrice').value.trim()||d.price||'';a.push('💰 السعر الإجمالي: '+(p?p+' '+currencyArabic($('hotelCurrency').value):''));}let notes=['✅ السعر شامل جميع الضرائب ما عدا ضريبة المدينة (إن وجدت).','⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.',(refundMode?[extraNote||'🔄 الحجز مسترد حتى () مع خصم 5% عند الإلغاء']:['❌ الحجز غير مسترد وغير قابل للتعديل.'])];if(options.includeNotes!==false)a.push('📝 ملاحظة:\n'+notes.join('\n'));return a.join('\n\n')}
 window.hotelParsed={};function hotelWarnings(d){const missing=[];if(!d.hotel)missing.push('اسم الفندق');if(!d.ci)missing.push('تاريخ الدخول');if(!d.co)missing.push('تاريخ الخروج');if(!d.rooms?.length)missing.push('نوع الغرفة');if(!d.meal)missing.push('الوجبات');if(!d.guests)missing.push('عدد الأفراد');if($('hotelRefundable')?.dataset.active==='true'&&!$('hotelCancelDate')?.value)missing.push('موعد الإلغاء');return missing;}
@@ -196,7 +235,7 @@ function showNotReady(){const g=$('greetingOverlay');g.querySelector('#greetingI
 function copyValidated(kind){const id=kind==='hotel'?'hotelPreview':kind==='flight'?'flightPreview':'combinedPreview';if(kind==='flight'){const raw=$('flightRaw').value;if(!raw.trim()){toast('Enter flight details first');return;}const missing=flightWarnings(raw,$('flightPrice').value,flightPassengerCounts(raw));if(missing.length){showNotReady();return;}const preview=$(id).textContent;if(!preview||preview==='Paste flight details to see a live preview.'){toast('Flight preview is not ready');return;}return copyText(preview);}let missing=[];if(kind==='hotel')missing=hotelWarnings(window.hotelParsed||{});if(kind==='combined')missing=combinedWarnings();if(missing.length){showNotReady();return;}return copyText($(id).textContent);}
 function refreshHotel(){const raw=$('hotelRaw').value;if(!raw.trim()){$('hotelPreview').textContent='Paste booking details to see a live preview.';$('hotelWarnings').textContent='';window.hotelParsed={};return;}window.hotelParsed=parseHotel(raw);$('hotelPreview').textContent=hotelText();showWarnings('hotelWarnings',hotelWarnings(window.hotelParsed));}
 
-['hotelRaw','hotelCity','hotelPrice','hotelCancelDate'].forEach(id=>$(id).addEventListener('input',refreshHotel));$('hotelCurrency').addEventListener('change',refreshHotel);function setHotelPolicy(refundable){$('hotelRefundable').dataset.active=String(refundable);$('hotelNonRefundable').dataset.active=String(!refundable);$('hotelRefundable').classList.toggle('active',refundable);$('hotelNonRefundable').classList.toggle('active',!refundable);$('hotelCancelDate').style.display=refundable?'block':'none';refreshHotel();}$('hotelNonRefundable').onclick=()=>setHotelPolicy(false);$('hotelRefundable').onclick=()=>setHotelPolicy(true);
+['hotelRaw','hotelPrice','hotelCancelDate'].forEach(id=>$(id).addEventListener('input',refreshHotel));$('hotelCity').addEventListener('input',()=>{refreshHotel();lookupHotelCity();});$('hotelCurrency').addEventListener('change',refreshHotel);function setHotelPolicy(refundable){$('hotelRefundable').dataset.active=String(refundable);$('hotelNonRefundable').dataset.active=String(!refundable);$('hotelRefundable').classList.toggle('active',refundable);$('hotelNonRefundable').classList.toggle('active',!refundable);$('hotelCancelDate').style.display=refundable?'block':'none';refreshHotel();}$('hotelNonRefundable').onclick=()=>setHotelPolicy(false);$('hotelRefundable').onclick=()=>setHotelPolicy(true);
 $('clearHotel').onclick=()=>{$('hotelRaw').value='';$('hotelCity').value='';$('hotelPrice').value='';$('hotelCurrency').value='KWD';$('hotelCancelDate').value='';$('hotelNonRefundable').dataset.active='true';$('hotelRefundable').dataset.active='false';$('hotelNonRefundable').classList.add('active');$('hotelRefundable').classList.remove('active');$('hotelCancelDate').style.display='none';window.hotelParsed={};$('hotelPreview').textContent='Paste booking details to see a live preview.';$('hotelWarnings').textContent='';};
 async function copyText(text){if(!text.trim()){toast('There is no offer to copy');return}let ok=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch{}if(!ok){let ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{ok=document.execCommand('copy')}catch{}ta.remove()}toast(ok?'تم Copy Offer بنجاح':'Copy failed. Allow clipboard access and try again')}
 $('copyHotel').onclick=()=>copyValidated('hotel');$('printHotel').onclick=()=>window.print();
