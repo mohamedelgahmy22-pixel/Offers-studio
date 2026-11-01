@@ -519,6 +519,36 @@ flightWarnings=function(raw,price,passengerCounts){
  if(!/(?:\b\d+\s*\+\s*\d+\b|\b\d+\s*(?:kg|kgs|kilo|kilos)\b|\b(?:baggage|checked bag|cabin bag|hand bag|personal item)\b|بدون أمتعة|بدون شنط|شنطة|أمتعة)/i.test(text))missing.push('وزن الأمتعة');
  return [...new Set(missing)];
 };
+const translateFlightWithNoTimeStandard=translateFlight;
+translateFlight=function(raw,price,currency,options={}){
+ const text=norm(raw),lines=text.split('\n').map(x=>x.trim().replace(/^\*+|\*+$/g,'').replace(/\\+$/,'')).filter(Boolean);
+ const legs=[];let current={airline:'',date:'',route:''};
+ const flush=()=>{if(current.airline&&current.date&&current.route)legs.push({...current});current={airline:'',date:'',route:''};};
+ for(const line of lines){
+  if(/^={2,}$/.test(line)){flush();continue;}
+  if(/^\d+\s*\+\s*\d+/.test(line)||/^\d+\s*(?:ADL|ADT|CHD|INF)/i.test(line))continue;
+  if(/^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/i.test(line)){current.date=line;continue;}
+  if(/^[A-Za-z][A-Za-z .&'-]{1,55}$/.test(line)&&/\b(?:airlines?|airways?|aviation)\b/i.test(line)){current.airline=line;continue;}
+  if(/^[A-Za-z][A-Za-z .'-]{1,50}\s*[-–]\s*[A-Za-z][A-Za-z .'-]{1,50}$/.test(line)){current.route=line;continue;}
+ }
+ flush();
+ if(legs.length<2)return translateFlightWithNoTimeStandard(raw,price,currency,options);
+ const baggage=lines.find(x=>/^\d+\s*\+\s*\d+\s*(?:kg)?$/i.test(x));
+ const nums=baggage?[...baggage.matchAll(/(\d+)/g)].map(m=>+m[1]):[];
+ const bag=nums.length>=2?Math.min(...nums)+' كيلو شنطة يد + '+Math.max(...nums)+' كيلو':nums.length?nums[0]+' كيلو':'';
+ const out=[];
+ legs.forEach((leg,i)=>{
+  out.push(i===0?'رحلة الذهاب':'رحلة العودة');
+  const parts=['✈️ '+(airlineIdentity(leg.airline)||leg.airline),'🛫 '+leg.route.replace(/\s*[-–]\s*/,' - '),'📅 '+arabicDate(leg.date)];
+  if(bag)parts.push('🧳 '+bag);
+  out.push(parts.join('\n'));
+ });
+ const pc=flightPassengerCounts(raw),pass=[];if(pc.adults)pass.push(pc.adults+' بالغ');if(pc.children)pass.push(pc.children+' طفل');if(pc.infants)pass.push(pc.infants+' رضيع');
+ if(pass.length)out.push('👥 عدد الأفراد: '+pass.join(' + '));
+ if(options.includePrice!==false){const unit=currency?' '+currencyArabic(currency):'';out.push('💰 السعر للفرد: '+(price?price+unit:''));}
+ if(options.includeNotes!==false)out.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
+ return out.join('\n\n');
+};
 function refreshFlight(){const raw=$('flightRaw').value;updateFlightPriceFields(raw);if(!raw.trim()){$('flightPreview').textContent='Paste flight details to see a live preview.';$('flightWarnings').textContent='';return;}$('flightPreview').textContent=translateFlight(raw,$('flightPrice').value,$('flightCurrency').value,{childPrice:$('flightChildPrice').value,infantPrice:$('flightInfantPrice').value});showWarnings('flightWarnings',flightWarnings(raw,$('flightPrice').value));}
 
 $('toggleFlightExamples').onclick=()=>{const box=$('flightExamples'),open=box.hidden;box.hidden=!open;$('toggleFlightExamples').setAttribute('aria-expanded',String(open));$('toggleFlightExamples').textContent=open?'Hide examples':'Examples';};
