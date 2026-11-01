@@ -334,33 +334,33 @@ function translateFlight(raw,price,currency,options={}){
 const parsedFlightBase=translateFlight;
 translateFlight=function(raw,price,currency,options={}){
  const src=norm(raw);
- const chunks=src.split(/(?:^|\\n)\\s*={2,}\\s*(?:\\n|$)/).map(x=>x.trim()).filter(Boolean);
+ const chunks=src.split(/(?:^|\n)\s*={2,}\s*(?:\n|$)/).map(x=>x.trim()).filter(Boolean);
  if(chunks.length===2){
   const parseLeg=chunk=>{
-   const ls=chunk.split('\\n').map(x=>x.trim()).filter(Boolean);
-   const carrier=ls.find(x=>/^[A-Za-z][A-Za-z .&'-]{1,50}$/.test(x)&&!/^\\d/.test(x))||'';
-   const dateLine=ls.find(x=>/^\\d{1,2}\\s+[A-Za-z]{3,9}\\s+\\d{4}$/i.test(x));
-   const routeLine=ls.find(x=>/^.+?\\s*[-–]\\s*.+$/.test(x)&&!/^\\d/.test(x));
-   const timeLine=ls.find(x=>/^\\d{1,2}:\\d{2}\\s*[-–]\\s*\\d{1,2}:\\d{2}$/.test(x));
-   const bagLine=ls.find(x=>/^\\d+\\s*\\+\\s*\\d+(?:\\s*kg)?$/i.test(x));
+   const ls=chunk.split('\n').map(x=>x.trim()).filter(Boolean);
+   const carrier=ls.find(x=>/^[A-Za-z][A-Za-z .&'-]{1,50}$/.test(x)&&!/^\d/.test(x))||'';
+   const dateLine=ls.find(x=>/^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/i.test(x));
+   const routeLine=ls.find(x=>/^.+?\s*[-–]\s*.+$/.test(x)&&!/^\d/.test(x));
+   const timeLine=ls.find(x=>/^\d{1,2}:\d{2}\s*[-–]\s*\d{1,2}:\d{2}$/.test(x));
+   const bagLine=ls.find(x=>/^\d+\s*\+\s*\d+(?:\s*kg)?$/i.test(x));
    if(!carrier||!dateLine||!routeLine||!timeLine)return null;
-   const route=routeLine.match(/^(.+?)\\s*[-–]\\s*(.+)$/);
-   const times=timeLine.match(/^(\\d{1,2}:\\d{2})\\s*[-–]\\s*(\\d{1,2}:\\d{2})$/);
-   const d=dateLine.match(/^(\\d{1,2})\\s+([A-Za-z]{3,9})\\s+(\\d{4})$/i);
+   const route=routeLine.match(/^(.+?)\s*[-–]\s*(.+)$/);
+   const times=timeLine.match(/^(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})$/);
+   const d=dateLine.match(/^(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})$/i);
    const date=d?arabicDate(d[1]+' '+d[2]+' '+d[3]):dateLine;
-   const bagNums=bagLine?[...bagLine.matchAll(/(\\d+)/g)].map(m=>+m[1]):[];
+   const bagNums=bagLine?[...bagLine.matchAll(/(\d+)/g)].map(m=>+m[1]):[];
    const bag=bagNums.length>=2?Math.min(...bagNums)+' كيلو شنطة يد + '+Math.max(...bagNums)+' كيلو':'';
    return {carrier:airlineIdentity(carrier)||carrier,origin:cityCode(route[1])||route[1].trim().toUpperCase(),destination:cityCode(route[2])||route[2].trim().toUpperCase(),date,depart:times[1],arrive:times[2],bag};
   };
   const legs=chunks.map(parseLeg);
   if(legs.every(Boolean)){
    const out=[];
-   legs.forEach((leg,i)=>{out.push((i===0?'رحلة الذهاب':'رحلة العودة')+'\\n\\n✈️ '+leg.carrier+'\\n🛫 '+cityLabel(leg.origin)+' ← '+cityLabel(leg.destination)+'\\n📅 '+leg.date+'\\n🕒 '+flightTime(leg.depart)+' ← '+flightTime(leg.arrive)+(leg.bag?'\\n🧳 '+leg.bag:''));});
+   legs.forEach((leg,i)=>{out.push((i===0?'رحلة الذهاب':'رحلة العودة')+'\n\n✈️ '+leg.carrier+'\n🛫 '+cityLabel(leg.origin)+' ← '+cityLabel(leg.destination)+'\n📅 '+leg.date+'\n🕒 '+flightTime(leg.depart)+' ← '+flightTime(leg.arrive)+(leg.bag?'\n🧳 '+leg.bag:''));});
    const pc=flightPassengerCounts(raw),pass=[];if(pc.adults)pass.push(pc.adults+' بالغ');if(pc.children)pass.push(pc.children+' طفل');if(pc.infants)pass.push(pc.infants+' رضيع');
    if(pass.length)out.push('👥 عدد الأفراد: '+pass.join(' + '));
    if(options.includePrice!==false){const unit=currency?' '+currencyArabic(currency):'';out.push('💰 السعر للفرد: '+(price?price+unit:''));}
-   if(options.includeNotes!==false)out.push('📝 ملاحظة:\\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\\n❌ الحجز غير مسترد وغير قابل للتعديل.');
-   return out.join('\\n\\n');
+   if(options.includeNotes!==false)out.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
+   return out.join('\n\n');
   }
  }
  return parsedFlightBase(raw,price,currency,options);
