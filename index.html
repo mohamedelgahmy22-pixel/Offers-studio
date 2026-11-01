@@ -160,9 +160,9 @@ function refundDateFromText(text,checkIn){
  return day+' '+monthNames[mi]+' '+year;
 }
 function parseHotel(raw){
- const text=norm(raw),lines=text.split('\n').map(cleanHotelLine).filter(Boolean),datePattern='(\\d{4}-\\d{1,2}-\\d{1,2}|\\d{1,2}[/-]\\d{1,2}[/-]\\d{4}|\\d{1,2}\s+[A-Za-z]{3,9}(?:\s+\\d{4})?)';
- let ci='',co='';const im=text.match(new RegExp('check[\s-]*in\s*[:：]?\s*'+datePattern,'i')),om=text.match(new RegExp('check[\s-]*out\s*[:：]?\s*'+datePattern,'i'));if(im)ci=parseDate(im[1]);if(om)co=parseDate(om[1]);
- if(!ci||!co){const range=text.match(new RegExp(datePattern+'\s*(?:to|[-–—])\s*'+datePattern,'i'));if(range){if(!ci)ci=parseDate(range[1]);if(!co)co=parseDate(range[2]);}}
+ const text=norm(raw),lines=text.split('\n').map(cleanHotelLine).filter(Boolean),datePattern='(\\d{4}-\\d{1,2}-\\d{1,2}|\\d{1,2}[/-]\\d{1,2}[/-]\\d{4}|\\d{1,2}\\s+[A-Za-z]{3,9}(?:\\s+\\d{4})?)';
+ let ci='',co='';const im=text.match(new RegExp('check[\\s-]*in\\s*[:：]?\\s*'+datePattern,'i')),om=text.match(new RegExp('check[\\s-]*out\\s*[:：]?\\s*'+datePattern,'i'));if(im)ci=parseDate(im[1]);if(om)co=parseDate(om[1]);
+ if(!ci||!co){const range=text.match(new RegExp(datePattern+'\\s*(?:to|[-–—])\\s*'+datePattern,'i'));if(range){if(!ci)ci=parseDate(range[1]);if(!co)co=parseDate(range[2]);}}
  const isGuestLine=x=>/^\(?\s*\d+\s*(?:ADL|ADT|ADULTS?|CHD|CNN|CHILDREN?|INF(?:ANT)?S?)\b/i.test(x)||/^\(?\s*\d+\s*(?:adults?|children?|infants?)\s*\)?$/i.test(x);
  const isMeta=x=>/^(check[\s-]*in|check[\s-]*out|board\s*:|meal(?:\s*plan)?\s*:|inclusion\s*:|price\s*:|total\s*price\s*:|Price\s*:|room\s*:|الغرفة\s*:)/i.test(x)||isGuestLine(x)||/^[-=]+$/.test(x);
  const roomHint=/\b(room|suite|guest|deluxe|classic|premium|standard|superior|junior|executive|family|twin|king|queen|studio|apartment|villa|bungalow|connecting|pool|garden|sea view|city view|balcony)\b/i;
