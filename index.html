@@ -218,7 +218,7 @@ function cityCode(value){
 }
 function cityLabel(code){
  if(String(code).startsWith('CITY:')){
-  const city=String(code).slice(5),names={MOSCOW:'موسكو',LONDON:'لندن',PARIS:'باريس',TOKYO:'طوكيو',SEOUL:'سيول',NEW_YORK:'نيويورك',WASHINGTON:'واشنطن',ROME:'روما',MILAN:'ميلانو',BANGKOK:'بانكوك',SHANGHAI:'شنغهاي',BEIJING:'بكين',ISTANBUL:'إسطنبول'};
+  const city=String(code).slice(5),names={MOSCOW:'موسكو',LONDON:'لندن',PARIS:'باريس',TOKYO:'طوكيو',SEOUL:'سيول',NEW_YORK:'نيويورك',WASHINGTON:'واشنطن',ROME:'روما',MILAN:'ميلانو',BANGKOK:'بانكوك',SHANGHAI:'شنغهاي',BEIJING:'بكين',ISTANBUL:'إسطنبول',SHARJAH:'الشارقة',TBILISI:'تبليسي'};
   return names[city]||city.replace(/_/g,' ');
  }
  return AIRPORTS[code]||String(code||'');
@@ -593,7 +593,7 @@ translateFlight=function(raw,price,currency,options={}){
  const out=[];
  legs.forEach((leg,i)=>{
   out.push(i===0?'رحلة الذهاب':'رحلة العودة');
-  const parts=['✈️ '+(airlineIdentity(leg.airline)||leg.airline),'🛫 '+leg.route.replace(/\s*[-–]\s*/,' - '),'📅 '+arabicDate(leg.date)];
+  const parts=['✈️ '+(airlineIdentity(leg.airline)||leg.airline),'🛫 '+(()=>{const route=leg.route.split(/\s*[-–]\s*/);return route.length===2?cityLabel('CITY:'+route[0].trim().toUpperCase().replace(/\s+/g,'_'))+' - '+cityLabel('CITY:'+route[1].trim().toUpperCase().replace(/\s+/g,'_')):leg.route;})(),'📅 '+arabicDate(leg.date)];
   if(bag)parts.push('🧳 '+bag);
   out.push(parts.join('\n'));
  });
