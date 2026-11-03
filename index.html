@@ -103,6 +103,19 @@ Board: ROOM ONLY
 J9 121 | 07:20 - 10:05 | Mon, 16 Nov 2026
 20 + 7
 2 adl</pre></div>
+ <div class="example-card"><h4>Example: Standard format (round trip)</h4><pre>Air Arabia
+28 November 2026
+Sharjah - Tbilisi
+09:00 - 12:55
+20 + 7
+2 adl
+======
+Air Arabia
+30 November 2026
+Tbilisi - Sharjah
+13:00 - 15:55
+20 + 7
+2 adl</pre></div>
  <div class="example-card"><h4>Example: Standard format (one way)</h4><pre>Air Arabia
 28 November 2026
 Sharjah - Tbilisi
@@ -347,7 +360,7 @@ translateFlight=function(raw,price,currency,options={}){
   if(legs.every(Boolean)){
    const out=[];
    legs.forEach((leg,i)=>{out.push((i===0?'رحلة الذهاب':'رحلة العودة')+'\n\n✈️ '+leg.carrier+'\n🛫 '+cityLabel(leg.origin)+' ← '+cityLabel(leg.destination)+'\n📅 '+leg.date+'\n🕒 '+flightTime(leg.depart)+' ← '+flightTime(leg.arrive)+(leg.bag?'\n🧳 '+leg.bag:''));});
-   const pc=flightPassengerCounts(raw),pass=[];if(pc.adults)pass.push(pc.adults+' بالغ');if(pc.children)pass.push(pc.children+' طفل');if(pc.infants)pass.push(pc.infants+' رضيع');
+   const pcs=chunks.map(flightPassengerCounts),pc={adults:Math.max(0,...pcs.map(x=>x.adults)),children:Math.max(0,...pcs.map(x=>x.children)),infants:Math.max(0,...pcs.map(x=>x.infants))},pass=[];if(pc.adults)pass.push(pc.adults+' بالغ');if(pc.children)pass.push(pc.children+' طفل');if(pc.infants)pass.push(pc.infants+' رضيع');
    if(pass.length)out.push('👥 عدد الأفراد: '+pass.join(' + '));
    if(options.includePrice!==false){const unit=currency?' '+currencyArabic(currency):'',priceLines=[];if(pc.adults||(!pc.children&&!pc.infants))priceLines.push('💰 '+((pc.children||pc.infants)?'السعر للبالغ':'السعر للفرد')+': '+(price?price+unit:''));if(pc.children)priceLines.push('💰 السعر للطفل: '+(options.childPrice?options.childPrice+unit:''));if(pc.infants)priceLines.push('💰 السعر للرضيع: '+(options.infantPrice?options.infantPrice+unit:''));out.push(priceLines.join('\n'));}
    if(options.includeNotes!==false)out.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
@@ -685,7 +698,9 @@ flightWarnings=function(raw,price,passengerCounts){
 /* Standard one-way format: Airline / full date / named-city route / time pair / baggage / passengers. */
 const translateFlightBeforeStandardOneWay=translateFlight;
 function parseStandardOneWay(raw,price,currency,options={}){
- const lines=norm(raw).split(/\r?\n/).map(x=>x.trim().replace(/^\*+|\*+$/g,'')).filter(Boolean);
+ const source=norm(raw);
+ if(/(?:^|\n)\s*={2,}\s*(?:\n|$)/.test(source))return null;
+ const lines=source.split(/\r?\n/).map(x=>x.trim().replace(/^\*+|\*+$/g,'')).filter(Boolean);
  const dateRe=/^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/i;
  const routeRe=/^([A-Za-z][A-Za-z .'-]{1,45})\s*[-–]\s*([A-Za-z][A-Za-z .'-]{1,45})$/;
  const timesRe=/^([0-2]?\d:\d{2})\s*[-–]\s*([0-2]?\d:\d{2})$/;
@@ -721,7 +736,8 @@ function parseStandardOneWay(raw,price,currency,options={}){
 }
 translateFlight=function(raw,price,currency,options={}){
  const parsed=parseStandardOneWay(raw,price,currency,options);
- return parsed||translateFlightBeforeStandardOneWay(raw,price,currency,options);
+ // Keep the original Arabic offer layout; the new parser is for input recognition only.
+ return translateFlightBeforeStandardOneWay(raw,price,currency,options);
 };
 const flightWarningsBeforeStandardOneWay=flightWarnings;
 flightWarnings=function(raw,price,passengerCounts){
