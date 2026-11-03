@@ -422,8 +422,27 @@ translateFlight=function(raw,price,currency,options={}){
  if(!seg.length)return originalTranslateFlight(raw,price,currency,options);
  const bagLines=lines.filter(x=>/^\d+\s*\+\s*\d+\s*(?:kg)?$/i.test(x));
  const bag=x=>{if(!x)return '';const n=[...x.matchAll(/(\d+)/g)].map(m=>+m[1]);if(n.length>=2){const cabin=Math.min(...n),checked=Math.max(...n);return cabin+' كيلو شنطة يد + '+checked+' كيلو';}return n.length?n[0]+' كيلو':'';};
+ // Identify the return by the route turning back toward the first origin.
+ // A direct return starts at the outbound destination (not at the original origin).
  let split=seg.length;
- for(let i=1;i<seg.length;i++){if(seg[i].origin===seg[0].origin){split=i;break;}}
+ const firstOrigin=seg[0].origin;
+ const firstDestination=seg[0].destination;
+ const closesAt=seg.findIndex((x,i)=>i>0&&x.destination===firstOrigin);
+ if(closesAt>0){
+   // For a direct return, this is the return segment. For a multi-stop return,
+   // use the point where the itinerary starts retracing toward its origin.
+   split=closesAt;
+   for(let i=1;i<=closesAt;i++){
+     if(seg[i].origin===firstDestination){split=i;break;}
+   }
+ }
+ // Fallback for round trips with multiple outbound connections: the return starts
+ // when the route's destination chain reaches the first origin's reverse path.
+ if(split===seg.length){
+   for(let i=1;i<seg.length;i++){
+     if(seg[i].origin===firstDestination&&seg[i].destination===firstOrigin){split=i;break;}
+   }
+ }
  const groups=[{label:'رحلة الذهاب',items:seg.slice(0,split),offset:0},{label:'رحلة العودة',items:seg.slice(split),offset:split}].filter(g=>g.items.length);
  const out=[];
  groups.forEach(group=>{
