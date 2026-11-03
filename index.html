@@ -101,7 +101,7 @@ Board: ROOM ONLY
 1 adl</pre></div>
  <div class="example-card"><h4>Example: Jazeera Airways (round trip)</h4><pre>**Kuwait - Dubai**
 J9 121 | 07:20 - 10:05 | Tue, 10 Nov 2026
-\\========
+\========
 **Dubai - Kuwait**
 J9 126 | 19:25 - 20:20 | Thu, 12 Nov 2026
 20 + 7
@@ -347,11 +347,11 @@ translateFlight=function(raw,price,currency,options={}){
  const src=norm(raw).replace(/\\(?=={2,})/g,'');
  const chunks=src.split(/(?:^|\n)\s*={2,}\s*(?:\n|$)/).map(x=>x.trim()).filter(Boolean);
  // Jazeera Airways route-heading format: city pair + J9 flight/date line.
- if(chunks.length===2 && chunks.every(chunk=>/^\\*{0,2}.+?\\s+-\\s+.+?\\*{0,2}\\s*\\nJ9\\s*\\d+\\s*\\|/i.test(chunk))){
+ if(chunks.length===2 && chunks.every(chunk=>/^\*{0,2}.+?\s+-\s+.+?\*{0,2}\s*\nJ9\s*\d+\s*\|/i.test(chunk))){
   const parseJazeera=chunk=>{
    const ls=chunk.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
-   const route=ls[0].replace(/^\\*+|\\*+$/g,'').match(/^(.+?)\\s+-\\s+(.+)$/);
-   const detail=ls[1].match(/^J9\\s*(\\d+)\\s*\\|\\s*(\\d{1,2}:\\d{2})\\s*[-–]\\s*(\\d{1,2}:\\d{2})\\s*\\|\\s*(?:[A-Za-z]{3},?\\s*)?(\\d{1,2})\\s+([A-Za-z]{3})\\s+(\\d{4})$/i);
+   const route=ls[0].replace(/^\*+|\*+$/g,'').match(/^(.+?)\s+-\s+(.+)$/);
+   const detail=ls[1].match(/^J9\s*(\d+)\s*\|\s*(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})\s*\|\s*(?:[A-Za-z]{3},?\s*)?(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})$/i);
    if(!route||!detail)return null;
    const month=detail[5].slice(0,3).toUpperCase();
    return {origin:cityCode(route[1])||route[1].trim().toUpperCase(),destination:cityCode(route[2])||route[2].trim().toUpperCase(),date:detail[4]+month,depart:detail[2],arrive:detail[3]};
@@ -359,14 +359,14 @@ translateFlight=function(raw,price,currency,options={}){
   const legs=chunks.map(parseJazeera);
   if(legs.every(Boolean)){
    const out=[];
-   legs.forEach((leg,i)=>out.push((i===0?'رحلة الذهاب':'رحلة العودة')+'\\n\\n✈️ '+(AIRLINES.J9||'Jazeera Airways')+'\\n🛫 '+cityLabel(leg.origin)+' ← '+cityLabel(leg.destination)+'\\n📅 '+flightDate(leg.date)+'\\n🕒 '+flightTime(leg.depart)+' ← '+flightTime(leg.arrive)));
-   const bagLine=src.split(/\r?\n/).map(x=>x.trim()).find(x=>/^\\d+\\s*\\+\\s*\\d+(?:\\s*kg)?$/i.test(x));
-   if(bagLine){const nums=[...bagLine.matchAll(/(\\d+)/g)].map(x=>+x[1]);if(nums.length>=2)out.splice(2,0,'🧳 '+Math.min(...nums)+' كيلو شنطة يد + '+Math.max(...nums)+' كيلو');}
+   legs.forEach((leg,i)=>out.push((i===0?'رحلة الذهاب':'رحلة العودة')+'\n\n✈️ '+(AIRLINES.J9||'Jazeera Airways')+'\n🛫 '+cityLabel(leg.origin)+' ← '+cityLabel(leg.destination)+'\n📅 '+flightDate(leg.date)+'\n🕒 '+flightTime(leg.depart)+' ← '+flightTime(leg.arrive)));
+   const bagLine=src.split(/\r?\n/).map(x=>x.trim()).find(x=>/^\d+\s*\+\s*\d+(?:\s*kg)?$/i.test(x));
+   if(bagLine){const nums=[...bagLine.matchAll(/(\d+)/g)].map(x=>+x[1]);if(nums.length>=2)out.splice(2,0,'🧳 '+Math.min(...nums)+' كيلو شنطة يد + '+Math.max(...nums)+' كيلو');}
    const pc=flightPassengerCounts(src),pass=[];if(pc.adults)pass.push(pc.adults+' بالغ');if(pc.children)pass.push(pc.children+' طفل');if(pc.infants)pass.push(pc.infants+' رضيع');
    if(pass.length)out.push('👥 عدد الأفراد: '+pass.join(' + '));
    if(options.includePrice!==false){const unit=currency?' '+currencyArabic(currency):'';out.push('💰 السعر للفرد: '+(price?price+unit:''));}
-   if(options.includeNotes!==false)out.push('📝 ملاحظة:\\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\\n❌ الحجز غير مسترد وغير قابل للتعديل.');
-   return out.join('\\n\\n');
+   if(options.includeNotes!==false)out.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
+   return out.join('\n\n');
   }
  }
  if(chunks.length===2){
