@@ -681,27 +681,30 @@ flightWarnings=function(raw,price,passengerCounts){
  return priorFlightWarningsFinal(raw,price,passengerCounts);
 };
 
-/* Standard one-way format: Airline / full date / time + named-city route / baggage / passengers. */
+/* Standard one-way format: Airline / full date / named-city route / time pair / baggage / passengers. */
 const translateFlightBeforeStandardOneWay=translateFlight;
-function parseStandardOneWay(raw){
- const lines=norm(raw).split('\\n').map(x=>x.trim().replace(/^\\*+|\\*+$/g,'')).filter(Boolean);
- const dateRe=/^\\d{1,2}\\s+[A-Za-z]{3,9}\\s+\\d{4}$/i;
- const routeRe=/^([0-2]?\\d:\\d{2})\\s+(.+?)\\s*[-–]\\s*([0-2]?\\d:\\d{2})\\s+(.+)$/i;
+function parseStandardOneWay(raw,price,currency,options={}){
+ const lines=norm(raw).split(/\r?\n/).map(x=>x.trim().replace(/^\*+|\*+$/g,'')).filter(Boolean);
+ const dateRe=/^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/i;
+ const routeRe=/^([A-Za-z][A-Za-z .'-]{1,45})\s*[-–]\s*([A-Za-z][A-Za-z .'-]{1,45})$/;
+ const timesRe=/^([0-2]?\d:\d{2})\s*[-–]\s*([0-2]?\d:\d{2})$/;
  const dateIndex=lines.findIndex(x=>dateRe.test(x));
  if(dateIndex<1)return null;
+ const airline=lines.slice(0,dateIndex).find(x=>/^[A-Za-z][A-Za-z .&'-]{1,55}$/.test(x));
+ if(!airline)return null;
  const routeIndex=lines.findIndex((x,i)=>i>dateIndex&&routeRe.test(x));
  if(routeIndex<0)return null;
- const airline=lines.slice(0,dateIndex).find(x=>/^[A-Za-z][A-Za-z .&'-]{1,55}$/.test(x));
- const route=lines[routeIndex].match(routeRe);
- if(!airline||!route)return null;
- const city=v=>{const token=cityCode(v.trim());return cityLabel(token||('CITY:'+v.trim().toUpperCase().replace(/\\s+/g,'_')));};
- const bagLine=lines.find(x=>/^\\d+\\s*\\+\\s*\\d+\\s*(?:kg|kgs)?$/i.test(x));
- const bagNums=bagLine?[...bagLine.matchAll(/(\\d+)/g)].map(m=>+m[1]):[];
+ const timeIndex=lines.findIndex((x,i)=>i>routeIndex&&timesRe.test(x));
+ if(timeIndex<0)return null;
+ const route=lines[routeIndex].match(routeRe),times=lines[timeIndex].match(timesRe);
+ const city=v=>{const token=cityCode(v.trim());return cityLabel(token||('CITY:'+v.trim().toUpperCase().replace(/\s+/g,'_')));};
+ const bagLine=lines.find(x=>/^\d+\s*\+\s*\d+\s*(?:kg|kgs)?$/i.test(x));
+ const bagNums=bagLine?[...bagLine.matchAll(/(\d+)/g)].map(m=>+m[1]):[];
  const passengers=flightPassengerCounts(raw),pass=[];
  if(passengers.adults)pass.push(passengers.adults+' بالغ');
  if(passengers.children)pass.push(passengers.children+' طفل');
  if(passengers.infants)pass.push(passengers.infants+' رضيع');
- const out=['رحلة الذهاب','✈️ '+(airlineIdentity(airline)||airline),'🛫 '+city(route[2])+' - '+city(route[4]),'📅 '+arabicDate(lines[dateIndex]),'🕒 '+displayTime(route[1])+' - '+displayTime(route[3])];
+ const out=['رحلة الذهاب','✈️ '+(airlineIdentity(airline)||airline),'🛫 '+city(route[1])+' - '+city(route[2]),'📅 '+arabicDate(lines[dateIndex]),'🕒 '+displayTime(times[1])+' - '+displayTime(times[2])];
  if(bagNums.length>=2)out.push('🧳 '+bagNums[0]+' كيلو شحن + '+bagNums[1]+' كيلو شنطة يد');
  if(pass.length)out.push('👥 عدد الأفراد: '+pass.join(' + '));
  if(options.includePrice!==false){
@@ -710,27 +713,27 @@ function parseStandardOneWay(raw){
   if(passengers.adults||(!passengers.children&&!passengers.infants))priceLines.push('💰 '+((passengers.children||passengers.infants)?'السعر للبالغ':'السعر للفرد')+': '+(price?price+unit:''));
   if(passengers.children)priceLines.push('💰 السعر للطفل: '+(options.childPrice?options.childPrice+unit:''));
   if(passengers.infants)priceLines.push('💰 السعر للرضيع: '+(options.infantPrice?options.infantPrice+unit:''));
-  if(priceLines.length)out.push(priceLines.join('\\n'));
+  if(priceLines.length)out.push(priceLines.join('\n'));
  }
- if(options.includeNotes!==false)out.push('📝 ملاحظة:\\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\\n❌ الحجز غير مسترد وغير قابل للتعديل.');
- return out.join('\\n\\n');
+ if(options.includeNotes!==false)out.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
+ return out.join('\n\n');
 }
 translateFlight=function(raw,price,currency,options={}){
- const parsed=parseStandardOneWay(raw);
+ const parsed=parseStandardOneWay(raw,price,currency,options);
  return parsed||translateFlightBeforeStandardOneWay(raw,price,currency,options);
 };
 const flightWarningsBeforeStandardOneWay=flightWarnings;
 flightWarnings=function(raw,price,passengerCounts){
  const parsed=parseStandardOneWay(raw);
  if(!parsed)return flightWarningsBeforeStandardOneWay(raw,price,passengerCounts);
- const lines=norm(raw).split('\\n').map(x=>x.trim()).filter(Boolean);
+ const lines=norm(raw).split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
  const missing=[];
- if(!lines.slice(0,lines.findIndex(x=>/^\\d{1,2}\\s+[A-Za-z]{3,9}\\s+\\d{4}$/i.test(x))).some(x=>/^[A-Za-z][A-Za-z .&'-]{1,55}$/.test(x)))missing.push('شركة الطيران');
- if(!/(?:^|\\n)\\s*\\d{1,2}\\s+[A-Za-z]{3,9}\\s+\\d{4}\\s*(?:\\n|$)/i.test(norm(raw)))missing.push('تاريخ الرحلة');
- if(!/[0-2]?\\d:\\d{2}\\s+.+?\\s*[-–]\\s*[0-2]?\\d:\\d{2}\\s+.+/i.test(raw))missing.push('المدن ومواعيد الإقلاع والوصول');
+ if(!lines.slice(0,lines.findIndex(x=>/^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/i.test(x))).some(x=>/^[A-Za-z][A-Za-z .&'-]{1,55}$/.test(x)))missing.push('شركة الطيران');
+ if(!lines.some(x=>/^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/i.test(x)))missing.push('تاريخ الرحلة');
+ if(!lines.some(x=>/^[A-Za-z][A-Za-z .'-]{1,45}\s*[-–]\s*[A-Za-z][A-Za-z .'-]{1,45}$/.test(x))||!lines.some(x=>/^[0-2]?\d:\d{2}\s*[-–]\s*[0-2]?\d:\d{2}$/.test(x)))missing.push('المدن ومواعيد الإقلاع والوصول');
  const pc=passengerCounts||flightPassengerCounts(raw);
  if(!(pc&&((pc.adults||0)+(pc.children||0)+(pc.infants||0)>0)))missing.push('عدد الأفراد');
- if(!/\\b\\d+\\s*\\+\\s*\\d+\\b/i.test(norm(raw)))missing.push('وزن الأمتعة');
+ if(!/\b\d+\s*\+\s*\d+\b/i.test(norm(raw)))missing.push('وزن الأمتعة');
  return [...new Set(missing)];
 };
 function refreshFlight(){const raw=$('flightRaw').value;updateFlightPriceFields(raw);if(!raw.trim()){$('flightPreview').textContent='Paste flight details to see a live preview.';$('flightWarnings').textContent='';return;}$('flightPreview').textContent=translateFlight(raw,$('flightPrice').value,$('flightCurrency').value,{childPrice:$('flightChildPrice').value,infantPrice:$('flightInfantPrice').value});showWarnings('flightWarnings',flightWarnings(raw,$('flightPrice').value));}
