@@ -382,7 +382,7 @@ function transitDuration(previous,next){
  let a=mins(previous.arrive),b=mins(next.depart);if(a===null||b===null)return '';
  const months={JAN:0,FEB:1,MAR:2,APR:3,MAY:4,JUN:5,JUL:6,AUG:7,SEP:8,OCT:9,NOV:10,DEC:11};
  const day=x=>{const m=String(x||'').match(/^(\d{1,2})([A-Z]{3})$/);return m?Date.UTC(2026,months[m[2]]??0,+m[1])/86400000:null;};
- const d1=day(previous.date),d2=day(next.date);if(d1!==null&&d2!==null&&d2>d1)b+=(d2-d1)*1440;else if(b<a)b+=1440;
+ const d1=day(previous.arrivalDate||previous.date),d2=day(next.date);if(d1!==null&&d2!==null)b+=(d2-d1)*1440;else if(b<a)b+=1440;
  const n=b-a;if(n<0||n>36*60)return '';return Math.floor(n/60)+' ساعة'+(n%60?' و '+(n%60)+' دقيقة':'');
 }
 const originalTranslateFlight=translateFlight;
@@ -620,7 +620,11 @@ function parseAmadeusSegments(raw){
   const times=[...tail.matchAll(/(?:^|\s)(\d{4})(?=\s|$)/g)].map(m=>m[1]);
   if(!routeMatch||times.length<2)continue;
   const route=routeMatch[1].toUpperCase();
-  found.push({number:+head[1],airline:head[2].toUpperCase(),date:head[5].toUpperCase(),origin:route.slice(0,3),destination:route.slice(3),depart:times[0],arrive:times[1]});
+  // Amadeus usually prints the arrival date after the two local times (e.g. 13DEC).
+  // Keep it separately: transit is measured from arrival date/time to next departure date/time.
+  const dateTokens=[...tail.matchAll(/(?:^|\\s)(\\d{1,2}[A-Z]{3})(?=\\s|$)/gi)].map(m=>m[1].toUpperCase());
+  const arrivalDate=dateTokens.find((d,i)=>i>0)||head[5].toUpperCase();
+  found.push({number:+head[1],airline:head[2].toUpperCase(),date:head[5].toUpperCase(),arrivalDate,origin:route.slice(0,3),destination:route.slice(3),depart:times[0],arrive:times[1]});
  }
  return found;
 }
