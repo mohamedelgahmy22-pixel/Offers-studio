@@ -641,7 +641,7 @@ function parseAmadeusSegments(raw){
   const route=routeMatch[1].toUpperCase();
   // Amadeus usually prints the arrival date after the two local times (e.g. 13DEC).
   // Keep it separately: transit is measured from arrival date/time to next departure date/time.
-  const dateTokens=[...tail.matchAll(/(?:^|\\s)(\\d{1,2}[A-Z]{3})(?=\\s|$)/gi)].map(m=>m[1].toUpperCase());
+  const dateTokens=[...tail.matchAll(/(?:^|\s)(\d{1,2}[A-Z]{3})(?=\s|$)/gi)].map(m=>m[1].toUpperCase());
   const arrivalDate=dateTokens[0]||head[5].toUpperCase();
   found.push({number:+head[1],airline:head[2].toUpperCase(),date:head[5].toUpperCase(),arrivalDate,origin:route.slice(0,3),destination:route.slice(3),depart:times[0],arrive:times[1]});
  }
