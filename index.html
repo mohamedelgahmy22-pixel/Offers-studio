@@ -606,15 +606,30 @@ translateFlight=function(raw,price,currency,options={}){
  if(options.includeNotes!==false)out.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
  return out.join('\n\n');
 };
-// Robust Amadeus itinerary parser: handles multiple one-way sectors (including 7* airport indicators).
+// Dedicated Amadeus parser: parse every numbered segment independently, with tolerant token matching.
 const priorTranslateFlightFinal=translateFlight;
+function parseAmadeusSegments(raw){
+ const lines=norm(raw).split('\n').map(x=>x.trim().replace(/^\*+|\*+$/g,'').replace(/\\+$/,'')).filter(Boolean);
+ const found=[];
+ for(const line of lines){
+  // Normalize the common Amadeus line and locate route + departure/arrival times without assuming fixed spacing.
+  const head=line.match(/^\s*(\d+)\s+([A-Z0-9]{2})\s*(\d{1,4})\s+([A-Z])\s+(\d{1,2}[A-Z]{3})\b/i);
+  if(!head)continue;
+  const tail=line.slice(head[0].length);
+  const routeMatch=tail.match(/(?:^|\s)(?:\d{1,2}\*?\s*)?([A-Z]{6})(?=\s)/i);
+  const times=[...tail.matchAll(/(?:^|\s)(\d{4})(?=\s|$)/g)].map(m=>m[1]);
+  if(!routeMatch||times.length<2)continue;
+  const route=routeMatch[1].toUpperCase();
+  found.push({number:+head[1],airline:head[2].toUpperCase(),date:head[5].toUpperCase(),origin:route.slice(0,3),destination:route.slice(3),depart:times[0],arrive:times[1]});
+ }
+ return found;
+}
 translateFlight=function(raw,price,currency,options={}){
  const text=norm(raw);if(!text)return '';
- const lines=text.split('\n').map(x=>x.trim().replace(/^\*+|\*+$/g,'').replace(/\\+$/,'')).filter(Boolean);
- const re=/^\s*\d+\s+([A-Z0-9]{2})\s*(\d{1,4})\s+([A-Z])\s+(\d{1,2}[A-Z]{3})\s+(?:\d{1,2}\*?)?([A-Z]{6})\s+\S+\s+(\d{4})\s+(\d{4})/i;
- const seg=lines.map(line=>{const m=line.match(re);return m?{airline:m[1].toUpperCase(),date:m[4].toUpperCase(),origin:m[5].slice(0,3).toUpperCase(),destination:m[5].slice(3).toUpperCase(),depart:m[6],arrive:m[7]}:null}).filter(Boolean);
+ const seg=parseAmadeusSegments(text);
  if(!seg.length)return priorTranslateFlightFinal(raw,price,currency,options);
- let split=seg.length;for(let i=1;i<seg.length;i++){if(seg[i].origin===seg[0].origin){split=i;break;}}
+ let split=seg.length;
+ for(let i=1;i<seg.length;i++){if(seg[i].origin===seg[0].origin){split=i;break;}}
  const groups=[{name:'رحلة الذهاب',items:seg.slice(0,split)},{name:'رحلة العودة',items:seg.slice(split)}].filter(g=>g.items.length);
  const out=[];
  groups.forEach(g=>{out.push(g.name);g.items.forEach((x,j)=>{const carrier=AIRLINES[x.airline]||x.airline;out.push(['✈️ '+carrier,'🛫 '+cityLabel(x.origin)+' ← '+cityLabel(x.destination),'📅 '+flightDate(x.date),'🕒 '+flightTime(x.depart)+' ← '+flightTime(x.arrive)].join('\n'));if(j<g.items.length-1){const wait=transitDuration(x,g.items[j+1]);out.push('⏳ انتظار '+(wait||'')+' في '+cityLabel(x.destination));}});});
@@ -624,7 +639,11 @@ translateFlight=function(raw,price,currency,options={}){
  return out.join('\n\n');
 };
 const priorFlightWarningsFinal=flightWarnings;
-flightWarnings=function(raw,price,passengerCounts){const txt=norm(raw),ls=txt.split('\n').map(x=>x.trim());const am=ls.filter(x=>/^\s*\d+\s+[A-Z0-9]{2}\s*\d{1,4}\s+[A-Z]\s+\d{1,2}[A-Z]{3}\s+(?:\d{1,2}\*?)?[A-Z]{6}\s+\S+\s+\d{4}\s+\d{4}/i.test(x));if(am.length){const miss=[];const pc=passengerCounts||flightPassengerCounts(raw);if(!pc||!(pc.adults+pc.children+pc.infants))miss.push('عدد الأفراد');if(!/(?:\d+\s*\+\s*\d+|\d+\s*(?:kg|kgs|kilo|kilos)|baggage|checked bag|cabin bag|hand bag|بدون أمتعة|بدون شنط|شنطة|أمتعة)/i.test(txt))miss.push('وزن الأمتعة');return miss;}return priorFlightWarningsFinal(raw,price,passengerCounts);};
+flightWarnings=function(raw,price,passengerCounts){
+ const segments=parseAmadeusSegments(raw);
+ if(segments.length){const missing=[];const pc=passengerCounts||flightPassengerCounts(raw);if(!pc||!(pc.adults+pc.children+pc.infants))missing.push('عدد الأفراد');if(!/(?:\d+\s*\+\s*\d+|\d+\s*(?:kg|kgs|kilo|kilos)|baggage|checked bag|cabin bag|hand bag|بدون أمتعة|بدون شنط|شنطة|أمتعة)/i.test(norm(raw)))missing.push('وزن الأمتعة');return missing;}
+ return priorFlightWarningsFinal(raw,price,passengerCounts);
+};
 function refreshFlight(){const raw=$('flightRaw').value;updateFlightPriceFields(raw);if(!raw.trim()){$('flightPreview').textContent='Paste flight details to see a live preview.';$('flightWarnings').textContent='';return;}$('flightPreview').textContent=translateFlight(raw,$('flightPrice').value,$('flightCurrency').value,{childPrice:$('flightChildPrice').value,infantPrice:$('flightInfantPrice').value});showWarnings('flightWarnings',flightWarnings(raw,$('flightPrice').value));}
 
 $('toggleFlightExamples').onclick=()=>{const box=$('flightExamples'),open=box.hidden;box.hidden=!open;$('toggleFlightExamples').setAttribute('aria-expanded',String(open));$('toggleFlightExamples').textContent=open?'Hide examples':'Examples';};
