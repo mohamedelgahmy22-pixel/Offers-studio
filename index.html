@@ -642,7 +642,7 @@ function parseAmadeusSegments(raw){
   // Amadeus usually prints the arrival date after the two local times (e.g. 13DEC).
   // Keep it separately: transit is measured from arrival date/time to next departure date/time.
   const dateTokens=[...tail.matchAll(/(?:^|\\s)(\\d{1,2}[A-Z]{3})(?=\\s|$)/gi)].map(m=>m[1].toUpperCase());
-  const arrivalDate=dateTokens.find((d,i)=>i>0)||head[5].toUpperCase();
+  const arrivalDate=dateTokens[0]||head[5].toUpperCase();
   found.push({number:+head[1],airline:head[2].toUpperCase(),date:head[5].toUpperCase(),arrivalDate,origin:route.slice(0,3),destination:route.slice(3),depart:times[0],arrive:times[1]});
  }
  return found;
@@ -651,8 +651,29 @@ translateFlight=function(raw,price,currency,options={}){
  const text=norm(raw);if(!text)return '';
  const seg=parseAmadeusSegments(text);
  if(!seg.length)return priorTranslateFlightFinal(raw,price,currency,options);
+ // Detect the outbound/return boundary from the connected airport path.
+ // A return begins at the segment whose destination revisits an airport already
+ // visited on the outbound path (e.g. KWI-AUH-MNL-AUH-KWI => split at MNL-AUH).
  let split=seg.length;
- for(let i=1;i<seg.length;i++){if(seg[i].origin===seg[0].origin){split=i;break;}}
+ const visited=new Set();
+ if(seg.length){
+  visited.add(seg[0].origin);
+  for(let i=0;i<seg.length;i++){
+   if(visited.has(seg[i].destination)){split=i;break;}
+   visited.add(seg[i].destination);
+  }
+ }
+ // Fallback for disconnected/malformed records: locate a segment returning to
+ // the first origin, then seek the prior leg that starts the return journey.
+ if(split===seg.length){
+  const closesAt=seg.findIndex((x,i)=>i>0&&x.destination===seg[0].origin);
+  if(closesAt>0){
+   split=closesAt;
+   for(let i=closesAt-1;i>0;i--){
+    if(seg[i].destination===seg[closesAt].origin){split=i;break;}
+   }
+  }
+ }
  const groups=[{name:'رحلة الذهاب',items:seg.slice(0,split)},{name:'رحلة العودة',items:seg.slice(split)}].filter(g=>g.items.length);
  const out=[];
  groups.forEach(g=>{out.push(g.name);g.items.forEach((x,j)=>{const carrier=AIRLINES[x.airline]||x.airline;out.push(['✈️ '+carrier,'🛫 '+cityLabel(x.origin)+' ← '+cityLabel(x.destination),'📅 '+flightDate(x.date),'🕒 '+flightTime(x.depart)+' ← '+flightTime(x.arrive)].join('\n'));if(j<g.items.length-1){const wait=transitDuration(x,g.items[j+1]);out.push('⏳ انتظار '+(wait||'')+' في '+cityLabel(x.destination));}});});
