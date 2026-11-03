@@ -651,6 +651,10 @@ translateFlight=function(raw,price,currency,options={}){
  const text=norm(raw);if(!text)return '';
  const seg=parseAmadeusSegments(text);
  if(!seg.length)return priorTranslateFlightFinal(raw,price,currency,options);
+ // Preserve the supplied order: checked baggage first, cabin baggage second.
+ const baggageMatch=text.match(/(?:^|\n)\s*(\d+)\s*\+\s*(\d+)\s*(?:kg|kgs)?\s*(?=\n|$)/i);
+ const baggageText=baggageMatch?('🧳 '+baggageMatch[1]+' كيلو شحن + '+baggageMatch[2]+' كيلو شنطة يد'):'';
+
  // Detect the outbound/return boundary from the connected airport path.
  // A return begins at the segment whose destination revisits an airport already
  // visited on the outbound path (e.g. KWI-AUH-MNL-AUH-KWI => split at MNL-AUH).
@@ -676,7 +680,7 @@ translateFlight=function(raw,price,currency,options={}){
  }
  const groups=[{name:'رحلة الذهاب',items:seg.slice(0,split)},{name:'رحلة العودة',items:seg.slice(split)}].filter(g=>g.items.length);
  const out=[];
- groups.forEach(g=>{out.push(g.name);g.items.forEach((x,j)=>{const carrier=AIRLINES[x.airline]||x.airline;out.push(['✈️ '+carrier,'🛫 '+cityLabel(x.origin)+' ← '+cityLabel(x.destination),'📅 '+flightDate(x.date),'🕒 '+flightTime(x.depart)+' ← '+flightTime(x.arrive)].join('\n'));if(j<g.items.length-1){const wait=transitDuration(x,g.items[j+1]);out.push('⏳ انتظار '+(wait||'')+' في '+cityLabel(x.destination));}});});
+ groups.forEach(g=>{out.push(g.name);g.items.forEach((x,j)=>{const carrier=AIRLINES[x.airline]||x.airline;const details=['✈️ '+carrier,'🛫 '+cityLabel(x.origin)+' ← '+cityLabel(x.destination),'📅 '+flightDate(x.date),'🕒 '+flightTime(x.depart)+' ← '+flightTime(x.arrive)];if(baggageText)details.push(baggageText);out.push(details.join('\n'));if(j<g.items.length-1){const wait=transitDuration(x,g.items[j+1]);out.push('⏳ انتظار '+(wait||'')+' في '+cityLabel(x.destination));}});});
  const pc=flightPassengerCounts(raw),p=[];if(pc.adults)p.push(pc.adults+' بالغ');if(pc.children)p.push(pc.children+' طفل');if(pc.infants)p.push(pc.infants+' رضيع');if(p.length)out.push('👥 عدد الأفراد: '+p.join(' + '));
  if(options.includePrice!==false){const unit=currency?' '+currencyArabic(currency):'',pl=[];if(pc.adults||(!pc.children&&!pc.infants))pl.push('💰 '+((pc.children||pc.infants)?'السعر للبالغ':'السعر للفرد')+': '+(price?price+unit:''));if(pc.children)pl.push('💰 السعر للطفل: '+(options.childPrice?options.childPrice+unit:''));if(pc.infants)pl.push('💰 السعر للرضيع: '+(options.infantPrice?options.infantPrice+unit:''));out.push(pl.join('\n'));}
  if(options.includeNotes!==false)out.push('📝 ملاحظة:\n⏰ يُرجى التواجد في المطار قبل موعد الإقلاع بـ 3 ساعات على الأقل.\n⚠️ السعر والإمكانية غير ثابتين حتى يتم تأكيد وإتمام الحجز.\n❌ الحجز غير مسترد وغير قابل للتعديل.');
