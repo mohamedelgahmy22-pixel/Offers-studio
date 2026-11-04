@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#12343d"><title>Travel Offers Studio</title>
+<script>try{var __t=localStorage.getItem("theme");if(__t)document.documentElement.setAttribute("data-theme",__t);if(localStorage.getItem("lang")==="ar"){document.documentElement.setAttribute("lang","ar");document.documentElement.setAttribute("dir","rtl")}}catch(e){}</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap');
 :root{--navy:#12343d;--teal:#17636b;--gold:#c9aa70;--bg:#eef3f4;--card:#fff;--ink:#18363d;--muted:#71858a;--line:#dce6e8;--soft:#f5f8f8}
@@ -18,7 +19,12 @@ body.locked #passwordGate{display:flex}
 #greetingOverlay{display:none;position:fixed;inset:0;z-index:50;align-items:center;justify-content:center;padding:24px;background:#102f39d9;opacity:0;transition:opacity .25s ease}#greetingOverlay.show{display:flex;opacity:1}.greeting-card{width:min(100%,340px);padding:32px 24px;border-radius:24px;background:#fff;text-align:center;box-shadow:0 20px 70px #061e2580}.greeting-card h2{margin:0 0 8px;color:var(--teal);font-size:32px}.greeting-card p{margin:0;color:var(--muted);font-size:15px}
 #logoutButton{margin-left:auto;margin-right:0;border:1px solid #ffffff55;background:#ffffff15;color:#fff;border-radius:10px;padding:8px 12px;font:700 12px Tajawal;cursor:pointer}
 header{background:linear-gradient(115deg,#102f39,#1b5961);color:white;padding:22px max(20px,calc((100vw - 1240px)/2));display:flex;align-items:center;gap:14px;box-shadow:0 8px 25px #102f3922}
-.logo{width:48px;height:48px;border-radius:15px;background:#ffffff18;display:grid;place-items:center;font-size:25px;border:1px solid #ffffff2b}
+.logo{width:48px;height:48px;border-radius:15px;background:#ffffff18;display:grid;place-items:center;font-size:25px;border:1px solid #ffffff2b;overflow:hidden;flex:none}
+.logo:has(img){display:flex;align-items:center;justify-content:center;width:auto;height:auto;background:#fff;padding:6px 12px;border-radius:12px;border:0}
+.logo img{height:46px;width:auto;display:block}
+@media(max-width:800px){header{gap:10px;padding:14px 14px}.logo:has(img){padding:4px 8px;border-radius:10px}.logo img{height:34px}header h1{font-size:16px;line-height:1.25}header p{display:none}#logoutButton{padding:7px 10px}}
+.gate-logo{width:210px;height:115px;max-width:100%;margin:0 auto 14px;display:grid;place-items:center;font-size:40px}.gate-logo img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.print-brand{display:none}
 header h1{font-size:23px;margin:0;font-weight:800}header p{margin:3px 0 0;color:#c4d6d7;font-size:13px}
 main{max-width:1240px;margin:34px auto;padding:0 20px}
 .intro{text-align:center;margin:16px 0 28px}.intro h2{font-size:27px;margin:0 0 8px}.intro p{margin:0;color:var(--muted);font-size:15px}
@@ -41,13 +47,105 @@ textarea,input{width:100%;border:1px solid var(--line);border-radius:12px;paddin
 .note{color:#7a8d91;font-size:12px;line-height:1.8;margin-top:10px}\n#hotelWarnings,#flightWarnings,#combinedWarnings{white-space:pre-line}
 .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,18px);opacity:0;background:#123d43;color:white;padding:12px 20px;border-radius:12px;transition:.2s;z-index:10;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:800px){main{margin:22px auto}.cards{grid-template-columns:1fr;gap:13px}.card{min-height:0;padding:21px;display:grid;grid-template-columns:55px 1fr;column-gap:14px;align-items:center}.card .icon{grid-row:span 2;margin:0}.card h3{align-self:end}.card p{align-self:start}.card .arrow{grid-column:2;margin-top:8px}.layout{grid-template-columns:1fr}.intro h2{font-size:23px}.panel{padding:16px}}
-@media print{header,.topline,.panel.input-panel,.actions,.intro{display:none!important}body{background:white}main{margin:0;padding:0}.layout{display:block}.panel{border:0;box-shadow:none;padding:0}.preview{border:0;background:white;padding:0;min-height:0;font-size:14pt}}
+@media print{.print-brand{display:block!important;text-align:center;margin:0 0 14pt}.print-brand img{max-height:70pt;max-width:60%}header,.topline,.panel.input-panel,.actions,.intro{display:none!important}body{background:white}main{margin:0;padding:0}.layout{display:block}.panel{border:0;box-shadow:none;padding:0}.preview{border:0;background:white;padding:0;min-height:0;font-size:14pt}}
 @media(max-width:800px){.cards{display:flex;flex-wrap:wrap;gap:8px}.card{display:flex;grid-template-columns:none;min-width:0;flex:1 1 30%;min-height:64px;padding:10px;gap:7px}.card .icon{margin:0;font-size:22px}.card h3{font-size:14px}.card p,.card .arrow{display:none}}
+
+/* ===== Proposal v7: calm pastel + landmarks skyline ===== */
+:root{--navy:#2f4252;--teal:#4f8f8b;--bg:#eef3f5;--ink:#2f4252;--muted:#6d8090;--line:#dbe5ea}
+html{background:linear-gradient(#e6eff3 0,#f4efe6 62%,#f7f1e8 100%) fixed,#f4efe6}
+body{background:transparent;min-height:100vh;color:var(--ink)}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--sky) center 64px/max(100%,1100px) auto no-repeat,var(--city) bottom center/max(100%,1250px) auto no-repeat}
+#passwordGate{background:transparent}
+.gate-card{background:#ffffffd9;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #fff;border-radius:30px;box-shadow:0 24px 70px #4a6a7a33}
+.gate-mark{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#6fb0a9,#4a8782)}.gate-mark svg{stroke:#fff}
+.gate-card button{background:linear-gradient(135deg,#6fb0a9,#4a8782);box-shadow:0 8px 18px #4a878240}
+#greetingOverlay{background:#2f4252d9}.greeting-card h2{color:#4a8782}
+header{background:transparent;color:var(--ink);box-shadow:none;border:0;padding:20px max(22px,calc((100vw - 1240px)/2))}
+.logo{background:linear-gradient(135deg,#6fb0a9,#4a8782);border:0;border-radius:50%;box-shadow:0 8px 18px #4a878238}.logo svg{stroke:#fff}
+header h1{color:var(--ink);font-size:20px}header p{color:var(--muted)}
+#logoutButton{border:1px solid #fff;background:#ffffffb3;color:var(--ink);backdrop-filter:blur(8px)}#logoutButton:hover{background:#fff}
+.intro{margin:6px 0 30px}
+.intro::before{content:"";display:block;height:84px;max-width:420px;margin:0 auto 4px;background:var(--route) center/contain no-repeat}
+.intro h2{font-size:38px;letter-spacing:-.3px;color:var(--ink)}.intro p{color:var(--muted);font-size:16px}
+.cards{max-width:980px;gap:22px}
+.card{min-height:268px;justify-content:flex-start;padding:38px 24px 24px;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);border-radius:170px 170px 28px 28px;border:1px solid #ffffffd0;box-shadow:0 18px 40px #4a6a7a1c;color:var(--ink)}
+.cards .card:nth-child(1){background:linear-gradient(#f6e6d8e6,#fffaf4a8)}
+.cards .card:nth-child(2){background:linear-gradient(#dcece7e6,#f9fdfba8)}
+.cards .card:nth-child(3){background:linear-gradient(#dde8f3e6,#fafcffa8)}
+.card .icon{width:76px;height:76px;border-radius:50%;background:#ffffffc0;font-size:36px;box-shadow:0 6px 16px #4a6a7a18;margin-bottom:10px}
+.card:hover{transform:translateY(-6px);box-shadow:0 26px 50px #4a6a7a2e;border-color:#fff}
+.card .arrow{color:#4a8782;background:#ffffffb8;padding:7px 16px;border-radius:999px;margin-top:10px}
+.back{border-radius:999px;background:#ffffffb8;border:1px solid #fff;color:var(--ink);backdrop-filter:blur(8px)}
+.panel{background:#ffffffc9;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #ffffffe0;border-radius:26px;box-shadow:0 16px 44px #4a6a7a1c}
+.panel h3{display:flex;align-items:center;gap:9px}.panel h3::before{content:"";width:10px;height:10px;border-radius:50%;background:#e9a98f}
+textarea,input,select{background:#ffffffcc!important}
+textarea:focus,input:focus{border-color:#6fb0a9;box-shadow:0 0 0 3px #6fb0a926}
+.btn{border-radius:999px;padding:11px 20px}.primary{background:linear-gradient(135deg,#6fb0a9,#4a8782);box-shadow:0 8px 16px #4a878238}
+.soft{background:#e4edf0;color:#35505c}.outline{color:#4a8782;border-color:#a9cbc7;background:#ffffffb3}
+.policy-buttons .btn.active{background:#4a8782;border-color:#4a8782;color:#fff}
+.preview{unicode-bidi:plaintext;text-align:start;background:#fffdf9;border:1.5px dashed #e6d5c4;border-radius:20px;line-height:1.95}
+.field label{color:#6d8090}.toast{background:#2f4252}
+@media print{body::before{display:none}body{background:#fff}.preview{border:0}}
+@media(max-width:800px){
+ header{padding:14px 16px}header p{display:none}header h1{font-size:16px}
+ .intro h2{font-size:26px}.intro::before{height:64px}
+ .cards{display:grid!important;grid-template-columns:1fr;gap:12px;max-width:460px}
+ .card{display:grid!important;grid-template-columns:60px 1fr;column-gap:14px;min-height:0!important;flex:none!important;padding:16px 18px!important;border-radius:28px;text-align:start;align-items:center}
+ .card .icon{grid-row:span 2;width:60px;height:60px;font-size:28px;margin:0}
+ .card h3{font-size:17px!important;align-self:end}.card p{display:block!important;font-size:13px!important;align-self:start}.card .arrow{display:none!important}
+ main{padding-bottom:40px}
+}
+:root{--sky:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAwIDMwMCI+CjxjaXJjbGUgY3g9IjEyMzAiIGN5PSIxMTAiIHI9IjExMCIgZmlsbD0iI2Y5ZGZjZCIgb3BhY2l0eT0iLjM1Ii8+PGNpcmNsZSBjeD0iMTIzMCIgY3k9IjExMCIgcj0iNTIiIGZpbGw9IiNmNmNmYjYiIG9wYWNpdHk9Ii45Ii8+CjxnIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii43NSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTgwLDkwKSBzY2FsZSgxLjIpIj48Y2lyY2xlIGN4PSIwIiBjeT0iMCIgcj0iMjYiLz48Y2lyY2xlIGN4PSIzNCIgY3k9Ii0xMiIgcj0iMzQiLz48Y2lyY2xlIGN4PSI3NCIgY3k9IjIiIHI9IjI2Ii8+PHJlY3QgeD0iLTI2IiB5PSIwIiB3aWR0aD0iMTI2IiBoZWlnaHQ9IjI2IiByeD0iMTMiLz48L2c+PGcgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjc1IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg3NjAsNjApIHNjYWxlKDAuOSkiPjxjaXJjbGUgY3g9IjAiIGN5PSIwIiByPSIyNiIvPjxjaXJjbGUgY3g9IjM0IiBjeT0iLTEyIiByPSIzNCIvPjxjaXJjbGUgY3g9Ijc0IiBjeT0iMiIgcj0iMjYiLz48cmVjdCB4PSItMjYiIHk9IjAiIHdpZHRoPSIxMjYiIGhlaWdodD0iMjYiIHJ4PSIxMyIvPjwvZz48ZyBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuNzUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDExMjAsMTUwKSBzY2FsZSgxLjEpIj48Y2lyY2xlIGN4PSIwIiBjeT0iMCIgcj0iMjYiLz48Y2lyY2xlIGN4PSIzNCIgY3k9Ii0xMiIgcj0iMzQiLz48Y2lyY2xlIGN4PSI3NCIgY3k9IjIiIHI9IjI2Ii8+PHJlY3QgeD0iLTI2IiB5PSIwIiB3aWR0aD0iMTI2IiBoZWlnaHQ9IjI2IiByeD0iMTMiLz48L2c+PGcgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjc1IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNDMwLDcwKSBzY2FsZSgwLjgpIj48Y2lyY2xlIGN4PSIwIiBjeT0iMCIgcj0iMjYiLz48Y2lyY2xlIGN4PSIzNCIgY3k9Ii0xMiIgcj0iMzQiLz48Y2lyY2xlIGN4PSI3NCIgY3k9IjIiIHI9IjI2Ii8+PHJlY3QgeD0iLTI2IiB5PSIwIiB3aWR0aD0iMTI2IiBoZWlnaHQ9IjI2IiByeD0iMTMiLz48L2c+Cjwvc3ZnPg==);--city:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAwIDQyMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNYXggc2xpY2UiPgo8ZyBmaWxsPSIjZDBlMGU5Ij48cmVjdCB4PSIwIiB5PSIzNzEiIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OSIvPjxyZWN0IHg9IjU2IiB5PSIzODEiIHdpZHRoPSIzMSIgaGVpZ2h0PSIzOSIvPjxyZWN0IHg9Ijk3IiB5PSIzNDQiIHdpZHRoPSIzNCIgaGVpZ2h0PSI3NiIvPjxyZWN0IHg9IjEzMyIgeT0iMzYzIiB3aWR0aD0iNjAiIGhlaWdodD0iNTciLz48cmVjdCB4PSIxOTUiIHk9IjMzNSIgd2lkdGg9IjMzIiBoZWlnaHQ9Ijg1Ii8+PHJlY3QgeD0iMjM2IiB5PSIzNjAiIHdpZHRoPSIzMiIgaGVpZ2h0PSI2MCIvPjxyZWN0IHg9IjI3MSIgeT0iMzgzIiB3aWR0aD0iNTUiIGhlaWdodD0iMzciLz48cmVjdCB4PSIzMjkiIHk9IjMxMCIgd2lkdGg9IjQyIiBoZWlnaHQ9IjExMCIvPjxyZWN0IHg9IjM3MyIgeT0iMzg0IiB3aWR0aD0iNTMiIGhlaWdodD0iMzYiLz48cmVjdCB4PSI0MzEiIHk9IjMxOSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwMSIvPjxyZWN0IHg9IjQ2NSIgeT0iMzM3IiB3aWR0aD0iNDYiIGhlaWdodD0iODMiLz48cmVjdCB4PSI1MTUiIHk9IjMxNyIgd2lkdGg9IjM1IiBoZWlnaHQ9IjEwMyIvPjxyZWN0IHg9IjU1NiIgeT0iMzc3IiB3aWR0aD0iMzkiIGhlaWdodD0iNDMiLz48cmVjdCB4PSI2MDAiIHk9IjM3OCIgd2lkdGg9IjUxIiBoZWlnaHQ9IjQyIi8+PHJlY3QgeD0iNjYxIiB5PSIzMTgiIHdpZHRoPSIzMiIgaGVpZ2h0PSIxMDIiLz48cmVjdCB4PSI2OTUiIHk9IjMyNyIgd2lkdGg9IjQxIiBoZWlnaHQ9IjkzIi8+PHJlY3QgeD0iNzQ2IiB5PSIzNTAiIHdpZHRoPSI1NSIgaGVpZ2h0PSI3MCIvPjxyZWN0IHg9IjgxMCIgeT0iMzQ0IiB3aWR0aD0iNTciIGhlaWdodD0iNzYiLz48cmVjdCB4PSI4NzMiIHk9IjM2NyIgd2lkdGg9IjQzIiBoZWlnaHQ9IjUzIi8+PHJlY3QgeD0iOTIxIiB5PSIzMTciIHdpZHRoPSIzMyIgaGVpZ2h0PSIxMDMiLz48cmVjdCB4PSI5NjAiIHk9IjM0NyIgd2lkdGg9IjU5IiBoZWlnaHQ9IjczIi8+PHJlY3QgeD0iMTAyOCIgeT0iMzEzIiB3aWR0aD0iNDYiIGhlaWdodD0iMTA3Ii8+PHJlY3QgeD0iMTA3NyIgeT0iMzI1IiB3aWR0aD0iMzUiIGhlaWdodD0iOTUiLz48cmVjdCB4PSIxMTIwIiB5PSIzNDciIHdpZHRoPSIzOCIgaGVpZ2h0PSI3MyIvPjxyZWN0IHg9IjExNjIiIHk9IjMzNyIgd2lkdGg9IjU5IiBoZWlnaHQ9IjgzIi8+PHJlY3QgeD0iMTIyMyIgeT0iMzE5IiB3aWR0aD0iMzIiIGhlaWdodD0iMTAxIi8+PHJlY3QgeD0iMTI2MiIgeT0iMzQ2IiB3aWR0aD0iNDkiIGhlaWdodD0iNzQiLz48cmVjdCB4PSIxMzIwIiB5PSIzODIiIHdpZHRoPSI1NyIgaGVpZ2h0PSIzOCIvPjxyZWN0IHg9IjEzODAiIHk9IjMzMCIgd2lkdGg9IjQ1IiBoZWlnaHQ9IjkwIi8+PHJlY3QgeD0iMTQyOCIgeT0iMzUxIiB3aWR0aD0iMzEiIGhlaWdodD0iNjkiLz48cmVjdCB4PSIxNDY4IiB5PSIzNDEiIHdpZHRoPSI0NiIgaGVpZ2h0PSI3OSIvPjxyZWN0IHg9IjE1MjEiIHk9IjMzMSIgd2lkdGg9IjI5IiBoZWlnaHQ9Ijg5Ii8+PHJlY3QgeD0iMTU1NyIgeT0iMzEyIiB3aWR0aD0iMzgiIGhlaWdodD0iMTA4Ii8+PHJlY3QgeD0iMTU5OCIgeT0iMzgzIiB3aWR0aD0iNTkiIGhlaWdodD0iMzciLz48cG9seWdvbiBwb2ludHM9IjExMCw0MjAgMjM1LDI1NSAzNjAsNDIwIi8+PHBvbHlnb24gcG9pbnRzPSIyOTAsNDIwIDM3NSwzMTggNDYwLDQyMCIvPjxwb2x5Z29uIHBvaW50cz0iNjAsNDIwIDEyMCwzNDAgMTgwLDQyMCIvPjxwYXRoIGQ9Ik0xMjQwLDQyMCBWMzQ1IGE1MCw1MCAwIDAgMSAxMDAsMCBWNDIwWiIvPjxwYXRoIGQ9Ik0xMjkwLDI4NSB2LTI2Ii8+PGNpcmNsZSBjeD0iMTI5MCIgY3k9IjI1MiIgcj0iNSIvPjxyZWN0IHg9IjExOTkiIHk9IjMwMCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyMCIvPjxwYXRoIGQ9Ik0xMTk3LDMwMCBhOCw4IDAgMCAxIDE2LDBaIi8+PHJlY3QgeD0iMTM2OSIgeT0iMzAwIiB3aWR0aD0iMTIiIGhlaWdodD0iMTIwIi8+PHBhdGggZD0iTTEzNjcsMzAwIGE4LDggMCAwIDEgMTYsMFoiLz48cGF0aCBkPSJNMTIzMSwzNjAgYTE0LDE0IDAgMCAxIDI4LDAgVjQyMCBIMTIzMVoiLz48cGF0aCBkPSJNMTMyMSwzNjAgYTE0LDE0IDAgMCAxIDI4LDAgVjQyMCBIMTMyMVoiLz48cmVjdCB4PSIxMjAwIiB5PSI0MTUiIHdpZHRoPSIxODAiIGhlaWdodD0iNSIvPjwvZz4KPGcgZmlsbD0iI2I2Y2RkYiI+PHBvbHlnb24gcG9pbnRzPSI3NTIsNDIwIDc1MiwyNjAgNzU5LDIwNSA3NjQsMTQwIDc2OCw3MCA3NzAsMTIgNzcyLDcwIDc3NiwxNDAgNzgxLDIwNSA3ODgsMjYwIDc4OCw0MjAiLz48cmVjdCB4PSI3NDQiIHk9IjQxNSIgd2lkdGg9IjUyIiBoZWlnaHQ9IjUiLz48cGF0aCBkPSJNODg0LDQyMCBWMjE1IEg4NzQgVjE2MCBIOTI2IFYyMTUgSDkxNiBWNDIwWiIvPjxwYXRoIGQ9Ik04NzAsMTYwIEw5MDAsOTIgTDkzMCwxNjBaIi8+PHJlY3QgeD0iODk4IiB5PSI2MCIgd2lkdGg9IjQiIGhlaWdodD0iMzYiLz48Y2lyY2xlIGN4PSI5MDAiIGN5PSIxNTAiIHI9IjAiLz48cG9seWdvbiBwb2ludHM9Ijk5MCw0MjAgMTAyMCwzMTIgMTAzMCwzMTIgMTAzOCwyMDIgMTA0NCwyMDIgMTA0OSwxMTIgMTA1Miw0NCAxMDU1LDExMiAxMDYwLDIwMiAxMDY2LDIwMiAxMDc0LDMxMiAxMDg0LDMxMiAxMTE0LDQyMCAxMDkwLDQyMCAxMDcwLDM1MiAxMDM0LDM1MiAxMDE0LDQyMCIvPjxyZWN0IHg9IjEwMTYiIHk9IjMwNiIgd2lkdGg9IjcyIiBoZWlnaHQ9IjgiLz48cmVjdCB4PSIxMDM0IiB5PSIxOTYiIHdpZHRoPSIzNiIgaGVpZ2h0PSI3Ii8+PHJlY3QgeD0iMTA0OSIgeT0iMzAiIHdpZHRoPSI2IiBoZWlnaHQ9IjIyIi8+PC9nPgo8ZyBmaWxsPSIjOWJiYmNiIj48cG9seWdvbiBwb2ludHM9IjI4OSw0MjAgMjk4LDE2MCAzMDEsNzAgMzA0LDE2MCAzMTMsNDIwIi8+PGNpcmNsZSBjeD0iMzAxIiBjeT0iMjUwIiByPSIyMiIvPjxjaXJjbGUgY3g9IjMwMSIgY3k9IjE2OCIgcj0iOCIvPjxyZWN0IHg9IjMwMCIgeT0iNDAiIHdpZHRoPSIzIiBoZWlnaHQ9IjQwIi8+PHBvbHlnb24gcG9pbnRzPSIzNDQsNDIwIDM0OCwyNjAgMzUwLDIxNSAzNTIsMjYwIDM1Niw0MjAiLz48Y2lyY2xlIGN4PSIzNTAiIGN5PSIzMDAiIHI9IjE1Ii8+PHJlY3QgeD0iMzQ5IiB5PSIxOTUiIHdpZHRoPSIyLjUiIGhlaWdodD0iMjYiLz48cG9seWdvbiBwb2ludHM9IjI0Niw0MjAgMjQ5LDM1MCAyNTIsMzUwIDI1NSw0MjAiLz48Y2lyY2xlIGN4PSIyNTAuNSIgY3k9IjM0MiIgcj0iOSIvPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTQ3MCw0MjAgVjM1MCBRNTYwLDMyNiA2NTAsMzUwIFY0MjAgWiBNNDgwLDQyMCBWMzk2IGE2LDYgMCAwIDEgMTIsMCBWNDIwIFogTTQ5OCw0MjAgVjM5NiBhNiw2IDAgMCAxIDEyLDAgVjQyMCBaIE01MTYsNDIwIFYzOTYgYTYsNiAwIDAgMSAxMiwwIFY0MjAgWiBNNTM0LDQyMCBWMzk2IGE2LDYgMCAwIDEgMTIsMCBWNDIwIFogTTU1Miw0MjAgVjM5NiBhNiw2IDAgMCAxIDEyLDAgVjQyMCBaIE01NzAsNDIwIFYzOTYgYTYsNiAwIDAgMSAxMiwwIFY0MjAgWiBNNTg4LDQyMCBWMzk2IGE2LDYgMCAwIDEgMTIsMCBWNDIwIFogTTYwNiw0MjAgVjM5NiBhNiw2IDAgMCAxIDEyLDAgVjQyMCBaIE02MjQsNDIwIFYzOTYgYTYsNiAwIDAgMSAxMiwwIFY0MjAgWiBNNDgwLDM4MCBWMzYwIGE2LDYgMCAwIDEgMTIsMCBWMzgwIFogTTQ5OCwzODAgVjM2MCBhNiw2IDAgMCAxIDEyLDAgVjM4MCBaIE01MTYsMzgwIFYzNjAgYTYsNiAwIDAgMSAxMiwwIFYzODAgWiBNNTM0LDM4MCBWMzYwIGE2LDYgMCAwIDEgMTIsMCBWMzgwIFogTTU1MiwzODAgVjM2MCBhNiw2IDAgMCAxIDEyLDAgVjM4MCBaIE01NzAsMzgwIFYzNjAgYTYsNiAwIDAgMSAxMiwwIFYzODAgWiBNNTg4LDM4MCBWMzYwIGE2LDYgMCAwIDEgMTIsMCBWMzgwIFogTTYwNiwzODAgVjM2MCBhNiw2IDAgMCAxIDEyLDAgVjM4MCBaIE02MjQsMzgwIFYzNjAgYTYsNiAwIDAgMSAxMiwwIFYzODAgWiIvPjxwYXRoIGQ9Ik0xNDQwLDQyMCBRMTQ0OCwzNTAgMTQ4MiwzMzAgUTE0ODAsMzgwIDE0ODQsNDIwWiIvPjxwYXRoIGQ9Ik0xNDg2LDQyMCBRMTQ5MCwzNjAgMTUyMiwzNDUgUTE1MjAsMzkwIDE1MjQsNDIwWiIvPjxwYXRoIGQ9Ik0xNDAwLDQyMCBRMTQwNCwzODAgMTQyOCwzNjggUTE0MjgsMzk2IDE0MzAsNDIwWiIvPjxyZWN0IHg9IjEzOTYiIHk9IjQxNCIgd2lkdGg9IjEzNiIgaGVpZ2h0PSI2Ii8+PHJlY3QgeD0iMzAiIHk9IjM2MCIgd2lkdGg9IjQiIGhlaWdodD0iNjAiLz48cGF0aCBkPSJNMzIsMzYyIHEtMjYsLTggLTM0LDEwIE0zMiwzNjIgcTI2LC04IDM0LDEwIE0zMiwzNjIgcS0xOCwtMjQgLTMwLC0xNCBNMzIsMzYyIHExOCwtMjQgMzAsLTE0IiAgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOWJiYmNiIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxyZWN0IHg9IjY2MCIgeT0iMzYwIiB3aWR0aD0iNCIgaGVpZ2h0PSI2MCIvPjxwYXRoIGQ9Ik02NjIsMzYyIHEtMjYsLTggLTM0LDEwIE02NjIsMzYyIHEyNiwtOCAzNCwxMCBNNjYyLDM2MiBxLTE4LC0yNCAtMzAsLTE0IE02NjIsMzYyIHExOCwtMjQgMzAsLTE0IiAgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOWJiYmNiIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxyZWN0IHg9IjExNjAiIHk9IjM2MCIgd2lkdGg9IjQiIGhlaWdodD0iNjAiLz48cGF0aCBkPSJNMTE2MiwzNjIgcS0yNiwtOCAtMzQsMTAgTTExNjIsMzYyIHEyNiwtOCAzNCwxMCBNMTE2MiwzNjIgcS0xOCwtMjQgLTMwLC0xNCBNMTE2MiwzNjIgcTE4LC0yNCAzMCwtMTQiICBmaWxsPSJub25lIiBzdHJva2U9IiM5YmJiY2IiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHJlY3QgeD0iMTU2NSIgeT0iMzYwIiB3aWR0aD0iNCIgaGVpZ2h0PSI2MCIvPjxwYXRoIGQ9Ik0xNTY3LDM2MiBxLTI2LC04IC0zNCwxMCBNMTU2NywzNjIgcTI2LC04IDM0LDEwIE0xNTY3LDM2MiBxLTE4LC0yNCAtMzAsLTE0IE0xNTY3LDM2MiBxMTgsLTI0IDMwLC0xNCIgIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzliYmJjYiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L2c+CjxwYXRoIGZpbGw9IiM4NmE5YmMiIGQ9Ik0wLDQyMCBWNDAyIFE0MDAsMzg2IDgwMCw0MDAgVDE2MDAsMzk2IFY0MjBaIi8+Cjwvc3ZnPg==);--route:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MjAgOTAiPjxwYXRoIGQ9Ik04LDc4IEMxMjAsMiAyOTAsLTYgMzg4LDUwIiBmaWxsPSJub25lIiBzdHJva2U9IiM3YWE5YTQiIHN0cm9rZS13aWR0aD0iMi42IiBzdHJva2UtZGFzaGFycmF5PSIxIDkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDM3OCwyNikgcm90YXRlKDI0KSBzY2FsZSgxLjE1KSIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjNGE4NzgyIiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMTcuOCAxOS4yIDE2IDExbDMuNS0zLjVDMjEgNiAyMS41IDQgMjEgM2MtMS0uNS0zIDAtNC41IDEuNUwxMyA4IDQuOCA2LjJjLS41LS4xLS45LjEtMS4xLjVsLS4yLjJjLS4zLjQtLjIgMSAuMiAxLjNMOSAxMmwtMiAzSDRsLTEgMSAzIDIgMiAzIDEtMXYtM2wzLTIgMy41IDUuM2MuMy40LjkuNSAxLjMuMmwuMi0uMWMuMy0uMy41LS43LjQtMS4xeiIvPjwvZz48L3N2Zz4=)}
+html[data-theme="dark"]{--sky:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAwIDMwMCI+CjxjaXJjbGUgY3g9IjEyMzAiIGN5PSIxMTAiIHI9IjExMCIgZmlsbD0iI2Y3Yzk5ZiIgb3BhY2l0eT0iLjE2Ii8+PGNpcmNsZSBjeD0iMTIzMCIgY3k9IjExMCIgcj0iNTIiIGZpbGw9IiNmN2M5OWYiIG9wYWNpdHk9Ii45Ii8+CjxnIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4yIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxODAsOTApIHNjYWxlKDEuMikiPjxjaXJjbGUgY3g9IjAiIGN5PSIwIiByPSIyNiIvPjxjaXJjbGUgY3g9IjM0IiBjeT0iLTEyIiByPSIzNCIvPjxjaXJjbGUgY3g9Ijc0IiBjeT0iMiIgcj0iMjYiLz48cmVjdCB4PSItMjYiIHk9IjAiIHdpZHRoPSIxMjYiIGhlaWdodD0iMjYiIHJ4PSIxMyIvPjwvZz48ZyBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNzYwLDYwKSBzY2FsZSgwLjkpIj48Y2lyY2xlIGN4PSIwIiBjeT0iMCIgcj0iMjYiLz48Y2lyY2xlIGN4PSIzNCIgY3k9Ii0xMiIgcj0iMzQiLz48Y2lyY2xlIGN4PSI3NCIgY3k9IjIiIHI9IjI2Ii8+PHJlY3QgeD0iLTI2IiB5PSIwIiB3aWR0aD0iMTI2IiBoZWlnaHQ9IjI2IiByeD0iMTMiLz48L2c+PGcgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDExMjAsMTUwKSBzY2FsZSgxLjEpIj48Y2lyY2xlIGN4PSIwIiBjeT0iMCIgcj0iMjYiLz48Y2lyY2xlIGN4PSIzNCIgY3k9Ii0xMiIgcj0iMzQiLz48Y2lyY2xlIGN4PSI3NCIgY3k9IjIiIHI9IjI2Ii8+PHJlY3QgeD0iLTI2IiB5PSIwIiB3aWR0aD0iMTI2IiBoZWlnaHQ9IjI2IiByeD0iMTMiLz48L2c+PGcgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE0MzAsNzApIHNjYWxlKDAuOCkiPjxjaXJjbGUgY3g9IjAiIGN5PSIwIiByPSIyNiIvPjxjaXJjbGUgY3g9IjM0IiBjeT0iLTEyIiByPSIzNCIvPjxjaXJjbGUgY3g9Ijc0IiBjeT0iMiIgcj0iMjYiLz48cmVjdCB4PSItMjYiIHk9IjAiIHdpZHRoPSIxMjYiIGhlaWdodD0iMjYiIHJ4PSIxMyIvPjwvZz4KPC9zdmc+);--city:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAwIDQyMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNYXggc2xpY2UiPgo8ZyBmaWxsPSIjN2Q5YmIwIj48cmVjdCB4PSIwIiB5PSIzNzEiIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OSIvPjxyZWN0IHg9IjU2IiB5PSIzODEiIHdpZHRoPSIzMSIgaGVpZ2h0PSIzOSIvPjxyZWN0IHg9Ijk3IiB5PSIzNDQiIHdpZHRoPSIzNCIgaGVpZ2h0PSI3NiIvPjxyZWN0IHg9IjEzMyIgeT0iMzYzIiB3aWR0aD0iNjAiIGhlaWdodD0iNTciLz48cmVjdCB4PSIxOTUiIHk9IjMzNSIgd2lkdGg9IjMzIiBoZWlnaHQ9Ijg1Ii8+PHJlY3QgeD0iMjM2IiB5PSIzNjAiIHdpZHRoPSIzMiIgaGVpZ2h0PSI2MCIvPjxyZWN0IHg9IjI3MSIgeT0iMzgzIiB3aWR0aD0iNTUiIGhlaWdodD0iMzciLz48cmVjdCB4PSIzMjkiIHk9IjMxMCIgd2lkdGg9IjQyIiBoZWlnaHQ9IjExMCIvPjxyZWN0IHg9IjM3MyIgeT0iMzg0IiB3aWR0aD0iNTMiIGhlaWdodD0iMzYiLz48cmVjdCB4PSI0MzEiIHk9IjMxOSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwMSIvPjxyZWN0IHg9IjQ2NSIgeT0iMzM3IiB3aWR0aD0iNDYiIGhlaWdodD0iODMiLz48cmVjdCB4PSI1MTUiIHk9IjMxNyIgd2lkdGg9IjM1IiBoZWlnaHQ9IjEwMyIvPjxyZWN0IHg9IjU1NiIgeT0iMzc3IiB3aWR0aD0iMzkiIGhlaWdodD0iNDMiLz48cmVjdCB4PSI2MDAiIHk9IjM3OCIgd2lkdGg9IjUxIiBoZWlnaHQ9IjQyIi8+PHJlY3QgeD0iNjYxIiB5PSIzMTgiIHdpZHRoPSIzMiIgaGVpZ2h0PSIxMDIiLz48cmVjdCB4PSI2OTUiIHk9IjMyNyIgd2lkdGg9IjQxIiBoZWlnaHQ9IjkzIi8+PHJlY3QgeD0iNzQ2IiB5PSIzNTAiIHdpZHRoPSI1NSIgaGVpZ2h0PSI3MCIvPjxyZWN0IHg9IjgxMCIgeT0iMzQ0IiB3aWR0aD0iNTciIGhlaWdodD0iNzYiLz48cmVjdCB4PSI4NzMiIHk9IjM2NyIgd2lkdGg9IjQzIiBoZWlnaHQ9IjUzIi8+PHJlY3QgeD0iOTIxIiB5PSIzMTciIHdpZHRoPSIzMyIgaGVpZ2h0PSIxMDMiLz48cmVjdCB4PSI5NjAiIHk9IjM0NyIgd2lkdGg9IjU5IiBoZWlnaHQ9IjczIi8+PHJlY3QgeD0iMTAyOCIgeT0iMzEzIiB3aWR0aD0iNDYiIGhlaWdodD0iMTA3Ii8+PHJlY3QgeD0iMTA3NyIgeT0iMzI1IiB3aWR0aD0iMzUiIGhlaWdodD0iOTUiLz48cmVjdCB4PSIxMTIwIiB5PSIzNDciIHdpZHRoPSIzOCIgaGVpZ2h0PSI3MyIvPjxyZWN0IHg9IjExNjIiIHk9IjMzNyIgd2lkdGg9IjU5IiBoZWlnaHQ9IjgzIi8+PHJlY3QgeD0iMTIyMyIgeT0iMzE5IiB3aWR0aD0iMzIiIGhlaWdodD0iMTAxIi8+PHJlY3QgeD0iMTI2MiIgeT0iMzQ2IiB3aWR0aD0iNDkiIGhlaWdodD0iNzQiLz48cmVjdCB4PSIxMzIwIiB5PSIzODIiIHdpZHRoPSI1NyIgaGVpZ2h0PSIzOCIvPjxyZWN0IHg9IjEzODAiIHk9IjMzMCIgd2lkdGg9IjQ1IiBoZWlnaHQ9IjkwIi8+PHJlY3QgeD0iMTQyOCIgeT0iMzUxIiB3aWR0aD0iMzEiIGhlaWdodD0iNjkiLz48cmVjdCB4PSIxNDY4IiB5PSIzNDEiIHdpZHRoPSI0NiIgaGVpZ2h0PSI3OSIvPjxyZWN0IHg9IjE1MjEiIHk9IjMzMSIgd2lkdGg9IjI5IiBoZWlnaHQ9Ijg5Ii8+PHJlY3QgeD0iMTU1NyIgeT0iMzEyIiB3aWR0aD0iMzgiIGhlaWdodD0iMTA4Ii8+PHJlY3QgeD0iMTU5OCIgeT0iMzgzIiB3aWR0aD0iNTkiIGhlaWdodD0iMzciLz48cG9seWdvbiBwb2ludHM9IjExMCw0MjAgMjM1LDI1NSAzNjAsNDIwIi8+PHBvbHlnb24gcG9pbnRzPSIyOTAsNDIwIDM3NSwzMTggNDYwLDQyMCIvPjxwb2x5Z29uIHBvaW50cz0iNjAsNDIwIDEyMCwzNDAgMTgwLDQyMCIvPjxwYXRoIGQ9Ik0xMjQwLDQyMCBWMzQ1IGE1MCw1MCAwIDAgMSAxMDAsMCBWNDIwWiIvPjxwYXRoIGQ9Ik0xMjkwLDI4NSB2LTI2Ii8+PGNpcmNsZSBjeD0iMTI5MCIgY3k9IjI1MiIgcj0iNSIvPjxyZWN0IHg9IjExOTkiIHk9IjMwMCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyMCIvPjxwYXRoIGQ9Ik0xMTk3LDMwMCBhOCw4IDAgMCAxIDE2LDBaIi8+PHJlY3QgeD0iMTM2OSIgeT0iMzAwIiB3aWR0aD0iMTIiIGhlaWdodD0iMTIwIi8+PHBhdGggZD0iTTEzNjcsMzAwIGE4LDggMCAwIDEgMTYsMFoiLz48cGF0aCBkPSJNMTIzMSwzNjAgYTE0LDE0IDAgMCAxIDI4LDAgVjQyMCBIMTIzMVoiLz48cGF0aCBkPSJNMTMyMSwzNjAgYTE0LDE0IDAgMCAxIDI4LDAgVjQyMCBIMTMyMVoiLz48cmVjdCB4PSIxMjAwIiB5PSI0MTUiIHdpZHRoPSIxODAiIGhlaWdodD0iNSIvPjwvZz4KPGcgZmlsbD0iIzVkN2U5NCI+PHBvbHlnb24gcG9pbnRzPSI3NTIsNDIwIDc1MiwyNjAgNzU5LDIwNSA3NjQsMTQwIDc2OCw3MCA3NzAsMTIgNzcyLDcwIDc3NiwxNDAgNzgxLDIwNSA3ODgsMjYwIDc4OCw0MjAiLz48cmVjdCB4PSI3NDQiIHk9IjQxNSIgd2lkdGg9IjUyIiBoZWlnaHQ9IjUiLz48cGF0aCBkPSJNODg0LDQyMCBWMjE1IEg4NzQgVjE2MCBIOTI2IFYyMTUgSDkxNiBWNDIwWiIvPjxwYXRoIGQ9Ik04NzAsMTYwIEw5MDAsOTIgTDkzMCwxNjBaIi8+PHJlY3QgeD0iODk4IiB5PSI2MCIgd2lkdGg9IjQiIGhlaWdodD0iMzYiLz48Y2lyY2xlIGN4PSI5MDAiIGN5PSIxNTAiIHI9IjAiLz48cG9seWdvbiBwb2ludHM9Ijk5MCw0MjAgMTAyMCwzMTIgMTAzMCwzMTIgMTAzOCwyMDIgMTA0NCwyMDIgMTA0OSwxMTIgMTA1Miw0NCAxMDU1LDExMiAxMDYwLDIwMiAxMDY2LDIwMiAxMDc0LDMxMiAxMDg0LDMxMiAxMTE0LDQyMCAxMDkwLDQyMCAxMDcwLDM1MiAxMDM0LDM1MiAxMDE0LDQyMCIvPjxyZWN0IHg9IjEwMTYiIHk9IjMwNiIgd2lkdGg9IjcyIiBoZWlnaHQ9IjgiLz48cmVjdCB4PSIxMDM0IiB5PSIxOTYiIHdpZHRoPSIzNiIgaGVpZ2h0PSI3Ii8+PHJlY3QgeD0iMTA0OSIgeT0iMzAiIHdpZHRoPSI2IiBoZWlnaHQ9IjIyIi8+PC9nPgo8ZyBmaWxsPSIjNDI2MjdhIj48cG9seWdvbiBwb2ludHM9IjI4OSw0MjAgMjk4LDE2MCAzMDEsNzAgMzA0LDE2MCAzMTMsNDIwIi8+PGNpcmNsZSBjeD0iMzAxIiBjeT0iMjUwIiByPSIyMiIvPjxjaXJjbGUgY3g9IjMwMSIgY3k9IjE2OCIgcj0iOCIvPjxyZWN0IHg9IjMwMCIgeT0iNDAiIHdpZHRoPSIzIiBoZWlnaHQ9IjQwIi8+PHBvbHlnb24gcG9pbnRzPSIzNDQsNDIwIDM0OCwyNjAgMzUwLDIxNSAzNTIsMjYwIDM1Niw0MjAiLz48Y2lyY2xlIGN4PSIzNTAiIGN5PSIzMDAiIHI9IjE1Ii8+PHJlY3QgeD0iMzQ5IiB5PSIxOTUiIHdpZHRoPSIyLjUiIGhlaWdodD0iMjYiLz48cG9seWdvbiBwb2ludHM9IjI0Niw0MjAgMjQ5LDM1MCAyNTIsMzUwIDI1NSw0MjAiLz48Y2lyY2xlIGN4PSIyNTAuNSIgY3k9IjM0MiIgcj0iOSIvPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTQ3MCw0MjAgVjM1MCBRNTYwLDMyNiA2NTAsMzUwIFY0MjAgWiBNNDgwLDQyMCBWMzk2IGE2LDYgMCAwIDEgMTIsMCBWNDIwIFogTTQ5OCw0MjAgVjM5NiBhNiw2IDAgMCAxIDEyLDAgVjQyMCBaIE01MTYsNDIwIFYzOTYgYTYsNiAwIDAgMSAxMiwwIFY0MjAgWiBNNTM0LDQyMCBWMzk2IGE2LDYgMCAwIDEgMTIsMCBWNDIwIFogTTU1Miw0MjAgVjM5NiBhNiw2IDAgMCAxIDEyLDAgVjQyMCBaIE01NzAsNDIwIFYzOTYgYTYsNiAwIDAgMSAxMiwwIFY0MjAgWiBNNTg4LDQyMCBWMzk2IGE2LDYgMCAwIDEgMTIsMCBWNDIwIFogTTYwNiw0MjAgVjM5NiBhNiw2IDAgMCAxIDEyLDAgVjQyMCBaIE02MjQsNDIwIFYzOTYgYTYsNiAwIDAgMSAxMiwwIFY0MjAgWiBNNDgwLDM4MCBWMzYwIGE2LDYgMCAwIDEgMTIsMCBWMzgwIFogTTQ5OCwzODAgVjM2MCBhNiw2IDAgMCAxIDEyLDAgVjM4MCBaIE01MTYsMzgwIFYzNjAgYTYsNiAwIDAgMSAxMiwwIFYzODAgWiBNNTM0LDM4MCBWMzYwIGE2LDYgMCAwIDEgMTIsMCBWMzgwIFogTTU1MiwzODAgVjM2MCBhNiw2IDAgMCAxIDEyLDAgVjM4MCBaIE01NzAsMzgwIFYzNjAgYTYsNiAwIDAgMSAxMiwwIFYzODAgWiBNNTg4LDM4MCBWMzYwIGE2LDYgMCAwIDEgMTIsMCBWMzgwIFogTTYwNiwzODAgVjM2MCBhNiw2IDAgMCAxIDEyLDAgVjM4MCBaIE02MjQsMzgwIFYzNjAgYTYsNiAwIDAgMSAxMiwwIFYzODAgWiIvPjxwYXRoIGQ9Ik0xNDQwLDQyMCBRMTQ0OCwzNTAgMTQ4MiwzMzAgUTE0ODAsMzgwIDE0ODQsNDIwWiIvPjxwYXRoIGQ9Ik0xNDg2LDQyMCBRMTQ5MCwzNjAgMTUyMiwzNDUgUTE1MjAsMzkwIDE1MjQsNDIwWiIvPjxwYXRoIGQ9Ik0xNDAwLDQyMCBRMTQwNCwzODAgMTQyOCwzNjggUTE0MjgsMzk2IDE0MzAsNDIwWiIvPjxyZWN0IHg9IjEzOTYiIHk9IjQxNCIgd2lkdGg9IjEzNiIgaGVpZ2h0PSI2Ii8+PHJlY3QgeD0iMzAiIHk9IjM2MCIgd2lkdGg9IjQiIGhlaWdodD0iNjAiLz48cGF0aCBkPSJNMzIsMzYyIHEtMjYsLTggLTM0LDEwIE0zMiwzNjIgcTI2LC04IDM0LDEwIE0zMiwzNjIgcS0xOCwtMjQgLTMwLC0xNCBNMzIsMzYyIHExOCwtMjQgMzAsLTE0IiAgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDI2MjdhIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxyZWN0IHg9IjY2MCIgeT0iMzYwIiB3aWR0aD0iNCIgaGVpZ2h0PSI2MCIvPjxwYXRoIGQ9Ik02NjIsMzYyIHEtMjYsLTggLTM0LDEwIE02NjIsMzYyIHEyNiwtOCAzNCwxMCBNNjYyLDM2MiBxLTE4LC0yNCAtMzAsLTE0IE02NjIsMzYyIHExOCwtMjQgMzAsLTE0IiAgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDI2MjdhIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxyZWN0IHg9IjExNjAiIHk9IjM2MCIgd2lkdGg9IjQiIGhlaWdodD0iNjAiLz48cGF0aCBkPSJNMTE2MiwzNjIgcS0yNiwtOCAtMzQsMTAgTTExNjIsMzYyIHEyNiwtOCAzNCwxMCBNMTE2MiwzNjIgcS0xOCwtMjQgLTMwLC0xNCBNMTE2MiwzNjIgcTE4LC0yNCAzMCwtMTQiICBmaWxsPSJub25lIiBzdHJva2U9IiM0MjYyN2EiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHJlY3QgeD0iMTU2NSIgeT0iMzYwIiB3aWR0aD0iNCIgaGVpZ2h0PSI2MCIvPjxwYXRoIGQ9Ik0xNTY3LDM2MiBxLTI2LC04IC0zNCwxMCBNMTU2NywzNjIgcTI2LC04IDM0LDEwIE0xNTY3LDM2MiBxLTE4LC0yNCAtMzAsLTE0IE0xNTY3LDM2MiBxMTgsLTI0IDMwLC0xNCIgIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQyNjI3YSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L2c+CjxwYXRoIGZpbGw9IiMyZjRiNjAiIGQ9Ik0wLDQyMCBWNDAyIFE0MDAsMzg2IDgwMCw0MDAgVDE2MDAsMzk2IFY0MjBaIi8+Cjwvc3ZnPg==);--route:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MjAgOTAiPjxwYXRoIGQ9Ik04LDc4IEMxMjAsMiAyOTAsLTYgMzg4LDUwIiBmaWxsPSJub25lIiBzdHJva2U9IiNkY2VmZWMiIHN0cm9rZS13aWR0aD0iMi42IiBzdHJva2UtZGFzaGFycmF5PSIxIDkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDM3OCwyNikgcm90YXRlKDI0KSBzY2FsZSgxLjE1KSIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjNGE4NzgyIiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMTcuOCAxOS4yIDE2IDExbDMuNS0zLjVDMjEgNiAyMS41IDQgMjEgM2MtMS0uNS0zIDAtNC41IDEuNUwxMyA4IDQuOCA2LjJjLS41LS4xLS45LjEtMS4xLjVsLS4yLjJjLS4zLjQtLjIgMSAuMiAxLjNMOSAxMmwtMiAzSDRsLTEgMSAzIDIgMiAzIDEtMXYtM2wzLTIgMy41IDUuM2MuMy40LjkuNSAxLjMuMmwuMi0uMWMuMy0uMy41LS43LjQtMS4xeiIvPjwvZz48L3N2Zz4=)}
+/* theme toggle */
+.theme-btn{width:42px;height:42px;border-radius:50%;border:1px solid #fff;background:#ffffffb8;color:var(--ink);font-size:18px;line-height:1;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:grid;place-items:center;padding:0;transition:transform .2s,background .2s}
+.theme-btn:hover{transform:rotate(18deg) scale(1.06);background:#fff}
+header .lang-btn{margin-inline-start:auto}
+header .theme-btn{margin-inline-start:0}
+header #logoutButton{margin-left:0}
+.gate-tools{position:fixed;top:16px;inset-inline-end:16px;z-index:60;display:flex;gap:8px}
+/* dark theme (twilight) */
+html[data-theme="dark"]{background:linear-gradient(#2f4a63 0,#58788f 40%,#b99f8c 80%,#dfc2a0 100%) fixed,#58788f;color-scheme:dark}
+html[data-theme="dark"] header h1{color:#fff}
+html[data-theme="dark"] header p{color:#cddbe5}
+html[data-theme="dark"] #logoutButton,html[data-theme="dark"] .back,html[data-theme="dark"] .theme-btn{background:#ffffff1f;border:1px solid #ffffff44;color:#fff}
+html[data-theme="dark"] #logoutButton:hover,html[data-theme="dark"] .back:hover,html[data-theme="dark"] .theme-btn:hover{background:#ffffff33}
+html[data-theme="dark"] .intro h2{color:#fff;text-shadow:0 2px 14px #1b2f4266}
+html[data-theme="dark"] .intro p{color:#dbe7ee}
+html[data-theme="dark"] .topline h2{color:#fff}
+html[data-theme="dark"] .cards .card:nth-child(1){background:linear-gradient(#f6e6d8ee,#fffaf4cc)}
+html[data-theme="dark"] .cards .card:nth-child(2){background:linear-gradient(#dcece7ee,#f9fdfbcc)}
+html[data-theme="dark"] .cards .card:nth-child(3){background:linear-gradient(#dde8f3ee,#fafcffcc)}
+html[data-theme="dark"] .card{box-shadow:0 20px 44px #14263a40}
+html[data-theme="dark"] .panel{background:#ffffffe8;border-color:#ffffff66;box-shadow:0 18px 50px #14263a40}
+@media print{.theme-btn{display:none!important}html[data-theme="dark"]{background:#fff}html[data-theme="dark"] .topline h2{color:#111}}
+
+/* language toggle + RTL */
+.lang-btn{height:42px;min-width:56px;padding:0 16px;border-radius:999px;border:1px solid #fff;background:#ffffffb8;color:var(--ink);font:800 14px Tajawal,Arial,sans-serif;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:background .2s}
+.lang-btn:hover{background:#fff}
+html[data-theme="dark"] .lang-btn{background:#ffffff1f;border:1px solid #ffffff44;color:#fff}
+html[data-theme="dark"] .lang-btn:hover{background:#ffffff33}
+html[dir="rtl"] body{font-family:Tajawal,Arial,sans-serif}
+html[dir="rtl"] .card{text-align:center}
+html[dir="rtl"] pre{direction:ltr;text-align:left}
+html[dir="rtl"] .gate-card input[type="password"],html[dir="rtl"] .gate-card input[type="text"]{direction:rtl}
+html[dir="rtl"] .hint,html[dir="rtl"] .note{text-align:start}
+@media(max-width:800px){
+ html[dir="rtl"] .card{text-align:start}
+ header{gap:8px}
+ .lang-btn{height:36px;min-width:0;padding:0 11px;font-size:13px}
+ .theme-btn{width:36px;height:36px;font-size:16px}
+ #logoutButton{padding:7px 9px;font-size:11px;white-space:nowrap}
+ header h1{font-size:13px;line-height:1.3}
+}
+#logoutButton{white-space:nowrap}
+@media print{.lang-btn{display:none!important}}
 </style></head>
 <body class="locked">
 <section id="passwordGate" aria-label="Sign in">
+ <div class="gate-tools"><button class="lang-btn" type="button" data-lang-toggle aria-label="Change language">عربي</button><button class="theme-btn" type="button" data-theme-toggle aria-label="Toggle light / dark mode">🌙</button></div>
  <form class="gate-card" id="gateForm">
-  <div class="gate-mark">🔒</div>
+  <div class="gate-mark"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.2.2c-.3.4-.2 1 .2 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.9.5 1.3.2l.2-.1c.3-.3.5-.7.4-1.1z"/></svg></div>
   <h2>Travel Offers Studio</h2>
   <p>Sign in to continue</p>
   <input id="gateUsername" type="text" placeholder="Username" autocomplete="username" required>
@@ -57,7 +155,7 @@ textarea,input{width:100%;border:1px solid var(--line);border-radius:12px;paddin
  </form>
 </section>
 <section id="greetingOverlay"><div class="greeting-card"><div id="greetingIcon" style="font-size:34px">✨</div><h2>Welcome</h2><p>Welcome to Travel Offers Studio</p></div></section>
-<header><div class="logo">✦</div><div><h1>Travel Offers Studio</h1><p>Create your offers easily with ready-made templates</p></div><button id="logoutButton" type="button">Log out</button></header>
+<header><div class="logo"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.2.2c-.3.4-.2 1 .2 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.9.5 1.3.2l.2-.1c.3-.3.5-.7.4-1.1z"/></svg></div><div><h1>Travel Offers Studio</h1><p>Create your offers easily with ready-made templates</p></div><button class="lang-btn" type="button" data-lang-toggle aria-label="Change language">عربي</button><button class="theme-btn" type="button" data-theme-toggle aria-label="Toggle light / dark mode">🌙</button><button id="logoutButton" type="button">Log out</button></header>
 <main>
 <section id="home">
 <div class="intro"><h2>Welcome to Travel Offers Studio</h2><p>Choose an offer type to get started</p></div>
@@ -70,7 +168,7 @@ textarea,input{width:100%;border:1px solid var(--line);border-radius:12px;paddin
 <div class="topline"><h2>🏨 Hotel Offers</h2><button class="back" data-home>← Main menu</button></div>
 <div class="layout">
 <div class="panel input-panel"><h3>Booking Details</h3><p class="hint">Copy booking details from your system and paste them here as-is, even if they are in English. We will automatically extract the hotel, rooms, dates, meals, and guest count.</p>
-<textarea id="hotelRaw" placeholder="Example:
+<textarea dir="auto" id="hotelRaw" placeholder="Example:
 The Marble Arch Hotel, by Thistle
 
 Check-in 06/11/2026 - Check-out 11/11/2026
@@ -91,7 +189,7 @@ Board: ROOM ONLY
 <div class="panel"><h3>Offer Preview</h3><div class="preview" id="hotelPreview">Paste booking details to see a live preview.</div><div class="note" id="hotelWarnings" aria-live="polite"></div>
 <div class="actions"><button class="btn primary" id="copyHotel">Copy Offer</button><button class="btn soft" id="printHotel">Print / PDF</button></div></div>
 </div></section>
-<section class="workspace" id="flight"><div class="topline"><h2>✈️ Flight Offers</h2><button class="back" data-home>← Main menu</button></div><div class="layout"><div class="panel input-panel"><h3>Flight Details</h3><p class="hint">Paste flight details in any supported format: Amadeus, Jazeera Airways, or the standard format. Need help? Open the examples below.</p><textarea id="flightRaw" placeholder="Paste flight details here..." ></textarea><div class="fields"><div class="field"><label>Price per adult</label><input id="flightPrice" placeholder="Adult price"></div><div class="field" id="flightChildPriceWrap" style="display:none"><label>Price per child</label><input id="flightChildPrice" placeholder="Child price"></div><div class="field" id="flightInfantPriceWrap" style="display:none"><label>Price per infant</label><input id="flightInfantPrice" placeholder="Infant price"></div><div class="field"><label>Currency</label><select id="flightCurrency" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fbfdfd;color:var(--ink);font:500 14px Tajawal"><option value="KWD">KWD</option><option value="SAR">SAR</option><option value="AED">AED</option><option value="BHD">BHD</option><option value="OMR">OMR</option><option value="JOD">JOD</option><option value="USD">USD</option><option value="EUR">EUR</option></select></div></div><div class="actions"><button class="btn soft" id="clearFlight">Reset fields</button><button class="btn outline" type="button" id="toggleFlightExamples" aria-expanded="false">Examples</button></div>
+<section class="workspace" id="flight"><div class="topline"><h2>✈️ Flight Offers</h2><button class="back" data-home>← Main menu</button></div><div class="layout"><div class="panel input-panel"><h3>Flight Details</h3><p class="hint">Paste flight details in any supported format: Amadeus, Jazeera Airways, or the standard format. Need help? Open the examples below.</p><textarea dir="auto" id="flightRaw" placeholder="Paste flight details here..." ></textarea><div class="fields"><div class="field"><label>Price per adult</label><input id="flightPrice" placeholder="Adult price"></div><div class="field" id="flightChildPriceWrap" style="display:none"><label>Price per child</label><input id="flightChildPrice" placeholder="Child price"></div><div class="field" id="flightInfantPriceWrap" style="display:none"><label>Price per infant</label><input id="flightInfantPrice" placeholder="Infant price"></div><div class="field"><label>Currency</label><select id="flightCurrency" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fbfdfd;color:var(--ink);font:500 14px Tajawal"><option value="KWD">KWD</option><option value="SAR">SAR</option><option value="AED">AED</option><option value="BHD">BHD</option><option value="OMR">OMR</option><option value="JOD">JOD</option><option value="USD">USD</option><option value="EUR">EUR</option></select></div></div><div class="actions"><button class="btn soft" id="clearFlight">Reset fields</button><button class="btn outline" type="button" id="toggleFlightExamples" aria-expanded="false">Examples</button></div>
 <div id="flightExamples" class="examples-panel" hidden>
  <div class="example-card"><h4>Example: Amadeus</h4><pre>**1  GF 110 I 28OCT 3*DMMBAH DK1  1930 2020  28OCT **
 **2  GF 154 I 29OCT 4*BAHMNL DK1  0110 1450  29OCT **
@@ -130,7 +228,7 @@ Sharjah - Tbilisi
 20 + 7
 2 adl</pre></div>
 </div></div><div class="panel"><h3>Offer Preview</h3><div class="preview" id="flightPreview">Paste flight details to see a live preview.</div><div class="note" id="flightWarnings" aria-live="polite"></div><div class="actions"><button class="btn primary" id="copyFlight">Copy Offer</button><button class="btn soft" id="printFlight">Print / PDF</button></div></div></div></section>
-<section class="workspace" id="combined"><div class="topline"><h2>🧳 Flight + Hotel Offers</h2><button class="back" data-home>← Main menu</button></div><div class="layout"><div class="panel input-panel"><h3>Flight and Hotel Details</h3><p class="hint">Enter flight details in the top box and hotel details in the bottom box. They will be combined into one offer in the same order.</p><div class="field"><label>Flight Details</label><textarea id="combinedFlightRaw" placeholder="Paste flight details here..." style="min-height:210px"></textarea></div><div class="field" style="margin-top:13px"><label>Hotel Details</label><textarea id="combinedHotelRaw" placeholder="Paste hotel details here..." style="min-height:170px"></textarea></div><div class="fields"><div class="field"><label>Price per person</label><input id="combinedPrice" placeholder="Price"></div><div class="field"><label>Currency</label><select id="combinedCurrency" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fbfdfd;color:var(--ink);font:500 14px Tajawal"><option value="KWD">KWD</option><option value="SAR">SAR</option><option value="AED">AED</option><option value="BHD">BHD</option><option value="OMR">OMR</option><option value="JOD">JOD</option><option value="USD">USD</option><option value="EUR">EUR</option></select></div></div><div class="actions"><button class="btn soft" id="clearCombined">Reset fields</button></div></div><div class="panel"><h3>Offer Preview</h3><div class="preview" id="combinedPreview">Enter flight and hotel details to see a live preview.</div><div class="note" id="combinedWarnings" aria-live="polite"></div><div class="actions"><button class="btn primary" id="copyCombined">Copy Offer</button><button class="btn soft" id="printCombined">Print / PDF</button></div></div></div></section>
+<section class="workspace" id="combined"><div class="topline"><h2>🧳 Flight + Hotel Offers</h2><button class="back" data-home>← Main menu</button></div><div class="layout"><div class="panel input-panel"><h3>Flight and Hotel Details</h3><p class="hint">Enter flight details in the top box and hotel details in the bottom box. They will be combined into one offer in the same order.</p><div class="field"><label>Flight Details</label><textarea dir="auto" id="combinedFlightRaw" placeholder="Paste flight details here..." style="min-height:210px"></textarea></div><div class="field" style="margin-top:13px"><label>Hotel Details</label><textarea dir="auto" id="combinedHotelRaw" placeholder="Paste hotel details here..." style="min-height:170px"></textarea></div><div class="fields"><div class="field"><label>Price per person</label><input id="combinedPrice" placeholder="Price"></div><div class="field"><label>Currency</label><select id="combinedCurrency" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fbfdfd;color:var(--ink);font:500 14px Tajawal"><option value="KWD">KWD</option><option value="SAR">SAR</option><option value="AED">AED</option><option value="BHD">BHD</option><option value="OMR">OMR</option><option value="JOD">JOD</option><option value="USD">USD</option><option value="EUR">EUR</option></select></div></div><div class="actions"><button class="btn soft" id="clearCombined">Reset fields</button></div></div><div class="panel"><h3>Offer Preview</h3><div class="preview" id="combinedPreview">Enter flight and hotel details to see a live preview.</div><div class="note" id="combinedWarnings" aria-live="polite"></div><div class="actions"><button class="btn primary" id="copyCombined">Copy Offer</button><button class="btn soft" id="printCombined">Print / PDF</button></div></div></div></section>
 </main><div class="toast" id="toast"></div>
 <script src="flight-data.js"></script>
 <script>
@@ -824,4 +922,86 @@ $('copyCombined').onclick=()=>copyValidated('combined');$('printCombined').oncli
  });
  logout.addEventListener('click',()=>{sessionStorage.removeItem('offersStudioUnlocked');document.body.classList.add('locked');gate.style.display='';input.value='';username.value='';username.focus();});
 })();
-</script></body></html>
+</script><script>
+(function(){
+ var root=document.documentElement;
+ function store(t){try{localStorage.setItem("theme",t)}catch(e){}}
+ function apply(t){
+  root.setAttribute("data-theme",t);
+  document.querySelectorAll("[data-theme-toggle]").forEach(function(b){b.textContent=t==="dark"?"☀️":"🌙";b.title=t==="dark"?"Light mode":"Dark mode"});
+  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",t==="dark"?"#2f4a63":"#e6eff3");
+ }
+ apply(root.getAttribute("data-theme")==="dark"?"dark":"light");
+ document.querySelectorAll("[data-theme-toggle]").forEach(function(b){
+  b.addEventListener("click",function(){var n=root.getAttribute("data-theme")==="dark"?"light":"dark";apply(n);store(n)});
+ });
+})();
+</script>
+<script>
+(function(){
+ var AR={"Sign in to continue": "سجّل الدخول للمتابعة", "Sign in": "تسجيل الدخول", "Incorrect username or password. Please try again.": "اسم المستخدم أو كلمة المرور غير صحيحة. حاول مرة أخرى.", "Welcome": "أهلًا بك", "Welcome to Travel Offers Studio": "مرحبًا بك في Travel Offers Studio", "Create your offers easily with ready-made templates": "أنشئ عروضك بسهولة بقوالب جاهزة", "Log out": "تسجيل الخروج", "Choose an offer type to get started": "اختر نوع العرض للبدء", "Hotels": "الفنادق", "Paste booking details and convert them into a ready-to-use Arabic offer.": "الصق تفاصيل الحجز وحوّلها إلى عرض عربي جاهز للاستخدام.", "Open section →": "فتح القسم ←", "Flights": "الطيران", "Format flight details into a clear, organized offer.": "نسّق تفاصيل الرحلة في عرض واضح ومرتب.", "Flight + Hotel": "طيران + فندق", "Combine flight and hotel details in one offer.": "اجمع تفاصيل الطيران والفندق في عرض واحد.", "🏨 Hotel Offers": "🏨 عروض الفنادق", "← Main menu": "→ القائمة الرئيسية", "Booking Details": "تفاصيل الحجز", "Copy booking details from your system and paste them here as-is, even if they are in English. We will automatically extract the hotel, rooms, dates, meals, and guest count.": "انسخ تفاصيل الحجز من نظامك والصقها هنا كما هي، حتى لو كانت بالإنجليزية. سنستخرج تلقائيًا الفندق والغرف والتواريخ والوجبات وعدد الأفراد.", "Reset fields": "مسح الحقول", "Total Price (optional)": "السعر الإجمالي (اختياري)", "Currency": "العملة", "Cancellation Policy": "سياسة الإلغاء", "Non-refundable": "غير مسترد", "Refundable": "قابل للاسترداد", "Offer Preview": "معاينة العرض", "Paste booking details to see a live preview.": "الصق تفاصيل الحجز لتظهر المعاينة المباشرة.", "Copy Offer": "نسخ العرض", "Print / PDF": "طباعة / PDF", "✈️ Flight Offers": "✈️ عروض الطيران", "Flight Details": "تفاصيل الرحلة", "Paste flight details in any supported format: Amadeus, Jazeera Airways, or the standard format. Need help? Open the examples below.": "الصق تفاصيل الرحلة بأي صيغة مدعومة: Amadeus أو طيران الجزيرة أو الصيغة العادية. تحتاج مساعدة؟ افتح الأمثلة بالأسفل.", "Price per adult": "سعر البالغ", "Price per child": "سعر الطفل", "Price per infant": "سعر الرضيع", "Examples": "أمثلة", "Hide examples": "إخفاء الأمثلة", "Example: Amadeus": "مثال: Amadeus", "Example: Jazeera Airways (round trip)": "مثال: طيران الجزيرة (ذهاب وعودة)", "Example: Jazeera Airways (one way)": "مثال: طيران الجزيرة (ذهاب فقط)", "Example: Standard format (round trip)": "مثال: الصيغة العادية (ذهاب وعودة)", "Example: Standard format (one way)": "مثال: الصيغة العادية (ذهاب فقط)", "Paste flight details to see a live preview.": "الصق تفاصيل الرحلة لتظهر المعاينة المباشرة.", "🧳 Flight + Hotel Offers": "🧳 عروض الطيران + الفندق", "Flight and Hotel Details": "تفاصيل الطيران والفندق", "Enter flight details in the top box and hotel details in the bottom box. They will be combined into one offer in the same order.": "أدخل تفاصيل الطيران في الصندوق العلوي وتفاصيل الفندق في الصندوق السفلي، وسيتم دمجهما في عرض واحد بنفس الترتيب.", "Hotel Details": "تفاصيل الفندق", "Price per person": "السعر للشخص", "Enter flight and hotel details to see a live preview.": "أدخل تفاصيل الطيران والفندق لتظهر المعاينة المباشرة.", "Enter flight details first": "أدخل تفاصيل الرحلة أولًا", "Flight preview is not ready": "معاينة الرحلة غير جاهزة بعد", "There is no offer to copy": "لا يوجد عرض لنسخه", "Copy failed. Allow clipboard access and try again": "تعذّر النسخ. اسمح بالوصول إلى الحافظة وحاول مرة أخرى", "تم Copy Offer بنجاح": "تم نسخ العرض بنجاح", "Offer is not ready to send": "العرض غير جاهز للإرسال", "Please complete all details before sending.": "يرجى استكمال جميع البيانات قبل الإرسال.", "You forgot some details.": "نسيت بعض التفاصيل.", "✓ All required details are complete": "✓ جميع البيانات المطلوبة مكتملة", "Username": "اسم المستخدم", "Password": "كلمة المرور", "Leave blank if unavailable": "اتركه فارغًا إن لم يتوفر", "Paste flight details here...": "الصق تفاصيل الرحلة هنا...", "Adult price": "سعر البالغ", "Child price": "سعر الطفل", "Infant price": "سعر الرضيع", "Paste hotel details here...": "الصق تفاصيل الفندق هنا...", "Price": "السعر", "Cancellation deadline": "آخر موعد للإلغاء", "Toggle light / dark mode": "تبديل الوضع الفاتح / الغامق", "Dark mode": "الوضع الغامق", "Light mode": "الوضع الفاتح"};
+ var root=document.documentElement,lang=root.getAttribute("lang")==="ar"?"ar":"en";
+ var ATTRS=["placeholder","aria-label","title"];
+ var tNodes=new WeakMap(),tAttrs=new WeakMap();
+ function has(k){return Object.prototype.hasOwnProperty.call(AR,k)}
+ function skip(n){var p=n.parentElement;return !p||p.closest("pre,script,style")}
+ function doText(n){
+  if(lang!=="ar"||skip(n))return;
+  var v=n.nodeValue,k=v.trim();if(!k||!has(k))return;
+  var r=v.replace(k,function(){return AR[k]});
+  tNodes.set(n,{en:v,ar:r});n.nodeValue=r;
+ }
+ function doAttr(el,a){
+  if(lang!=="ar")return;
+  var v=el.getAttribute(a);if(!v||!has(v))return;
+  var m=tAttrs.get(el)||{};m[a]={en:v,ar:AR[v]};tAttrs.set(el,m);el.setAttribute(a,AR[v]);
+ }
+ function walk(node,fn){
+  var w=document.createTreeWalker(node,NodeFilter.SHOW_TEXT),n,list=[];
+  while((n=w.nextNode()))list.push(n);list.forEach(fn);
+ }
+ function toArabic(node){
+  if(node.nodeType===3){doText(node);return}
+  if(node.nodeType!==1)return;
+  walk(node,doText);
+  var els=[node].concat([].slice.call(node.querySelectorAll("[placeholder],[aria-label],[title]")));
+  els.forEach(function(el){ATTRS.forEach(function(a){if(el.hasAttribute&&el.hasAttribute(a))doAttr(el,a)})});
+ }
+ function toEnglish(){
+  walk(document.body,function(n){var r=tNodes.get(n);if(r&&n.nodeValue===r.ar)n.nodeValue=r.en});
+  document.querySelectorAll("[placeholder],[aria-label],[title]").forEach(function(el){
+   var m=tAttrs.get(el);if(!m)return;
+   ATTRS.forEach(function(a){var r=m[a];if(r&&el.getAttribute(a)===r.ar)el.setAttribute(a,r.en)});
+  });
+ }
+ new MutationObserver(function(list){
+  if(lang!=="ar")return;
+  list.forEach(function(m){
+   if(m.type==="childList")m.addedNodes.forEach(toArabic);
+   else if(m.type==="characterData")doText(m.target);
+   else if(m.type==="attributes")doAttr(m.target,m.attributeName);
+  });
+ }).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:ATTRS});
+ var _toast=window.toast;
+ if(typeof _toast==="function")window.toast=function(s){
+  if(lang==="en"&&s==="\u062a\u0645 Copy Offer \u0628\u0646\u062c\u0627\u062d")s="Offer copied successfully";
+  return _toast(s);
+ };
+ function setLang(l,save){
+  lang=l;root.setAttribute("lang",l);root.setAttribute("dir",l==="ar"?"rtl":"ltr");
+  if(l==="ar")toArabic(document.body);else toEnglish();
+  document.querySelectorAll("[data-lang-toggle]").forEach(function(b){
+   b.textContent=l==="ar"?"EN":"\u0639\u0631\u0628\u064a";
+   b.setAttribute("aria-label",l==="ar"?"\u062a\u063a\u064a\u064a\u0631 \u0627\u0644\u0644\u063a\u0629":"Change language");
+   b.title=l==="ar"?"English":"\u0627\u0644\u0639\u0631\u0628\u064a\u0629";
+  });
+  var m=document.querySelector('meta[name="theme-color"]');
+  if(save){try{localStorage.setItem("lang",l)}catch(e){}}
+ }
+ setLang(lang,false);
+ document.querySelectorAll("[data-lang-toggle]").forEach(function(b){
+  b.addEventListener("click",function(){setLang(lang==="ar"?"en":"ar",true)});
+ });
+})();
+</script>
+</body></html>
